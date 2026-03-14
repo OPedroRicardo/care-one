@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarePlus | Pitching</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- ECG -->
+<div class="hero-ecg-wrap"><canvas id="ecg-canvas"></canvas></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <img class="logo-care" src="./careplus.svg" alt="CarePlus">
+    <div>por <span>Time #1</span></div>
+  </div>
+  <ul>
+    <li><a href="#problema">Problema</a></li>
+    <li><a href="#solucao">Solução</a></li>
+    <li><a href="#mercado">Mercado</a></li>
+    <li><a href="#equipe">Equipe</a></li>
+    <li><a href="#cta">Contato</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow animate">Pitch Deck · 2025</div>
+  <h1 class="animate delay-1">
+    A saúde do futuro<br>começa com <span class="highlight">triagem inteligente.</span>
+  </h1>
+  <p class="hero-sub animate delay-2">
+    Enquanto filas crescem e diagnósticos atrasam, nosso ecosistema irá transformar o ponto de entrada dos planos de saúde com tecnologia de ponta.
+  </p>
+  <div class="stat-row animate delay-3">
+    <div class="stat">
+      <div class="stat-num">73%</div>
+      <div class="stat-label">das triagens ainda são manuais no Brasil</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4,2x</div>
+      <div class="stat-label">mais rápido com pré-triagem automatizada</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">USD 312.9B</div>
+      <div class="stat-label">mercado de healthtech em 2024</div>
+      <a
+        class="stat-info"
+        target="_blank"
+        href="https://www.gminsights.com/industry-analysis/digital-health-market"
+      >segundo relatório da Global Market Insights</a>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROBLEMA -->
+<section id="problema">
+  <div class="section-tag reveal"><span class="dot"></span> O Problema</div>
+  <h2 class="reveal">O sistema de triagem atual é <em>ineficiente e caro.</em></h2>
+  <p class="lead reveal">Operadoras de saúde perdem bilhões anualmente com triagens imprecisas, internações desnecessárias e ausência de dados estruturados sobre seus beneficiários.</p>
+
+  <div class="problem-grid">
+    <div class="problem-card reveal">
+      <div class="problem-icon">⏱️</div>
+      <h3>Filas longas e decisões lentas</h3>
+      <p>Profissionais de saúde dedicam até 30% do tempo em processos manuais de triagem que poderiam ser automatizados com precisão superior.</p>
+    </div>
+    <div class="problem-card reveal">
+      <div class="problem-icon">📊</div>
+      <h3>Dados fragmentados e inúteis</h3>
+      <p>Informações clínicas ficam presas em sistemas isolados, impossibilitando uma visão 360° do paciente e decisões baseadas em dados reais.</p>
+    </div>
+    <div class="problem-card reveal">
+      <div class="problem-icon">🚨</div>
+      <h3>Supertriagem e subdimensionamento</h3>
+      <p>Sem protocolos padronizados, casos críticos são subvalorizados e casos simples sobrecarregam o sistema. O resultado: custo alto e risco elevado.</p>
+    </div>
+    <div class="problem-card reveal">
+      <div class="problem-icon">🔗</div>
+      <h3>Operadoras sem visibilidade</h3>
+      <p>A CarePlus e outras operadoras operam às cegas. Sem dados de pré-triagem, é impossível antecipar sinistros, planejar capacidade e reduzir custos.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SOLUÇÃO -->
+<section id="solucao">
+  <div class="section-tag reveal"><span class="dot"></span> A Solução</div>
+  <h2 class="reveal">Dois produtos. <em>Um ecossistema completo.</em></h2>
+  <p class="lead reveal">Conectamos o ponto de atendimento físico a uma inteligência analítica em nuvem — trazendo a Indústria 4.0 para dentro dos planos de saúde.</p>
+
+  <div class="solution-layout">
+    <div>
+      <div class="product-card reveal">
+        <div class="product-badge">Hardware + Software</div>
+        <div class="product-title">🖥️ Totem de Pré-Triagem</div>
+        <p class="product-desc">Dispositivo autônomo com sensores clínicos integrados que aplica o protocolo NEWS2 em tempo real, sem necessidade de profissional presente.</p>
+        <ul class="feature-list">
+          <li>Aferição de SpO₂, FC, FR, temperatura e PA</li>
+          <li>Score NEWS2 automático e risco classificado</li>
+          <li>Interface intuitiva para o beneficiário</li>
+          <li>Integração em tempo real com a dashboard</li>
+          <li>Design compacto para UBSs, clínicas e redes CarePlus</li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="product-card reveal">
+        <div class="product-badge">Cloud + IA</div>
+        <div class="product-title">📡 Dashboard Inteligente</div>
+        <p class="product-desc">Plataforma web onde gestores e médicos visualizam dados digeridos, histórico de triagens e navegam pelas informações com linguagem natural.</p>
+        <ul class="feature-list">
+          <li>Painel de KPIs clínicos e operacionais</li>
+          <li>Histórico completo de triagens por paciente</li>
+          <li>Chat com RAG para busca conversacional</li>
+          <li>Alertas inteligentes de risco elevado</li>
+          <li>Relatórios automáticos para ANS e auditoria</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div class="section-tag" style="font-size:0.7rem; margin-bottom: 16px;">Fluxo de dados</div>
+        <div class="pipeline reveal">
+          <div class="pipe-step">
+            <div class="pipe-dot">01</div>
+            <div class="pipe-content">
+              <h4>Beneficiário usa o Totem</h4>
+              <p>Sensores capturam sinais vitais em menos de 2 minutos</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-dot">02</div>
+            <div class="pipe-content">
+              <h4>NEWS2 calcula o score</h4>
+              <p>Algoritmo classifica o risco e define prioridade de atendimento</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-dot">03</div>
+            <div class="pipe-content">
+              <h4>Dados vão para a cloud</h4>
+              <p>Transmissão segura e em tempo real para a Dashboard</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-dot">04</div>
+            <div class="pipe-content">
+              <h4>Gestores tomam decisões</h4>
+              <p>Visão completa, alertas e insights acionáveis na Dashboard</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DIFERENCIAL -->
+<section id="diferencial">
+  <div class="section-tag reveal"><span class="dot"></span> Diferencial Competitivo</div>
+  <h2 class="reveal">Por que a CarePlus escolhe <em>essa solução?</em></h2>
+  <p class="lead reveal">Nenhum player do mercado combina hardware clínico validado, protocolo NEWS2 e IA conversacional em uma única plataforma integrada.</p>
+
+  <div class="diff-grid">
+    <div class="diff-card reveal">
+      <div class="diff-icon">🧬</div>
+      <h4>Protocolo NEWS2 Validado</h4>
+      <p>Adotado pelo NHS britânico e hospitais de referência. Precisão clínica superior a triagens manuais comuns no Brasil.</p>
+    </div>
+    <div class="diff-card reveal">
+      <div class="diff-icon">🤖</div>
+      <h4>RAG Chat Proprietário</h4>
+      <p>IA treinada sobre dados da própria operadora. Respostas contextuais e busca em linguagem natural pelos dados de triagem.</p>
+    </div>
+    <div class="diff-card reveal">
+      <div class="diff-icon">🔒</div>
+      <h4>LGPD-Compliant by Design</h4>
+      <p>Arquitetura de dados desenhada desde o início para conformidade com a LGPD e normas da ANS.</p>
+    </div>
+    <div class="diff-card reveal">
+      <div class="diff-icon">⚡</div>
+      <h4>Integração Plug & Play</h4>
+      <p>O Totem conecta ao sistema existente da CarePlus sem necessidade de substituição de infraestrutura.</p>
+    </div>
+    <div class="diff-card reveal">
+      <div class="diff-icon">📈</div>
+      <h4>Escalabilidade Imediata</h4>
+      <p>Arquitetura em nuvem permite expansão para toda a rede de unidades sem custo incremental relevante.</p>
+    </div>
+    <div class="diff-card reveal">
+      <div class="diff-icon">🎯</div>
+      <h4>ROI Mensurável</h4>
+      <p>Redução de sinistros, internações evitáveis e processos manuais — com dashboards de ROI em tempo real.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MERCADO -->
+<section id="mercado">
+  <div class="section-tag reveal"><span class="dot"></span> Mercado e Potencial</div>
+  <h2 class="reveal">Um mercado de <em>R$ 12 bilhões</em> em transformação.</h2>
+  <p class="lead reveal">O setor de saúde digital no Brasil cresce 28% ao ano. A digitalização de operadoras é regulatória e inevitável — a questão é quem chegará primeiro.</p>
+
+  <div class="market-row">
+    <div class="market-card reveal">
+      <div class="market-num">160M+</div>
+      <div class="market-label">Beneficiários de planos de saúde no Brasil</div>
+    </div>
+    <div class="market-card reveal">
+      <div class="market-num">28%</div>
+      <div class="market-label">Crescimento anual da saúde digital no país</div>
+    </div>
+    <div class="market-card reveal">
+      <div class="market-num">R$12B</div>
+      <div class="market-label">Mercado endereçável de health tech em 2025</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CRESCIMENTO -->
+<section id="crescimento">
+  <div class="section-tag reveal"><span class="dot"></span> Estratégia de Crescimento</div>
+  <h2 class="reveal">Crescimento em <em>3 fases claras.</em></h2>
+
+  <div class="growth-layout">
+    <div class="phase-list">
+      <div class="phase reveal" style="margin-bottom:16px;">
+        <div class="phase-tag">Fase 01 · 2025</div>
+        <h4>Piloto na rede CarePlus</h4>
+        <p>Implantação de 10–20 Totens em unidades estratégicas de SP. Validação clínica, ajuste de UX e coleta de dados para case comercial.</p>
+      </div>
+      <div class="phase reveal" style="margin-bottom:16px;">
+        <div class="phase-tag">Fase 02 · 2026</div>
+        <h4>Expansão para toda a rede</h4>
+        <p>Roll-out para 100% das unidades CarePlus. Abertura de modelo SaaS para outras operadoras regionais e hospitais.</p>
+      </div>
+      <div class="phase reveal">
+        <div class="phase-tag">Fase 03 · 2027+</div>
+        <h4>Plataforma nacional</h4>
+        <p>Licenciamento do ecossistema (Totem + Dashboard) para operadoras nacionais, hospitais privados e redes de UBS via contratos B2B.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px;">
+      <div class="section-tag" style="font-size:0.7rem; margin-bottom: 24px;">Canais de aquisição</div>
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="font-size:0.85rem;">Venda direta B2B</span>
+            <span style="color:var(--accent); font-size:0.85rem; font-weight:700;">55%</span>
+          </div>
+          <div style="height:4px; background:var(--surface2); border-radius:2px;">
+            <div style="height:4px; width:55%; background:linear-gradient(90deg,var(--accent),var(--accent3)); border-radius:2px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="font-size:0.85rem;">Parcerias com distribuidores med</span>
+            <span style="color:var(--accent); font-size:0.85rem; font-weight:700;">30%</span>
+          </div>
+          <div style="height:4px; background:var(--surface2); border-radius:2px;">
+            <div style="height:4px; width:30%; background:linear-gradient(90deg,var(--accent),var(--accent3)); border-radius:2px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="font-size:0.85rem;">Indicação e referral</span>
+            <span style="color:var(--accent); font-size:0.85rem; font-weight:700;">15%</span>
+          </div>
+          <div style="height:4px; background:var(--surface2); border-radius:2px;">
+            <div style="height:4px; width:15%; background:linear-gradient(90deg,var(--accent),var(--accent3)); border-radius:2px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EQUIPE -->
+<section id="equipe">
+  <div class="section-tag reveal"><span class="dot"></span> Equipe</div>
+  <h2 class="reveal">As pessoas certas para <em>resolver esse problema.</em></h2>
+  <p class="lead reveal">Uma equipe multidisciplinar com experiência em saúde, tecnologia e negócios — construída para executar em velocidade de startup com rigor de corporate.</p>
+
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="avatar">👨‍⚕️</div>
+      <h4>Dr. Ricardo Alves</h4>
+      <div class="team-role">Chief Medical Officer</div>
+      <p>15 anos em medicina de urgência. Especialista em protocolos de triagem e implementação de NEWS2 em ambientes hospitalares.</p>
+    </div>
+    <div class="team-card reveal">
+      <div class="avatar">👨‍💻</div>
+      <h4>Lucas Ferreira</h4>
+      <div class="team-role">CTO</div>
+      <p>Ex-engenheiro sênior em healthtech. Liderou squads de IoT médico e plataformas de dados em saúde na América Latina.</p>
+    </div>
+    <div class="team-card reveal">
+      <div class="avatar">👩‍💼</div>
+      <h4>Marina Costa</h4>
+      <div class="team-role">CEO</div>
+      <p>MBA FGV. Histórico de growth em startups B2B de saúde. Fechou contratos com 3 operadoras regionais antes desse projeto.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FINANCEIRO -->
+<section id="financeiro">
+  <div class="section-tag reveal"><span class="dot"></span> Projeções e Capital</div>
+  <h2 class="reveal">Buscamos <em>R$ 2,4M</em> para escalar.</h2>
+  <p class="lead reveal">O investimento cobre produção dos primeiros Totens, desenvolvimento da plataforma cloud e estrutura comercial para expansão à rede completa da CarePlus.</p>
+
+  <div class="fin-row">
+    <div class="fin-card reveal">
+      <div class="fin-year">2025</div>
+      <div class="fin-val">R$480K</div>
+      <div class="fin-label">Receita piloto (20 unidades)</div>
+    </div>
+    <div class="fin-card reveal">
+      <div class="fin-year">2026</div>
+      <div class="fin-val">R$2,1M</div>
+      <div class="fin-label">Expansão CarePlus + early adopters</div>
+    </div>
+    <div class="fin-card reveal">
+      <div class="fin-year">2027</div>
+      <div class="fin-val">R$7,8M</div>
+      <div class="fin-label">Plataforma nacional B2B SaaS</div>
+    </div>
+    <div class="fin-card reveal">
+      <div class="fin-year">Retorno</div>
+      <div class="fin-val">3,2x</div>
+      <div class="fin-label">ROI projetado em 36 meses</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 36px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;" class="reveal">
+    <div>
+      <div style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Uso do Capital</div>
+      <div style="font-size:1.1rem; font-weight:700; color:var(--accent);">45%</div>
+      <div style="font-size:0.85rem; color:var(--muted);">Produção de hardware (Totens)</div>
+    </div>
+    <div>
+      <div style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Plataforma</div>
+      <div style="font-size:1.1rem; font-weight:700; color:var(--accent);">35%</div>
+      <div style="font-size:0.85rem; color:var(--muted);">Desenvolvimento e infra cloud</div>
+    </div>
+    <div>
+      <div style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Go-to-Market</div>
+      <div style="font-size:1.1rem; font-weight:700; color:var(--accent);">20%</div>
+      <div style="font-size:0.85rem; color:var(--muted);">Comercial, marketing e operações</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section" id="cta">
+  <div class="cta-glow"></div>
+  <div class="section-tag reveal" style="display:inline-flex; margin-bottom:32px;"><span class="dot"></span> Chamada à Ação</div>
+  <h2 class="reveal">Pronto para levar a CarePlus<br>para a <em>próxima década?</em></h2>
+  <p class="reveal">Estamos buscando parceria estratégica com a CarePlus para implantar o piloto em 20 unidades e provar que triagem inteligente é o futuro dos planos de saúde no Brasil.</p>
+  <a href="mailto:contato@careplus-tech.com.br" class="btn-primary reveal">Vamos conversar →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">Care<span>Plus</span> <span style="font-size:0.7rem; color: var(--muted); font-weight:400; letter-spacing:1px; margin-left:12px;">Pitch 2025</span></div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

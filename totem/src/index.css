@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@import "@fontsource/mada/200.css";
+@import "@fontsource/mada/300.css";
+@import "@fontsource/mada/400.css";
+@import "@fontsource/mada/500.css";
+@import "@fontsource/mada/600.css";
+@import "@fontsource/mada/700.css";
+
+:root {
+  --mada-font: 'Mada', sans-serif;
+  --primary: #0079C8;
+  --primary-light: #7ca5c7;
+  --primary-lighter: #cee3f5;
+  --primary-dark: #00335B;
+  --succcess: #1EA04A;
+  --negative: #FF1F1F;
+}
+
+.mada-extralight {
+	font-family: var(--mada-font);
+	font-weight: 200;
+}
+.mada-light {
+	font-family: var(--mada-font);
+	font-weight: 300;
+}
+.mada-regular {
+	font-family: var(--mada-font);
+	font-weight: 400;
+}
+.mada-medium {
+	font-family: var(--mada-font);
+	font-weight: 500;
+}
+.mada-semibold {
+	font-family: var(--mada-font);
+	font-weight: 600;
+}
+.mada-bold {
+	font-family: var(--mada-font);
+	font-weight: 700;
+}
+
+.text-primary {
+  color: var(--primary);
+}
+.text-primary-light {
+  color: var(--primary-light);
+}
+.text-primary-dark {
+  color: var(--primary-dark);
+}
+.text-success {
+  color: var(--succes);
+}
+.text-negative {
+  color: var(--negative);
+}
+
+input {
+	padding: 30px 20px;
+	border: 2px solid var(--primary-light);
+	border-radius: 25px;
+}
+
+input:focus {
+	outline: 4px solid var(--primary-lighter);
+}
+
+input::placeholder {
+	color: var(--primary-light);
+}
+
+button.primary {
+	font-size: 30px;
+	background: var(--primary);
+	color: white;
+	font-weight: 400;
+	padding: 20px 44px;
+	border-radius: 15px;
+}
+button.secondary {
+	font-size: 30px;
+	background: white;
+	color: var(--primary);
+	border: 2px solid var(--primary);
+	font-weight: 400;
+	padding: 20px 44px;
+	border-radius: 15px;
+}
+button.positive {
+	font-size: 30px;
+	background: white;
+	color: var(--succcess);
+	border: 2px solid var(--succcess);
+	font-weight: 400;
+	padding: 20px 44px;
+	border-radius: 15px;
+}
+button.negative {
+	font-size: 30px;
+	background: white;
+	color: var(--negative);
+	border: 2px solid var(--negative);
+	font-weight: 400;
+	padding: 20px 44px;
+	border-radius: 15px;
+}
