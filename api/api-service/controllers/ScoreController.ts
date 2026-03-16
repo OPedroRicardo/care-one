@@ -1,20 +1,70 @@
+// Importa tipos e funções do Express e Zod para validação
 import { Express, Request, Response, RequestHandler, NextFunction } from 'express';
 import z from 'zod';
 
+// Tipo para definir intervalos de valores (mínimo e máximo)
 type rangeType = {
   min?: number;
   max?: number;
 }
 
+// Tipo para os sinais vitais utilizados no cálculo do NEWS2
 type vitalsType = {
-  fr: number;
-  fc: number;
-  spo2: number;
-  temp: number;
-  pa: number;
-  oxygen: boolean;
+  fr: number;      // Frequência respiratória
+  fc: number;      // Frequência cardíaca
+  spo2: number;    // Saturação de oxigênio
+  temp: number;    // Temperatura
+  pa: number;      // Pressão arterial
+  oxygen: boolean; // Uso de oxigênio suplementar
 }
 
+// Regras de pontuação do algoritmo NEWS2 para cada parâmetro vital
+const SCORE_RULES = {
+  fr: [ // Frequência respiratória
+    [{ min: 12, max: 20 }],
+    [{ min:  9, max: 11 }],
+    [{ min: 21, max: 24 }]
+  ],
+
+  pa: [ // Pressão arterial
+    [{ min: 111, max: 219 }],
+    [{ min: 101, max: 110 }],
+    [{ min:  91, max: 100 }]
+  ],
+
+  fc: [ // Frequência cardíaca
+    [{ min: 51, max: 90 }],
+    [{ min: 41, max: 50 }, { min: 91, max: 110 }],
+    [{ min:  111, max: 130 }]
+  ],
+
+  temp: [ // Temperatura
+    [{ min: 36.1, max: 38.0 }],
+    [{ min: 35.1, max: 36 }, { min: 38.1, max: 39 }],
+    [{ min: 39.1 }],
+    [{ max: 35.0 }]
+  ],
+
+  spo2_1: [ // Saturação de oxigênio sem uso de oxigênio suplementar
+    [{ min: 96 }],
+    [{ min: 94, max: 95 }],
+    [{ min: 92, max: 93 }]
+  ],
+
+  spo2_2_air: [ // Saturação de oxigênio em ar ambiente
+    [{ min: 88, max: 92 }, { min: 93 }],
+    [{ min: 86, max: 87 }],
+    [{ min: 84, max: 85 }]
+  ],
+
+  spo2_2_oxygen: [ // Saturação de oxigênio com oxigênio suplementar
+    [{ min: 88, max: 92 }],
+    [{ min: 86, max: 87 }, { min: 93, max: 94 }],
+    [{ min: 84, max: 85 }, { min: 95, max: 96 }]
+  ],
+}
+
+// Controlador responsável por calcular o escore NEWS2 a partir dos sinais vitais
 export class ScoreController {
   #app
 
@@ -22,8 +72,12 @@ export class ScoreController {
     this.#app = app
   }
 
+  /**
+   * Calcula o score para um valor de sinal vital, baseado nas regras fornecidas.
+   * Retorna o índice do intervalo correspondente, ou 3 se não encontrar.
+   */
   #calcScore (value: number, range: rangeType[][]) {
-    const score = range.findIndex((ranges, index) => {
+    const score = range.findIndex(ranges => {
       return ranges.some(({ min, max }) =>
         value >= (min || -Infinity) &&
         value <= (max || Infinity)
@@ -32,100 +86,51 @@ export class ScoreController {
     return score >= 0 ? score : 3
   }
 
-  handleFrScore (fr: number) {
-    const range = [
-      [{ min: 12, max: 20 }],
-      [{ min:  9, max: 11 }],
-      [{ min: 21, max: 24 }]
-    ]
-    
-    return this.#calcScore(fr ,range)
-  }
-
-  spo2Score1 (o2:number) {
-    const range = [
-      [{ min: 96 }],
-      [{ min: 94, max: 95 }],
-      [{ min: 92, max: 93 }]
-    ]
-    
-    return this.#calcScore(o2 ,range)
-  }
-
-  spo2Score2 (o2:number, oxygen: boolean) {
-    const range = [
-      [{ min: 88, max: 92 }, { min: 93 }],
-      [{ min: 86, max: 87 }, { min: 93, max: 94 }],
-      [{ min: 84, max: 85 }]
-    ]
-
-    if (oxygen) {
-      range[0] = [{ min: 88, max: 92 }]
-      range[1].push({ min: 93, max: 94 })
-      range[2].push({ min: 95, max: 96 })
-    }
-
-    return this.#calcScore(o2, range)
-  }
-
+  /**
+   * Retorna a pontuação para uso de oxigênio suplementar.
+   * NEWS2 atribui 2 pontos se o paciente estiver usando oxigênio.
+   */
   handleAirOxygenScore (oxygen: boolean) {
-    if (oxygen) return 2
-    return 0
+    return oxygen ? 2 : 0
   }
 
-  handlePaScore (pa: number) {
-    const range = [
-      [{ min: 111, max: 219 }],
-      [{ min: 101, max: 110 }],
-      [{ min:  91, max: 100 }]
-    ]
-
-    return this.#calcScore(pa, range)
-  }
-
-  handleFcScore (fc: number) {
-    const range = [
-      [{ min: 51, max: 90 }],
-      [{ min: 41, max: 50 }, { min: 91, max: 110 }],
-      [{ min:  111, max: 130 }]
-    ]
-
-    return this.#calcScore(fc, range)
-  }
-
-  handleTempScore (temp: number) {
-    const range = [
-      [{ min: 36.1, max: 38.0 }],
-      [{ min: 35.1, max: 36 }, { min: 38.1, max: 39 }],
-      [{ min: 39.1 }],
-      [{ max: 35.0 }]
-    ]
-
-    return this.#calcScore(temp, range)
-  }
-
+  /**
+   * Calcula todos os scores dos sinais vitais conforme as regras do NEWS2.
+   * Retorna um objeto com os scores individuais.
+   */
   calcAllScores (vitals: vitalsType) {
-    const fr = this.handleFrScore(vitals.fr)
-    const spo2_1 = this.spo2Score1(vitals.spo2)
-    const spo2_2 = this.spo2Score2(vitals.spo2, vitals.oxygen)
-    const airOxygen = this.handleAirOxygenScore(vitals.oxygen)
-    const pa = this.handlePaScore(vitals.pa)
-    const fc = this.handleFcScore(vitals.fc)
-    const temp = this.handleTempScore(vitals.temp)
+    const cs = this.#calcScore
 
-    return {
+    const fr = cs(vitals.fr, SCORE_RULES.fr)
+    const pa = cs(vitals.pa, SCORE_RULES.pa)
+    const fc = cs(vitals.fc, SCORE_RULES.fc)
+    const temp = cs(vitals.temp, SCORE_RULES.temp)
+
+    // NEWS2 tem duas abordagens para SpO2, dependendo do uso de oxigênio
+    const spo2_1 = cs(vitals.spo2, SCORE_RULES.spo2_1)
+    const spo2_2 = this.#calcScore(vitals.spo2, vitals.oxygen ? SCORE_RULES.spo2_2_oxygen : SCORE_RULES.spo2_2_air)
+    const airOxygen = this.handleAirOxygenScore(vitals.oxygen)
+
+    console.log({
       fr,
+      pa,
+      fc,
+      temp,
       spo2_1,
       spo2_2,
       airOxygen,
-      pa,
-      fc,
-      temp
-    }
+    })
+
+    return { fr, pa, fc, temp, spo2_1, spo2_2, airOxygen }
   }
 
+  /**
+   * Endpoint para calcular o escore NEWS2.
+   * Valida o corpo da requisição, calcula os scores e retorna o resultado.
+   */
   calcNEWS2 (req: Request, res: Response, next: NextFunction) {
-    const validator = z.object({ // TODO: definir range de valores possívels
+    // Validação dos dados recebidos
+    const validator = z.object({ // TODO: definir range de valores possíveis
       fr: z.number(),
       fc: z.number(),
       spo2: z.number(),
@@ -136,8 +141,10 @@ export class ScoreController {
 
     const body = validator.parse(req.body)
 
+    // Calcula os scores dos sinais vitais
     const score = this.calcAllScores(body)
 
+    // Retorna o resultado
     res.status(200).send({ score })
   }
 }
