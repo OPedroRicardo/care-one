@@ -1,31 +1,30 @@
 # CarePlus Next
 
-Projeto acadêmico para FIAP, integrando soluções de saúde, IA e interfaces modernas. O repositório contém múltiplos módulos: API backend, POCs de IA, interface Totem e pitches.
+Projeto acadêmico para FIAP, integrando soluções de saúde, IA e interfaces modernas. O repositório contém múltiplos módulos: backend, POCs de IA, interface Totem e pitches.
 
 ## Estrutura do Projeto
 
 ```
 careplus-next/
-├── api/           # Backend Express/TypeScript
+├── server/        # Backend Express/TypeScript
 ├── POCs/          # Provas de conceito (IA, OCR, LangChain)
 ├── pitches/       # Apresentações e protótipos
-├── totem/         # Frontend React/Vite
+├── totem-client/  # Frontend React/Vite
 ```
 
-### 1. `api/` — Backend Principal
+### 1. `server/` — Backend Principal
 
-- **Tecnologia:** Express, TypeScript, Zod, Winston, Helmet, Rate Limit.
-- **Função:** API REST para sinais vitais, autenticação e integração com Totem.
+- **Tecnologia:** Express + TypeScript
+- **Função:** Serviços para sinais vitais, autenticação e integração com Totem.
 - **Subpastas:**
   - `api-service/`: Código principal da API.
     - `controllers/`: Lógica de negócio (ex: ScoreController para cálculo NEWS2).
     - `middlewares/`: Middlewares de logging, segurança, etc.
     - `routes/`: Organização modular das rotas (app, totem, score).
-  - `logs/`: Armazenamento de logs.
 - **Como rodar:**
   1. Instale dependências:
      ```
-     cd api
+     cd server
      npm install
      ```
   2. Configure variáveis no `.env` (exemplo: PORT, ALLOWED_ORIGINS).
@@ -66,14 +65,14 @@ careplus-next/
   - `img_map.py`, `txt_recognition.py`: Processamento de imagens e extração de texto.
   - `assets/`: Dados de teste.
 
-### 3. `totem/` — Frontend React
+### 3. `totem-client/` — Frontend React
 
 - **Tecnologia:** React, TypeScript, Vite.
 - **Função:** Interface para o Totem de atendimento, com páginas de login, vitais, perguntas, resultados.
 - **Como rodar:**
   1. Instale dependências:
      ```
-     cd totem
+     cd totem-client
      npm install
      ```
   2. Rode em modo desenvolvimento:
@@ -89,11 +88,11 @@ careplus-next/
 
 ---
 
-## Como Rodar a API Principal
+## Como Rodar o Server Principal
 
-1. Entre na pasta `api`:
+1. Entre na pasta `server`:
    ```
-   cd api
+   cd server
    ```
 2. Instale as dependências:
    ```
