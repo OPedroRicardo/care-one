@@ -9,6 +9,14 @@
     const ctx = canvas.getContext('2d');
     const hero = document.querySelector('.hero');
 
+    // Desativa ECG em telas pequenas
+    if (window.innerWidth < 600) {
+      canvas.style.display = 'none';
+      return;
+    } else {
+      canvas.style.display = '';
+    }
+
     function resize() {
       canvas.width  = hero.offsetWidth;
       canvas.height = hero.offsetHeight;
@@ -44,7 +52,7 @@
     function frame() {
       const W = canvas.width;
       const H = canvas.height;
-      const baseY = H * 0.25; // ECG sits at 72% height of hero
+      const baseY = H * 0.2; // ECG sits at 72% height of hero
 
       ctx.clearRect(0, 0, W, H);
 
@@ -57,7 +65,13 @@
 
       // advance head
       headX += SPEED;
-      if (headX > W + TRAIL) headX = -10;
+
+      if (headX > W + TRAIL) {
+        // Reinicia animação: limpa buffer e canvas
+        headX = 0;
+        pts.length = 0;
+        ctx.clearRect(0, 0, W, H);
+      }
 
       const cyclePos = ((headX % CYCLE) + CYCLE) % CYCLE / CYCLE;
       const headY = baseY - ecgPulse(cyclePos) * AMP;
@@ -130,6 +144,16 @@
     console.error(e)
   }
 })();
+
+// Tilt
+// document.querySelectorAll('.tilt-card').forEach(function(card) {
+//   VanillaTilt.init(card, {
+//     max: 18,
+//     speed: 400,
+//     glare: true,
+//     "max-glare": 0.25
+//   });
+// });
 
 // Animações
 const reveals = document.querySelectorAll('.reveal');

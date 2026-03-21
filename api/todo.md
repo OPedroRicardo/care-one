@@ -1,6 +1,0 @@
-- [X] Setup
-- [X] Basic routing
-- [ ] totem routes
-- [ ] app routes
-- [ ] cors
-- [ ] error handling
