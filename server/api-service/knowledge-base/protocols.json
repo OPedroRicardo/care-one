@@ -1,0 +1,158 @@
+{
+  "sistema": "CarePlus NEWS2",
+  "versao": "1.0",
+  "descricao": "Protocolos clínicos e limiares do algoritmo NEWS2 para triagem hospitalar automatizada.",
+
+  "sinais_vitais": {
+    "frequencia_respiratoria": {
+      "unidade": "irpm",
+      "normal": { "min": 12, "max": 20 },
+      "alertas": {
+        "critico_baixo": "<=8",
+        "baixo": "9-11",
+        "normal": "12-20",
+        "elevado": "21-24",
+        "critico_alto": ">=25"
+      }
+    },
+    "frequencia_cardiaca": {
+      "unidade": "bpm",
+      "normal": { "min": 51, "max": 90 },
+      "alertas": {
+        "critico_baixo": "<=40",
+        "baixo": "41-50",
+        "normal": "51-90",
+        "levemente_elevado": "91-110",
+        "elevado": "111-130",
+        "critico_alto": ">=131"
+      }
+    },
+    "saturacao_oxigenio": {
+      "unidade": "%",
+      "normal": { "min": 96, "max": 100 },
+      "alertas": {
+        "critico": "<=91",
+        "baixo": "92-93",
+        "levemente_baixo": "94-95",
+        "normal": ">=96"
+      },
+      "obs": "Para pacientes com hipercapnia, usar escala específica (SpO2 88-92% pode ser aceitável)"
+    },
+    "temperatura": {
+      "unidade": "°C",
+      "normal": { "min": 36.1, "max": 38.0 },
+      "alertas": {
+        "hipotermia_grave": "<= 35.0",
+        "hipotermia_leve": "35.1-36.0",
+        "normal": "36.1-38.0",
+        "febre_leve": "38.1-39.0",
+        "febre_alta": ">=39.1"
+      }
+    },
+    "pressao_arterial_sistolica": {
+      "unidade": "mmHg",
+      "normal": { "min": 111, "max": 219 },
+      "alertas": {
+        "hipotensao_grave": "<=90",
+        "hipotensao_moderada": "91-100",
+        "hipotensao_leve": "101-110",
+        "normal": "111-219",
+        "hipertensao_grave": ">=220"
+      }
+    }
+  },
+
+  "classificacoes_risco": [
+    {
+      "pontuacao": "0",
+      "nivel": "Nenhum risco",
+      "cor": "verde",
+      "conduta": "Monitoramento rotineiro. Reavaliar conforme protocolo padrão.",
+      "intervalo_reavaliacao_horas": 12
+    },
+    {
+      "pontuacao": "1-4",
+      "nivel": "Baixo risco",
+      "cor": "amarelo",
+      "conduta": "Aumentar frequência de monitoramento. Reavaliar entre 4 e 6 horas.",
+      "intervalo_reavaliacao_horas": 4
+    },
+    {
+      "pontuacao": "5-6",
+      "nivel": "Risco moderado",
+      "cor": "laranja",
+      "conduta": "Notificar enfermeiro responsável. Avaliação médica urgente em até 30 minutos. Considerar transferência para área monitorada.",
+      "intervalo_reavaliacao_horas": 1
+    },
+    {
+      "pontuacao": "3 em um unico parametro",
+      "nivel": "Risco moderado a alto",
+      "cor": "laranja",
+      "conduta": "Mesmo que a pontuação total seja baixa, acionar avaliação médica imediata para o parâmetro com pontuação 3.",
+      "intervalo_reavaliacao_horas": 0.5
+    },
+    {
+      "pontuacao": ">=7",
+      "nivel": "Alto risco",
+      "cor": "vermelho",
+      "conduta": "Emergência clínica. Acionar equipe médica imediatamente. Considerar UTI. Não deixar o paciente desacompanhado.",
+      "intervalo_reavaliacao_horas": 0
+    }
+  ],
+
+  "populacoes_especiais": {
+    "hipercapnia": {
+      "descricao": "Pacientes com DPOC ou insuficiência respiratória hipercápnica crônica",
+      "escala_spo2": "Usar escala 2 do SpO2: alvo 88-92%",
+      "atencao": "Oxigenioterapia excessiva pode ser prejudicial nesses pacientes"
+    },
+    "gestantes": {
+      "descricao": "Parâmetros podem ser naturalmente alterados",
+      "fc_normal": "70-100 bpm no 3º trimestre",
+      "pa_atencao": "PA >= 140/90 mmHg requer avaliação obstétrica urgente"
+    },
+    "idosos": {
+      "descricao": "Maior risco de deterioração rápida mesmo com pontuações moderadas",
+      "conduta": "Considerar limiar mais baixo para acionar avaliação médica"
+    }
+  },
+
+  "acoes_emergencia": {
+    "score_alto": [
+      "Acionar código de emergência hospitalar",
+      "Posicionar paciente em decúbito dorsal com elevação de membros inferiores (exceto dispneia)",
+      "Verificar permeabilidade de via aérea",
+      "Monitorar sinais vitais continuamente",
+      "Preparar acesso venoso",
+      "Acionar médico plantonista imediatamente"
+    ],
+    "queda_saturacao": [
+      "Ofertar oxigênio suplementar (exceto hipercápnicos sem prescrição)",
+      "Posicionar em proclive (30-45°)",
+      "Notificar equipe de saúde",
+      "Registrar histórico de SpO2"
+    ],
+    "hipertensao_grave": [
+      "Manter paciente em repouso absoluto",
+      "Evitar esforços e emoções",
+      "Acionar médico para avaliação imediata",
+      "Não administrar medicamentos sem prescrição"
+    ]
+  },
+
+  "glossario": {
+    "NEWS2": "National Early Warning Score 2 — sistema padronizado de pontuação para detectar deterioração clínica precoce.",
+    "SpO2": "Saturação periférica de oxigênio — medida não invasiva da oxigenação do sangue.",
+    "DPOC": "Doença Pulmonar Obstrutiva Crônica — condição que causa obstrução do fluxo de ar nos pulmões.",
+    "Hipercapnia": "Excesso de CO2 no sangue, comum em pacientes com DPOC avançado.",
+    "Taquicardia": "Frequência cardíaca acima de 100 bpm.",
+    "Bradicardia": "Frequência cardíaca abaixo de 60 bpm.",
+    "Taquipneia": "Frequência respiratória acima de 20 irpm.",
+    "Bradipneia": "Frequência respiratória abaixo de 12 irpm.",
+    "Hipotensao": "Pressão arterial sistólica abaixo de 90 mmHg.",
+    "Hipertensao": "Pressão arterial sistólica acima de 140 mmHg.",
+    "Febre": "Temperatura corporal acima de 38,0 °C.",
+    "Hipotermia": "Temperatura corporal abaixo de 35,0 °C.",
+    "Triagem": "Processo de classificação de pacientes por urgência e gravidade clínica."
+  }
+}
