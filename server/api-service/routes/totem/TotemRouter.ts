@@ -1,8 +1,8 @@
 
 import { Express, Request, Response, RequestHandler } from 'express';
 import { APIRouter } from '../router';
-import AuthRouter from './AuthRouter';
 import ScoreRouter from './ScoreRouter';
+import ChatRouter  from './ChatRouter';
 
 // Exemplo de middleware próprio do Totem
 const totemMiddleware: RequestHandler = (req, res, next) => {
@@ -21,8 +21,8 @@ export default class TotemRouter extends APIRouter {
   constructor(app: Express) {
     super(app, [totemMiddleware]);
     // Adiciona sub-routers
-    this.addChild(new AuthRouter(app));
     this.addChild(new ScoreRouter(app));
+    this.addChild(new ChatRouter(app));
   }
 
   setupRoutes() {
