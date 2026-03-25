@@ -15,24 +15,46 @@ careplus-next/
 ### 1. `server/` — Backend Principal
 
 - **Tecnologia:** Express + TypeScript
-- **Função:** Serviços para sinais vitais, autenticação e integração com Totem.
+- **Função:** Serviços para sinais vitais, chat clínico com RAG + LLM e integração com Totem.
 - **Subpastas:**
   - `api-service/`: Código principal da API.
-    - `controllers/`: Lógica de negócio (ex: ScoreController para cálculo NEWS2).
+    - `controllers/`: Lógica de negócio (ScoreController, ChatController).
     - `middlewares/`: Middlewares de logging, segurança, etc.
-    - `routes/`: Organização modular das rotas (app, totem, score).
+    - `routes/`: Organização modular das rotas (app, totem, score, chat).
+    - `services/`: RagService (busca semântica), LLMChatService (Ollama), ChatSessionStore (DB).
+    - `db/`: Schema e cliente Drizzle ORM (SQLite via libsql).
+    - `knowledge-base/`: Documentos `.md`/`.json` indexados pelo RAG.
 - **Como rodar:**
-  1. Instale dependências:
+  1. Instale o [Ollama](https://ollama.com) e baixe os modelos necessários:
+     ```bash
+     ollama pull llama3.2        # LLM para geração de respostas
+     ollama pull all-minilm      # modelo de embeddings (RAG)
      ```
+  2. Instale dependências:
+     ```bash
      cd server
-     npm install
+     yarn install
      ```
-  2. Configure variáveis no `.env` (exemplo: PORT, ALLOWED_ORIGINS).
-  3. Inicie em modo desenvolvimento:
+  3. Configure variáveis no `.env` (copie de `.env.example`):
      ```
-     npm run dev
+     OLLAMA_BASE_URL="http://localhost:11434"
+     OLLAMA_MODEL_LLM="llama3.2"
+     OLLAMA_MODEL_EMBEDDINGS="all-minilm"
+     DB_PATH="file:./careplus.db"
      ```
-  4. Acesse: `http://localhost:<PORT>`
+  4. Crie o banco de dados:
+     ```bash
+     yarn db:push
+     ```
+  5. Inicie em modo desenvolvimento:
+     ```bash
+     yarn dev
+     ```
+  6. Acesse: `http://localhost:3333`
+- **Scripts úteis:**
+  - `yarn db:push` — cria/atualiza o schema SQLite
+  - `yarn db:studio` — abre o Drizzle Studio (UI para o banco)
+- **Postman:** importe `careplus.postman_collection.json` na raiz do `server/`.
 
 ### 2. `POCs/` — Provas de Conceito
 
@@ -91,19 +113,28 @@ careplus-next/
 ## Como Rodar o Server Principal
 
 1. Entre na pasta `server`:
-   ```
+   ```bash
    cd server
    ```
-2. Instale as dependências:
+2. Instale o Ollama e puxe os modelos:
+   ```bash
+   ollama pull llama3.2
+   ollama pull all-minilm
    ```
-   npm install
+3. Instale as dependências:
+   ```bash
+   yarn install
    ```
-3. Configure o arquivo `.env` com as variáveis necessárias (exemplo: PORT, ALLOWED_ORIGINS).
-4. Inicie o servidor:
+4. Configure o `.env` a partir do `.env.example`.
+5. Crie o banco de dados:
+   ```bash
+   yarn db:push
    ```
-   npm run dev
+6. Inicie o servidor:
+   ```bash
+   yarn dev
    ```
-5. Acesse a API em `http://localhost:<PORT>`
+7. Acesse a API em `http://localhost:3333`
 
 ---
 
@@ -121,4 +152,3 @@ MIT
 
 ---
 
-Se quiser, posso salvar esse README diretamente no repositório. Deseja que eu crie o arquivo?

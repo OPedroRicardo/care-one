@@ -1,0 +1,360 @@
+{
+  "info": {
+    "name": "CarePlus API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3333",
+      "type": "string"
+    },
+    {
+      "key": "chatId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/",
+        "description": "Verifica se o servidor está no ar."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "status": "OK",
+          "code": 200,
+          "body": "{\"status\":\"OK\",\"message\":\"Funfando!\"}"
+        }
+      ]
+    },
+    {
+      "name": "Totem",
+      "item": [
+        {
+          "name": "Health Check Totem",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/totem/",
+            "description": "Verifica se o módulo Totem está ativo."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"status\":\"OK\",\"message\":\"Funfando o totem!\"}"
+            }
+          ]
+        },
+        {
+          "name": "Score",
+          "item": [
+            {
+              "name": "Health Check Score",
+              "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/totem/score/",
+                "description": "Verifica se o módulo Score está ativo."
+              },
+              "response": [
+                {
+                  "name": "200 OK",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"status\":\"OK\",\"message\":\"Funfando o score!\"}"
+                }
+              ]
+            },
+            {
+              "name": "Calcular NEWS2",
+              "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/totem/score/news2",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fr\": 18,\n  \"fc\": 80,\n  \"spo2\": 97,\n  \"temp\": 37.0,\n  \"pa\": 120,\n  \"oxygen\": false,\n  \"hipercapnia\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Calcula o escore NEWS2 a partir dos sinais vitais do paciente.\n\n| Campo | Tipo | Descrição |\n|---|---|---|\n| `fr` | number | Frequência respiratória (irpm) |\n| `fc` | number | Frequência cardíaca (bpm) |\n| `spo2` | number | Saturação de oxigênio (%) |\n| `temp` | number | Temperatura corporal (°C) |\n| `pa` | number | Pressão arterial sistólica (mmHg) |\n| `oxygen` | boolean | Uso de oxigênio suplementar |\n| `hipercapnia` | boolean | Insuficiência respiratória hipercápnica |"
+              },
+              "response": [
+                {
+                  "name": "200 OK — Paciente estável",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"score\":{\"fr\":0,\"pa\":0,\"fc\":0,\"temp\":0,\"spo2\":0,\"airOxygen\":0,\"total\":0}}"
+                },
+                {
+                  "name": "200 OK — Paciente crítico",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\"score\":{\"fr\":3,\"pa\":3,\"fc\":3,\"temp\":3,\"spo2\":3,\"airOxygen\":2,\"total\":17}}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Chat",
+          "item": [
+            {
+              "name": "Listar Chats",
+              "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/totem/chat/list",
+                "description": "Retorna todos os chats com preview da primeira mensagem do usuário.\n\nResposta:\n```json\n{ \"chats\": [ { \"id\": \"uuid\", \"createdAt\": 1700000000000, \"preview\": \"Quais são os sintomas...\" } ] }\n```"
+              },
+              "response": [
+                {
+                  "name": "200 OK",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"chats\":[{\"id\":\"550e8400-e29b-41d4-a716-446655440000\",\"createdAt\":1700000000000,\"preview\":\"Quais são os sintomas de sepse?\"}]}"
+                }
+              ]
+            },
+            {
+              "name": "Buscar Chat por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/totem/chat/{{chatId}}",
+                "description": "Retorna um chat com histórico completo de mensagens.\n\nResposta:\n```json\n{ \"id\": \"uuid\", \"createdAt\": 1700000000000, \"history\": [ { \"role\": \"user\", \"content\": \"...\" } ] }\n```"
+              },
+              "response": [
+                {
+                  "name": "200 OK",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"id\":\"550e8400-e29b-41d4-a716-446655440000\",\"createdAt\":1700000000000,\"history\":[{\"role\":\"user\",\"content\":\"Quais são os sintomas de sepse?\"},{\"role\":\"assistant\",\"content\":\"Sepse é uma resposta inflamatória sistêmica grave...\"}]}"
+                },
+                {
+                  "name": "404 Sessão não encontrada",
+                  "status": "Not Found",
+                  "code": 404,
+                  "body": "{\"error\":\"Sessão não encontrada.\"}"
+                }
+              ]
+            },
+            {
+              "name": "Criar Sessão de Chat",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "if (json.chatId) {",
+                      "  pm.collectionVariables.set('chatId', json.chatId);",
+                      "  console.log('chatId salvo:', json.chatId);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/totem/chat/new",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"context\": \"Paciente com pressão 140/90, SpO2 94%, frequência respiratória 22 irpm.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Cria uma nova sessão de chat e retorna um `chatId` (UUID).\n\nO `context` é opcional — use para injetar dados da triagem como contexto inicial do assistente (ex: sinais vitais, score NEWS2).\n\n> O script de teste salva o `chatId` retornado na variável de coleção `{{chatId}}` automaticamente."
+              },
+              "response": [
+                {
+                  "name": "201 Created",
+                  "status": "Created",
+                  "code": 201,
+                  "body": "{\"chatId\":\"550e8400-e29b-41d4-a716-446655440000\"}"
+                }
+              ]
+            },
+            {
+              "name": "Enviar Mensagem",
+              "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/totem/chat/message",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"chatId\": \"{{chatId}}\",\n  \"message\": \"Quais são os sintomas de sepse?\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Envia uma mensagem para o assistente e recebe a resposta gerada pelo pipeline RAG + LLM.\n\n| Campo | Tipo | Descrição |\n|---|---|---|\n| `chatId` | UUID | ID da sessão criada em `/chat/new` |\n| `message` | string | Mensagem do usuário (1–2000 caracteres) |\n\nA resposta inclui `reply` (texto gerado) e `sources` (trechos da base de conhecimento usados)."
+              },
+              "response": [
+                {
+                  "name": "200 OK",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"reply\":\"Sepse é uma resposta inflamatória sistêmica grave a uma infecção...\",\"sources\":[{\"content\":\"...\",\"source\":\"sepse.md\"}]}"
+                },
+                {
+                  "name": "404 Sessão não encontrada",
+                  "status": "Not Found",
+                  "code": 404,
+                  "body": "{\"error\":\"Sessão não encontrada.\"}"
+                },
+                {
+                  "name": "499 Cancelado pelo cliente",
+                  "status": "Client Closed Request",
+                  "code": 499,
+                  "body": "{\"error\":\"Requisição cancelada pelo cliente.\"}"
+                }
+              ]
+            },
+            {
+              "name": "Cancelar Mensagem em Andamento",
+              "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/totem/chat/message/cancel",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"chatId\": \"{{chatId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Cancela a chamada LLM em andamento para a sessão informada.\n\nRetorna `{ cancelled: true }` se havia uma chamada ativa, ou `{ cancelled: false }` caso contrário."
+              },
+              "response": [
+                {
+                  "name": "200 OK — Cancelado",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"cancelled\":true}"
+                },
+                {
+                  "name": "200 OK — Nada em andamento",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"cancelled\":false}"
+                }
+              ]
+            },
+            {
+              "name": "Deletar Mensagem do Histórico",
+              "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/totem/chat/message/delete",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"chatId\": \"{{chatId}}\",\n  \"index\": 0\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Remove uma mensagem específica do histórico da sessão pelo índice (base 0)."
+              },
+              "response": [
+                {
+                  "name": "200 OK",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"ok\":true}"
+                },
+                {
+                  "name": "400 Índice inválido",
+                  "status": "Bad Request",
+                  "code": 400,
+                  "body": "{\"error\":\"Índice 5 inválido. A sessão possui 2 mensagem(ns).\"}"
+                }
+              ]
+            },
+            {
+              "name": "Deletar Sessão de Chat",
+              "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/totem/chat/delete",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"chatId\": \"{{chatId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Remove permanentemente uma sessão de chat e seu histórico."
+              },
+              "response": [
+                {
+                  "name": "200 OK",
+                  "status": "OK",
+                  "code": 200,
+                  "body": "{\"ok\":true}"
+                },
+                {
+                  "name": "404 Sessão não encontrada",
+                  "status": "Not Found",
+                  "code": 404,
+                  "body": "{\"error\":\"Sessão não encontrada.\"}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
