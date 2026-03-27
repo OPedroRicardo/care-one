@@ -34,6 +34,8 @@ careplus-next/
      ```bash
      cd server
      yarn install
+     # ou
+     npm install
      ```
   3. Configure variáveis no `.env` (copie de `.env.example`):
      ```
@@ -45,15 +47,19 @@ careplus-next/
   4. Crie o banco de dados:
      ```bash
      yarn db:push
+     # ou
+     npm run db:push
      ```
   5. Inicie em modo desenvolvimento:
      ```bash
      yarn dev
+     # ou
+     npm run dev
      ```
   6. Acesse: `http://localhost:3333`
 - **Scripts úteis:**
-  - `yarn db:push` — cria/atualiza o schema SQLite
-  - `yarn db:studio` — abre o Drizzle Studio (UI para o banco)
+  - `yarn db:push` / `npm run db:push` — cria/atualiza o schema SQLite
+  - `yarn db:studio` / `npm run db:studio` — abre o Drizzle Studio (UI para o banco)
 - **Postman:** importe `careplus.postman_collection.json` na raiz do `server/`.
 
 ### 2. `POCs/` — Provas de Conceito
@@ -64,6 +70,8 @@ careplus-next/
        ```
        cd POCs/langchain
        yarn install
+       # ou
+       npm install
        ```
     2. Configure `.env` conforme exemplo do README.
     3. Suba infraestrutura:
@@ -78,6 +86,8 @@ careplus-next/
     5. Rode a API:
        ```
        yarn dev
+       # ou
+       npm run dev
        ```
     6. Acesse: `http://localhost:3000`
   - **Endpoints:** Upload de documentos, chat, histórico, coleções, etc.
@@ -95,10 +105,14 @@ careplus-next/
   1. Instale dependências:
      ```
      cd totem-client
+     yarn install
+     # ou
      npm install
      ```
   2. Rode em modo desenvolvimento:
      ```
+     yarn dev
+     # ou
      npm run dev
      ```
   3. Acesse: `http://localhost:5173`
@@ -124,15 +138,21 @@ careplus-next/
 3. Instale as dependências:
    ```bash
    yarn install
+   # ou
+   npm install
    ```
 4. Configure o `.env` a partir do `.env.example`.
 5. Crie o banco de dados:
    ```bash
    yarn db:push
+   # ou
+   npm run db:push
    ```
 6. Inicie o servidor:
    ```bash
    yarn dev
+   # ou
+   npm run dev
    ```
 7. Acesse a API em `http://localhost:3333`
 
