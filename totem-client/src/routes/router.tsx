@@ -13,26 +13,11 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      {
-        path: "/",
-        element: <Home />
-      },
-      {
-        path: "/login",
-        element: <Login />
-      },
-      {
-        path: "/questions",
-        element: <Questions />
-      },
-      {
-        path: "/pre-vitals",
-        element: <PreVitals />
-      },
-      {
-        path: "/vitals-result",
-        element: <VitalsResult />
-      },
+      { path: "/", element: <Home /> },
+      { path: "/login", element: <Login /> },
+      { path: "/questions", element: <Questions /> },
+      { path: "/pre-vitals", element: <PreVitals /> },
+      { path: "/vitals-result", element: <VitalsResult /> },
     ]
   },
 ]);
