@@ -1,31 +1,24 @@
+import { Express, Request, Response, RequestHandler } from 'express'
+import { APIRouter } from '@api-service/routes/api-router.ts'
+import ScoreRouter from '@api-service/routes/totem/ScoreRouter.ts'
+import MeasureRouter from '@api-service/routes/totem/MeasureRouter.ts'
 
-import { Express, Request, Response, RequestHandler } from 'express';
-import { APIRouter } from '../router';
-import ScoreRouter from './ScoreRouter';
-import ChatRouter  from './ChatRouter';
-
-// Exemplo de middleware próprio do Totem
-const totemMiddleware: RequestHandler = (req, res, next) => {
-  // Pode adicionar lógica específica do Totem
-  // console.log('Totem middleware');
-  next();
-};
+const totemMiddleware: RequestHandler = (_req, _res, next) => next()
 
 const hello = (_: Request, res: Response) => {
-  res.status(200).json({ status: 'OK', message: 'Funfando o totem!' });
-};
+  res.status(200).json({ status: 'OK', message: 'Funfando o totem!' })
+}
 
 export default class TotemRouter extends APIRouter {
-  get base_path() { return '/totem'; }
+  get base_path() { return '/totem' }
 
   constructor(app: Express) {
-    super(app, [totemMiddleware]);
-    // Adiciona sub-routers
-    this.addChild(new ScoreRouter(app));
-    this.addChild(new ChatRouter(app));
+    super(app, [totemMiddleware])
+    this.addChild(new ScoreRouter(app))
+    this.addChild(new MeasureRouter(app))
   }
 
   setupRoutes() {
-    this.router.get('/', hello);
+    this.router.get('/', hello)
   }
 }
