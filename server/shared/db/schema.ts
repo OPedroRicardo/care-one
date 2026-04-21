@@ -21,3 +21,15 @@ export const chatsRelations = relations(chats, ({ many }) => ({
 export const messagesRelations = relations(messages, ({ one }) => ({
   chat: one(chats, { fields: [messages.chatId], references: [chats.id] }),
 }))
+
+// ── Histórico (triagens e exames)
+
+export const historyRecords = sqliteTable('history_records', {
+  id:          text('id').primaryKey(),
+  type:        text('type', { enum: ['triagem', 'exame'] }).notNull(),
+  patientName: text('patient_name').notNull(),
+  date:        integer('date').notNull(),
+  summary:     text('summary').notNull(),
+  details:     text('details').notNull(), // JSON serializado
+  createdAt:   integer('created_at').notNull(),
+})

@@ -10,7 +10,7 @@ o nível de risco clínico, auxiliando a equipe de saúde na priorização do at
 
 ## Como funciona a triagem?
 
-1. O paciente se identifica no totem com CPF ou cartão.
+1. O paciente se identifica no totem com CPF.
 2. O sistema coleta os sinais vitais: frequência respiratória, frequência cardíaca, saturação de oxigênio (SpO2), temperatura e pressão arterial sistólica.
 3. Também registra se o paciente usa oxigênio suplementar e se possui histórico de insuficiência respiratória hipercápnica.
 4. O algoritmo NEWS2 calcula a pontuação total e classifica o risco.
