@@ -1,0 +1,53 @@
+import { MessageSquare, ClipboardList } from "lucide-react"
+import { useLocation, useNavigate, NavLink } from "react-router-dom"
+
+export default function Header() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const isHome = location.pathname === '/'
+
+  if (isHome) return null
+
+  const showBackBtn = !['/chat', '/history'].includes(location.pathname)
+
+  return (
+    <header className="w-full px-6 py-4 flex justify-between items-center fixed top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-slate-100">
+      {showBackBtn ? (
+        <button
+          className="p-2 rounded-full hover:bg-slate-100 transition-colors"
+          onClick={() => navigate(-1)}
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0079C8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </button>
+      ) : (
+        <></>
+      )}
+
+      <img src="/careplus.svg" alt="Care Plus" className="h-8" />
+
+      <nav className="flex items-center gap-2">
+        <NavLink
+          to="/chat"
+          className={({ isActive }) =>
+            `p-2 rounded-full transition-colors ${isActive ? 'bg-blue-100 text-[#0079C8]' : 'text-slate-400 hover:bg-slate-100 hover:text-[#0079C8]'}`
+          }
+          title="Chat"
+        >
+          <MessageSquare size={24} />
+        </NavLink>
+        <NavLink
+          to="/history"
+          className={({ isActive }) =>
+            `p-2 rounded-full transition-colors ${isActive ? 'bg-blue-100 text-[#0079C8]' : 'text-slate-400 hover:bg-slate-100 hover:text-[#0079C8]'}`
+          }
+          title="Histórico"
+        >
+          <ClipboardList size={24} />
+        </NavLink>
+      </nav>
+    </header>
+  )
+}
