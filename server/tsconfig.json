@@ -3,11 +3,14 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@api-service/*": ["./api-service/*"],
+      "@mqtt-service/*": ["./mqtt-service/*"],
+      "@shared/*": ["./shared/*"]
     },
-    "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -17,6 +20,6 @@
     "removeComments": true,
     "sourceMap": true
   },
-  "include": ["src"],
+  "include": ["api-service", "mqtt-service", "shared"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
