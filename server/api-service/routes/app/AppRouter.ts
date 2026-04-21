@@ -1,8 +1,9 @@
 
 import { Express, Request, Response, RequestHandler } from 'express';
-import { APIRouter } from '../router';
-import AuthRouter from './AuthRouter';
-// import ScoreRouter from './ScoreRouter';
+import { APIRouter } from '@api-service/routes/api-router.ts';
+import AuthRouter from '@api-service/routes/app/AuthRouter.ts';
+import HistoryRouter from '@api-service/routes/app/HistoryRouter.ts';
+import ChatRouter from '@api-service/routes/app/ChatRouter.ts';
 
 // Exemplo de middleware próprio do App
 const appMiddleware: RequestHandler = (req, res, next) => {
@@ -20,9 +21,14 @@ export default class AppRouter extends APIRouter {
 
   constructor(app: Express) {
     super(app, [appMiddleware]);
-    // Adiciona sub-routers
-    this.addChild(new AuthRouter(app));
-    // this.addChild(new ScoreRouter(app));
+
+    const authRouter = new AuthRouter(app)
+    const historyRouter = new HistoryRouter(app)
+    const chatRouter = new ChatRouter(app)
+
+    this.addChild(authRouter)
+        .addChild(historyRouter)
+        .addChild(chatRouter);
   }
 
   setupRoutes() {
