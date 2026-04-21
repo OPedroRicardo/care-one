@@ -1,6 +1,6 @@
 import { eq, asc } from 'drizzle-orm'
-import { db } from '../db/index.ts'
-import { chats, messages } from '../db/schema.ts'
+import { db } from '../../shared/db/index.ts'
+import { chats, messages } from '../../shared/db/schema.ts'
 
 export type MessageRole = 'user' | 'assistant'
 

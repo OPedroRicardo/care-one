@@ -9,7 +9,7 @@ import { dirname } from 'path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname  = dirname(__filename)
 
-const DEFAULT_KB_PATH = join(__dirname, '..', 'knowledge-base')
+const DEFAULT_KB_PATH = join(__dirname, '..', 'llm/knowledge-base')
 
 export interface SearchResult {
   content: string
