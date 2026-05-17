@@ -24,7 +24,7 @@ export class MeasureController {
 
       const sessionId = randomUUID()
 
-      const valkey = await getValkeyPublisher()
+      const valkey = getValkeyPublisher()
       await valkey.publish(
         VALKEY_MEASURE_CHANNEL,
         JSON.stringify({ sessionId, patientName }),

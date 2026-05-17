@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { connect } from 'mqtt'
-import { GlideClient, GlideClientConfiguration } from '@valkey/valkey-glide'
+import Redis from 'ioredis'
 
 import { MqttOrchestrator } from './orchestrator.ts'
 
@@ -44,30 +44,26 @@ async function bootstrap() {
 
   console.log(`[Valkey] Conectando a ${VALKEY_HOST}:${VALKEY_PORT}...`)
 
-  await GlideClient.createClient({
-    addresses: [{ host: VALKEY_HOST, port: VALKEY_PORT }],
-    pubsubSubscriptions: {
-      channelsAndPatterns: {
-        [GlideClientConfiguration.PubSubChannelModes.Exact]: new Set([VALKEY_MEASURE_CHANNEL]),
-      },
-      callback: (msg) => {
-        try {
-          if (typeof msg.message !== 'string') msg.message = msg.message.toString()
+  const subscriber = new Redis({ host: VALKEY_HOST, port: VALKEY_PORT })
 
-          const { sessionId, patientName } = JSON.parse(msg.message) as {
-            sessionId:   string
-            patientName: string
-          }
-          if (!sessionId || !patientName) {
-            console.warn('[Valkey] Payload incompleto — ignorando:', msg.message)
-            return
-          }
-          orchestrator.enqueue(mqtt, sessionId, patientName)
-        } catch (err) {
-          console.error('[Valkey] Erro ao processar mensagem:', err)
-        }
-      },
-    },
+  subscriber.on('error', (err) => console.error('[Valkey] Erro de conexão:', err))
+
+  await subscriber.subscribe(VALKEY_MEASURE_CHANNEL)
+
+  subscriber.on('message', (_channel, message) => {
+    try {
+      const { sessionId, patientName } = JSON.parse(message) as {
+        sessionId:   string
+        patientName: string
+      }
+      if (!sessionId || !patientName) {
+        console.warn('[Valkey] Payload incompleto — ignorando:', message)
+        return
+      }
+      orchestrator.enqueue(mqtt, sessionId, patientName)
+    } catch (err) {
+      console.error('[Valkey] Erro ao processar mensagem:', err)
+    }
   })
 
   console.log(`[Valkey] Aguardando medições no canal "${VALKEY_MEASURE_CHANNEL}"`)

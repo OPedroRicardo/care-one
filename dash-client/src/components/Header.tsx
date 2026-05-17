@@ -1,15 +1,16 @@
-import { MessageSquare, ClipboardList } from "lucide-react"
+import { MessageSquare, ClipboardList, MessagesSquare } from "lucide-react"
 import { useLocation, useNavigate, NavLink } from "react-router-dom"
+
+// Top-level pages: no back button shown
+const TOP_LEVEL = ['/chat', '/chats', '/history']
 
 export default function Header() {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const isHome = location.pathname === '/'
+  if (location.pathname === '/') return null
 
-  if (isHome) return null
-
-  const showBackBtn = !['/chat', '/history'].includes(location.pathname)
+  const showBackBtn = !TOP_LEVEL.includes(location.pathname)
 
   return (
     <header className="w-full px-6 py-4 flex justify-between items-center fixed top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-slate-100">
@@ -23,27 +24,37 @@ export default function Header() {
           </svg>
         </button>
       ) : (
-        <></>
+        <div />
       )}
 
-      <img src="/careplus.svg" alt="Care Plus" className="h-8" />
+      <img src="src/assets/careplus-full.svg" alt="Care Plus" className="h-8" />
 
       <nav className="flex items-center gap-2">
         <NavLink
           to="/chat"
+          end
           className={({ isActive }) =>
             `p-2 rounded-full transition-colors ${isActive ? 'bg-blue-100 text-[#0079C8]' : 'text-slate-400 hover:bg-slate-100 hover:text-[#0079C8]'}`
           }
-          title="Chat"
+          title="Novo chat"
         >
           <MessageSquare size={24} />
+        </NavLink>
+        <NavLink
+          to="/chats"
+          className={({ isActive }) =>
+            `p-2 rounded-full transition-colors ${isActive ? 'bg-blue-100 text-[#0079C8]' : 'text-slate-400 hover:bg-slate-100 hover:text-[#0079C8]'}`
+          }
+          title="Conversas"
+        >
+          <MessagesSquare size={24} />
         </NavLink>
         <NavLink
           to="/history"
           className={({ isActive }) =>
             `p-2 rounded-full transition-colors ${isActive ? 'bg-blue-100 text-[#0079C8]' : 'text-slate-400 hover:bg-slate-100 hover:text-[#0079C8]'}`
           }
-          title="Histórico"
+          title="Histórico clínico"
         >
           <ClipboardList size={24} />
         </NavLink>

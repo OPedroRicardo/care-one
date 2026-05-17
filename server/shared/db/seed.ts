@@ -1,6 +1,6 @@
 /**
  * Script de seeding para a tabela history_records.
- * Execução: tsx api-service/db/seed.ts
+ * Execução: tsx shared/db/seed.ts
  */
 
 import { db } from './index.ts'

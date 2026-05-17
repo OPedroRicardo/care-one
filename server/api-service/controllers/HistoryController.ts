@@ -64,10 +64,13 @@ export class HistoryController {
       }
 
       const record = row[0]
-      res.status(200).json({
-        ...record,
-        details: JSON.parse(record.details),
-      })
+      let details: unknown
+      try {
+        details = JSON.parse(record.details)
+      } catch {
+        details = null
+      }
+      res.status(200).json({ ...record, details })
     } catch (err) {
       next(err)
     }

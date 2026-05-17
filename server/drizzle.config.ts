@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default defineConfig({
-  schema:  './api-service/db/schema.ts',
+  schema:  './shared/db/schema.ts',
   out:     './drizzle',
   dialect: 'turso',
   dbCredentials: {

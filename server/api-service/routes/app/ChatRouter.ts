@@ -17,7 +17,8 @@ export default class ChatRouter extends APIRouter {
     this.router.get('/:id',           this.#controller.getChat.bind(this.#controller))
     this.router.post('/new',          this.#controller.newChat.bind(this.#controller))
     this.router.post('/delete',       this.#controller.deleteChat.bind(this.#controller))
-    this.router.post('/message',      this.#controller.onMessage.bind(this.#controller))
+    this.router.post('/message',        this.#controller.onMessage.bind(this.#controller))
+    this.router.post('/message/stream', this.#controller.onMessageStream.bind(this.#controller))
     this.router.post('/message/delete', this.#controller.deleteMessage.bind(this.#controller))
     this.router.post('/message/cancel', this.#controller.cancelMessage.bind(this.#controller))
   }

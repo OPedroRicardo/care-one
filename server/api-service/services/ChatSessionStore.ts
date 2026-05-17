@@ -1,4 +1,4 @@
-import { eq, asc } from 'drizzle-orm'
+import { eq, asc, desc } from 'drizzle-orm'
 import { db } from '../../shared/db/index.ts'
 import { chats, messages } from '../../shared/db/schema.ts'
 
@@ -18,9 +18,10 @@ export interface ChatSession {
 }
 
 export interface ChatListItem {
-  id:        string
-  createdAt: number
-  preview:   string | null
+  id:           string
+  createdAt:    number
+  preview:      string | null
+  messageCount: number
 }
 
 /**
@@ -39,20 +40,15 @@ export class ChatSessionStore {
 
   async list(): Promise<ChatListItem[]> {
     const rows = await db.query.chats.findMany({
-      with: {
-        messages: {
-          where: eq(messages.role, 'user'),
-          orderBy: asc(messages.createdAt),
-          limit: 1,
-        },
-      },
-      orderBy: asc(chats.createdAt),
+      with: { messages: { orderBy: asc(messages.createdAt) } },
+      orderBy: desc(chats.createdAt),
     })
 
     return rows.map(row => ({
-      id:        row.id,
-      createdAt: row.createdAt,
-      preview:   row.messages[0]?.content ?? null,
+      id:           row.id,
+      createdAt:    row.createdAt,
+      preview:      row.messages.find(m => m.role === 'user')?.content ?? null,
+      messageCount: row.messages.length,
     }))
   }
 
