@@ -1,0 +1,334 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-05-19T21:00:00.000Z",
+  "__export_source": "careplus-next",
+  "resources": [
+    {
+      "_id": "wrk_careplus",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Careplus API",
+      "description": "",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_careplus",
+      "_type": "environment",
+      "parentId": "wrk_careplus",
+      "name": "Base",
+      "data": {
+        "base_url": "http://localhost:3333"
+      },
+      "color": null,
+      "isPrivate": false
+    },
+
+    {
+      "_id": "fld_totem",
+      "_type": "request_group",
+      "parentId": "wrk_careplus",
+      "name": "Totem",
+      "description": "",
+      "metaSortKey": -1000
+    },
+    {
+      "_id": "fld_totem_measure",
+      "_type": "request_group",
+      "parentId": "fld_totem",
+      "name": "Measure",
+      "description": "",
+      "metaSortKey": -100
+    },
+    {
+      "_id": "fld_totem_score",
+      "_type": "request_group",
+      "parentId": "fld_totem",
+      "name": "Score",
+      "description": "",
+      "metaSortKey": -200
+    },
+    {
+      "_id": "fld_app",
+      "_type": "request_group",
+      "parentId": "wrk_careplus",
+      "name": "App",
+      "description": "",
+      "metaSortKey": -2000
+    },
+    {
+      "_id": "fld_app_chat",
+      "_type": "request_group",
+      "parentId": "fld_app",
+      "name": "Chat",
+      "description": "",
+      "metaSortKey": -100
+    },
+    {
+      "_id": "fld_app_history",
+      "_type": "request_group",
+      "parentId": "fld_app",
+      "name": "History",
+      "description": "",
+      "metaSortKey": -200
+    },
+
+    {
+      "_id": "req_root",
+      "_type": "request",
+      "parentId": "wrk_careplus",
+      "name": "Health check",
+      "method": "GET",
+      "url": "{{ _.base_url }}/",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+
+    {
+      "_id": "req_totem_root",
+      "_type": "request",
+      "parentId": "fld_totem",
+      "name": "Health check",
+      "method": "GET",
+      "url": "{{ _.base_url }}/totem",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+
+    {
+      "_id": "req_measure",
+      "_type": "request",
+      "parentId": "fld_totem_measure",
+      "name": "Start measure session",
+      "method": "POST",
+      "url": "{{ _.base_url }}/totem/measure",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"patientName\": \"João Silva\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+
+    {
+      "_id": "req_score_root",
+      "_type": "request",
+      "parentId": "fld_totem_score",
+      "name": "Health check",
+      "method": "GET",
+      "url": "{{ _.base_url }}/totem/score",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+    {
+      "_id": "req_score_news2",
+      "_type": "request",
+      "parentId": "fld_totem_score",
+      "name": "Calc NEWS2",
+      "method": "POST",
+      "url": "{{ _.base_url }}/totem/score/news2",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"fr\": 16,\n  \"fc\": 72,\n  \"spo2\": 98,\n  \"temp\": 36.5,\n  \"pa\": 120,\n  \"oxygen\": false,\n  \"hipercapnia\": false\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -200
+    },
+
+    {
+      "_id": "req_app_root",
+      "_type": "request",
+      "parentId": "fld_app",
+      "name": "Health check",
+      "method": "GET",
+      "url": "{{ _.base_url }}/app",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+
+    {
+      "_id": "req_chat_list",
+      "_type": "request",
+      "parentId": "fld_app_chat",
+      "name": "List chats",
+      "method": "GET",
+      "url": "{{ _.base_url }}/app/chat/list",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+    {
+      "_id": "req_chat_get",
+      "_type": "request",
+      "parentId": "fld_app_chat",
+      "name": "Get chat",
+      "method": "GET",
+      "url": "{{ _.base_url }}/app/chat/:id",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -200
+    },
+    {
+      "_id": "req_chat_new",
+      "_type": "request",
+      "parentId": "fld_app_chat",
+      "name": "New chat",
+      "method": "POST",
+      "url": "{{ _.base_url }}/app/chat/new",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"context\": \"\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -300
+    },
+    {
+      "_id": "req_chat_message",
+      "_type": "request",
+      "parentId": "fld_app_chat",
+      "name": "Send message",
+      "method": "POST",
+      "url": "{{ _.base_url }}/app/chat/message",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"chatId\": \"\",\n  \"message\": \"Olá, como posso ajudar?\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -400
+    },
+    {
+      "_id": "req_chat_message_stream",
+      "_type": "request",
+      "parentId": "fld_app_chat",
+      "name": "Send message (stream)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/app/chat/message/stream",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"chatId\": \"\",\n  \"message\": \"Olá, como posso ajudar?\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "text/event-stream" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -500
+    },
+    {
+      "_id": "req_chat_message_delete",
+      "_type": "request",
+      "parentId": "fld_app_chat",
+      "name": "Delete message",
+      "method": "POST",
+      "url": "{{ _.base_url }}/app/chat/message/delete",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"chatId\": \"\",\n  \"index\": 0\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -600
+    },
+    {
+      "_id": "req_chat_message_cancel",
+      "_type": "request",
+      "parentId": "fld_app_chat",
+      "name": "Cancel message",
+      "method": "POST",
+      "url": "{{ _.base_url }}/app/chat/message/cancel",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"chatId\": \"\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -700
+    },
+    {
+      "_id": "req_chat_delete",
+      "_type": "request",
+      "parentId": "fld_app_chat",
+      "name": "Delete chat",
+      "method": "POST",
+      "url": "{{ _.base_url }}/app/chat/delete",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"chatId\": \"\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -800
+    },
+
+    {
+      "_id": "req_history_list",
+      "_type": "request",
+      "parentId": "fld_app_history",
+      "name": "List records",
+      "method": "GET",
+      "url": "{{ _.base_url }}/app/history",
+      "body": {},
+      "headers": [],
+      "parameters": [
+        { "name": "type", "value": "triagem", "disabled": true }
+      ],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+    {
+      "_id": "req_history_get",
+      "_type": "request",
+      "parentId": "fld_app_history",
+      "name": "Get record",
+      "method": "GET",
+      "url": "{{ _.base_url }}/app/history/:id",
+      "body": {},
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -200
+    }
+  ]
+}
