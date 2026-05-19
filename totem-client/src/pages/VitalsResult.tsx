@@ -1,46 +1,61 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function PreVitals () {
+type resultType = {
+  type: 'fr' | 'spo2' | 'temp' | 'pa' | 'fc';
+  val: number
+}
+
+const resultStrategy = Object.freeze({
+  fr: { label: 'Frequência respiratória (FR)', unit: 'rpm' },
+  spo2: { label: 'Saturação de Oxigênio (SpO2)', unit: '%' },
+  temp: { label: 'Temperatura Corporal', unit: '°C' },
+  pa: { label: 'Pressão Arterial Sistólica', unit: 'mmHg' },
+  fc: { label: 'Frequência Cardíaca (FC)', unit: 'bpm' },
+})
+
+const dummyResult: resultType[] = [
+  { type: 'fr', val: 15 },
+  { type: 'spo2', val: 97 },
+  { type: 'temp', val: 37 },
+  { type: 'pa', val: 110 },
+  { type: 'fc', val: 70 },
+]
+
+export default function VitalsResult () {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  type resultType = {
-    type: 'fr' | 'spo2' | 'temp' | 'pa' | 'fc';
-    val: number
-  }
+  const handleSend = async () => {
+    setLoading(true)
+    setError(null)
 
-  const resultStrategy = Object.freeze({
-    fr: {
-      label: 'Frequência respiratória (FR)',
-      unit: 'rpm'
-    },
-    spo2: {
-      label: 'Saturação de Oxigênio (SpO2)',
-      unit: '%'
-    },
-    temp: {
-      label: 'Temperatura Corporal',
-      unit: '°C'
-    },
-    pa: {
-      label: 'Pressão Arterial Sistólica',
-      unit: 'mmHg'
-    },
-    fc: {
-      label: 'Frequência Cardíaca (FC)',
-      unit: 'bpm'
+    const vitals = {
+      fr: dummyResult.find(r => r.type === 'fr')!.val,
+      fc: dummyResult.find(r => r.type === 'fc')!.val,
+      spo2: dummyResult.find(r => r.type === 'spo2')!.val,
+      temp: dummyResult.find(r => r.type === 'temp')!.val,
+      pa: dummyResult.find(r => r.type === 'pa')!.val,
+      oxygen: false,
+      hipercapnia: false,
     }
-  })
 
-  const dummyResult: resultType[] = [
-    { type: 'fr', val: 15 },
-    { type: 'spo2', val: 97 },
-    { type: 'temp', val: 37 },
-    { type: 'pa', val: 110 },
-    { type: 'fc', val: 70 },
-  ]
+    try {
+      const res = await fetch('/totem/score/news2', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(vitals),
+      })
 
-  const navToPreVitals = () => {
-    navigate('/pre-vitals')
+      if (!res.ok) throw new Error(`Erro ${res.status}`)
+
+      const data = await res.json()
+      navigate('/score-result', { state: { score: data.score } })
+    } catch (err) {
+      setError('Falha ao enviar os dados. Tente novamente.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -61,9 +76,16 @@ export default function PreVitals () {
         }
       </tbody>
     </table>
+
+    {error && (
+      <p className="mb-4 text-red-500 text-xl">{error}</p>
+    )}
+
     <div className="mx-auto flex gap-4">
-      <button className="secondary" onClick={navToPreVitals}>Coletar Novamente</button>
-      <button className="primary w-75">Enviar</button>
+      <button className="secondary" onClick={() => navigate('/pre-vitals')}>Coletar Novamente</button>
+      <button className="primary w-75" onClick={handleSend} disabled={loading}>
+        {loading ? 'Enviando...' : 'Enviar'}
+      </button>
     </div>
   </main>
   )

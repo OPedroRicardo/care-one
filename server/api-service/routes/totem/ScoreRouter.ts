@@ -1,7 +1,7 @@
-import { ScoreController } from './../../controllers/ScoreController';
+import { ScoreController } from '@api-service/controllers/ScoreController.ts';
 
 import { Express, Request, Response, RequestHandler } from 'express';
-import { APIRouter } from '../router';
+import { APIRouter } from '@api-service/routes/router.ts';
 
 // Exemplo de middleware próprio do Score
 const scoreMiddleware: RequestHandler = (req, res, next) => {

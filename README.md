@@ -37,12 +37,35 @@ careplus-next/
      # ou
      npm install
      ```
-  3. Configure variáveis no `.env` (copie de `.env.example`):
+  3. Configure variáveis no `server/.env` (copie de `server/.env.example`):
      ```
-     OLLAMA_BASE_URL="http://localhost:11434"
-     OLLAMA_MODEL_LLM="llama3.2"
-     OLLAMA_MODEL_EMBEDDINGS="all-minilm"
-     DB_PATH="file:./careplus.db"
+      # .env.example
+
+      # ── Servidor ──────────────────────────────────────────────
+      NODE_ENV=development
+      PORT=3333
+      ALLOWED_ORIGINS="http://localhost:5173"
+
+      # ── Ollama (LLM + Embeddings) ─────────────────────────────
+      # URL base do servidor Ollama (local ou remoto)
+      OLLAMA_BASE_URL="http://localhost:11434"
+
+      # Modelo de linguagem para geração de respostas
+      # Opções: llama3.2, llama3.1, mistral, gemma2, etc.
+      OLLAMA_MODEL_LLM="llama3.2"
+
+      # Modelo de embeddings para indexação e busca RAG
+      # Recomendado: nomic-embed-text (leve e eficiente)
+      OLLAMA_MODEL_EMBEDDINGS="nomic-embed-text"
+
+      # ── Valkey (pub/sub entre api-service e mqtt-service) ─────
+      # Suba o container com: docker compose up -d
+      VALKEY_HOST="127.0.0.1"
+      VALKEY_PORT=6379
+
+      # ── Banco de Dados ────────────────────────────────────────
+      # Caminho para o arquivo SQLite (prefixo file: obrigatório)
+      DB_PATH="file:./careplus.db"
      ```
   4. Crie o banco de dados:
      ```bash
@@ -50,16 +73,26 @@ careplus-next/
      # ou
      npm run db:push
      ```
-  5. Inicie em modo desenvolvimento:
+  5. Alimente o banco de dados:
+     ```bash
+     yarn db:seed
+     # ou
+     npm run db:seed
+     ```
+  6. Caso queira checar o estado do banco de dados:
+     ```bash
+     yarn db:studio
+     # ou
+     npm run db:studio
+     ```
+  6. Inicie em modo desenvolvimento:
      ```bash
      yarn dev
      # ou
      npm run dev
      ```
-  6. Acesse: `http://localhost:3333`
+  7. Acesse: `http://localhost:3333`
 - **Scripts úteis:**
-  - `yarn db:push` / `npm run db:push` — cria/atualiza o schema SQLite
-  - `yarn db:studio` / `npm run db:studio` — abre o Drizzle Studio (UI para o banco)
 - **Postman:** importe `careplus.postman_collection.json` na raiz do `server/`.
 
 ### 2. `POCs/` — Provas de Conceito
