@@ -47,7 +47,7 @@ export class MqttOrchestrator {
     const session: MeasureSession = { sessionId, patientName, vitals: {}, startedAt: Date.now() }
     this.#queue.push(session)
     console.log(
-      `[MQTT] Sessão enfileirada: "${patientName}" (${sessionId}) — fila: ${this.#queue.length}`,
+      `Sessão enfileirada: "${patientName}" (${sessionId}) — fila: ${this.#queue.length}`,
     )
     this.dequeue(mqtt)
   }
@@ -55,9 +55,7 @@ export class MqttOrchestrator {
   dequeue(mqtt: MqttClient): void {
     if (this.#current !== null || this.#queue.length === 0) return
     this.#current = this.#queue.shift()!
-    console.log(
-      `[MQTT] Iniciando setup para "${this.#current.patientName}" (${this.#current.sessionId})`,
-    )
+    console.log(`Iniciando setup para "${this.#current.patientName}" (${this.#current.sessionId})`,)
     mqtt.publish(
       TOPICS.SETUP,
       JSON.stringify({ sessionId: this.#current.sessionId, patientName: this.#current.patientName }),
@@ -68,6 +66,7 @@ export class MqttOrchestrator {
 
   async persistSession(session: MeasureSession): Promise<void> {
     const now = Date.now()
+    console.log(now, session)
     await db.insert(historyRecords).values({
       id:          session.sessionId,
       type:        'triagem',
@@ -77,7 +76,7 @@ export class MqttOrchestrator {
       details:     JSON.stringify({ vitals: session.vitals }),
       createdAt:   now,
     })
-    console.log(`[MQTT] Registro salvo para "${session.patientName}" (${session.sessionId})`)
+    console.log(`Registro salvo para "${session.patientName}" (${session.sessionId})`)
   }
 
   // ── Handler de mensagens MQTT ─────────────────────────────────────────────────
@@ -85,7 +84,7 @@ export class MqttOrchestrator {
   async handleMessage(mqtt: MqttClient, topic: string, raw: string): Promise<void> {
     const session = this.#current
     if (!session) {
-      console.warn('[MQTT] Mensagem recebida sem sessão ativa — ignorando')
+      console.warn('Mensagem recebida sem sessão ativa — ignorando')
       return
     }
 
@@ -93,13 +92,13 @@ export class MqttOrchestrator {
     try {
       data = JSON.parse(raw)
     } catch {
-      console.error(`[MQTT] Payload inválido no tópico "${topic}": ${raw}`)
+      console.error(`Payload inválido no tópico "${topic}": ${raw}`)
       return
     }
 
     switch (topic) {
       case TOPICS.SETUP_RESPONSE: {
-        console.log('[MQTT] Setup OK → publicando em "oximeter"')
+        console.log('Setup OK → publicando em "oximeter"')
         mqtt.publish(TOPICS.OXIMETER, JSON.stringify({ sessionId: session.sessionId }))
         break
       }
@@ -108,6 +107,7 @@ export class MqttOrchestrator {
         session.vitals.oxygenSaturation = data.oxygenSaturation as number
         session.vitals.respiratoryRate  = data.respiratoryRate  as number
         session.vitals.heartRate        = data.heartRate        as number
+        console.log(`${TOPICS.OXIMETER_RESPONSE} OK → publicando em "${TOPICS.BLOOD_PRESSURE}"`)
         mqtt.publish(TOPICS.BLOOD_PRESSURE, JSON.stringify({ sessionId: session.sessionId }))
         break
       }
@@ -117,6 +117,7 @@ export class MqttOrchestrator {
           systolic:  data.systolic  as number,
           diastolic: data.diastolic as number,
         }
+        console.log(`${TOPICS.BLOOD_PRESSURE_RESPONSE} OK → publicando em "${TOPICS.TEMP}"`)
         mqtt.publish(TOPICS.TEMP, JSON.stringify({ sessionId: session.sessionId }))
         break
       }
@@ -136,11 +137,11 @@ export class MqttOrchestrator {
   setupHandlers(mqtt: MqttClient): void {
     mqtt.on('message', async (topic, payload) => {
       const raw = payload.toString()
-      console.log(`[MQTT] ← ${topic}: ${raw}`)
+      console.log(`← ${topic}: ${raw}`)
       try {
         await this.handleMessage(mqtt, topic, raw)
       } catch (err) {
-        console.error(`[MQTT] Erro ao processar tópico "${topic}":`, err)
+        console.error(`Erro ao processar tópico "${topic}":`, err)
       }
     })
   }

@@ -11,10 +11,11 @@ async function bootstrap() {
 
   // 1. Conecta ao broker MQTT
   const MQTT_BROKER = process.env.MQTT_BROKER ?? 'mqtt://test.mosquitto.org'
+  console.log(MQTT_BROKER)
   const mqtt = connect(MQTT_BROKER)
 
   mqtt.on('connect', () => {
-    console.log(`[MQTT] Conectado ao broker: ${MQTT_BROKER}`)
+    console.log(`Conectado ao broker: ${MQTT_BROKER}`)
 
     const responseTopics = [
       'setup/response',
@@ -25,16 +26,16 @@ async function bootstrap() {
 
     mqtt.subscribe(responseTopics, (err) => {
       if (err) {
-        console.error('[MQTT] Erro ao subscrever tópicos de resposta:', err)
+        console.error('Erro ao subscrever tópicos de resposta:', err)
         return
       }
-      console.log('[MQTT] Inscrito nos tópicos:', responseTopics.join(', '))
+      console.log('Inscrito nos tópicos:', responseTopics.join(', '))
     })
   })
 
-  mqtt.on('error',     (err) => console.error('[MQTT] Erro de conexão:', err))
-  mqtt.on('offline',   ()    => console.warn('[MQTT] Broker offline'))
-  mqtt.on('reconnect', ()    => console.log('[MQTT] Reconectando ao broker...'))
+  mqtt.on('error',     (err) => console.error('Erro de conexão:', err))
+  mqtt.on('offline',   ()    => console.warn('Broker offline'))
+  mqtt.on('reconnect', ()    => console.log('Reconectando ao broker...'))
 
   orchestrator.setupHandlers(mqtt)
 
