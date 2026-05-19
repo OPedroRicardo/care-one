@@ -85,15 +85,22 @@ careplus-next/
      # ou
      npm run db:studio
      ```
-  6. Inicie em modo desenvolvimento:
+  7. Suba o container com:
+     ```bash
+     docker compose up -d
+     ``` 
+  8. Inicie em modo desenvolvimento:
      ```bash
      yarn dev
      # ou
      npm run dev
      ```
-  7. Acesse: `http://localhost:3333`
-- **Scripts úteis:**
-- **Postman:** importe `careplus.postman_collection.json` na raiz do `server/`.
+  9.  Acesse: `http://localhost:3333`
+
+Para importar as configurações em clientes de API ou MQTT utilize a pasta `client-config/`:
+  - **Postman:** importe `postman.postman_collection.json`
+  - **Insomnia:** importe `insomnia.json`
+  - **MQTTX:** importe `mqttx.json`
 
 ### 2. `POCs/` — Provas de Conceito
 
