@@ -3,6 +3,7 @@ import { ChatPromptTemplate }   from '@langchain/core/prompts'
 import { StringOutputParser }   from '@langchain/core/output_parsers'
 import { RagService, SearchResult } from './RagService.ts'
 import { ChatMessage }          from './ChatSessionStore.ts'
+import { SYSTEM_PROMPT }        from '../llm/prompts.ts'
 
 export interface ChatResponse {
   reply:   string
@@ -12,32 +13,6 @@ export interface ChatResponse {
 export type ChatStreamChunk =
   | { type: 'token'; value: string }
   | { type: 'done';  reply: string; sources: string[] }
-
-const SYSTEM_PROMPT = `Você é o assistente clínico pessoal dos clientes da CarePlus, uma empresa de tecnologia em saúde.
-
-Suas responsabilidades:
-- Explicar resultados de triagem e exames de forma clara e acessível ao paciente
-- Orientar sobre sinais vitais, seus valores normais e o que cada um significa
-- Informar sobre condutas clínicas e próximos passos conforme o resultado da triagem
-- Esclarecer termos médicos em linguagem simples
-
-FORMATAÇÃO — OBRIGATÓRIO:
-- Use Markdown em todas as respostas
-- Prefira **tabelas** para comparar valores de exames, sinais vitais ou referências normais
-- Use **negrito** para destacar valores críticos ou termos-chave
-- Use listas com marcadores para enumerar orientações ou sintomas
-- Use cabeçalhos (##) apenas quando a resposta tiver múltiplas seções distintas
-- Nunca use blocos de código para informações clínicas
-- Seja conciso: prefira tabelas e listas a parágrafos longos
-
-REGRAS IMPORTANTES:
-- Priorize os DADOS CLÍNICOS DO PACIENTE fornecidos quando eles forem relevantes para a pergunta
-- Complemente com os documentos de contexto para explicações clínicas gerais
-- Se a informação não estiver nos dados do paciente nem nos documentos, diga que não encontrou essa informação no sistema
-- Nunca faça diagnósticos ou prescrições médicas
-- Em situações de emergência (risco alto), sempre instrua o paciente a procurar atendimento imediato
-- Seja objetivo, empático e use linguagem acessível ao público geral
-- Responda sempre em Português do Brasil a menos que o paciente solicite que fale em outro idioma`
 
 /**
  * Orquestra a chamada ao LLM (Ollama) com contexto RAG e dados clínicos do paciente.
@@ -94,24 +69,27 @@ export class LLMChatService {
     return { reply, sources }
   }
 
-  // Retrieves RAG docs and assembles the ChatPromptTemplate for both code paths
+  // Retrieves RAG docs and assembles a single consolidated ChatPromptTemplate
   async #buildPrompt(
     userMessage:    string,
     history:        ChatMessage[],
     patientContext: string,
   ) {
-    const docs    = await this.rag.search(userMessage, 4)
+    // k=5 with a minimum relevance threshold to suppress unrelated chunks
+    const docs    = await this.rag.search(userMessage, 5, 0.20)
     const sources = [...new Set(docs.map(d => d.source))]
-    const ragCtx  = this.#buildRagContext(docs)
 
-    // LangChain templates interpret { } as variables — escape literal braces in data
-    const safeRag     = ragCtx.replace(/\{/g, '{{').replace(/\}/g, '}}')
-    const safePatient = patientContext.replace(/\{/g, '{{').replace(/\}/g, '}}')
+    const systemMessage = [
+      SYSTEM_PROMPT,
+      `## DADOS CLÍNICOS DO PACIENTE\n\n${patientContext}`,
+      this.#buildRagSection(docs),
+    ].join('\n\n---\n\n')
+
+    // LangChain templates interpret { } as variables — escape literal braces in injected data
+    const safeSystem = systemMessage.replace(/\{/g, '{{').replace(/\}/g, '}}')
 
     const prompt = ChatPromptTemplate.fromMessages([
-      ['system', SYSTEM_PROMPT],
-      ['system', `DADOS CLÍNICOS DO PACIENTE:\n\n${safePatient}`],
-      ['system', `CONTEXTO DOS DOCUMENTOS (base de conhecimento):\n\n${safeRag}`],
+      ['system', safeSystem],
       ...this.#formatHistory(history),
       ['human', '{input}'],
     ])
@@ -126,10 +104,14 @@ export class LLMChatService {
     ])
   }
 
-  #buildRagContext(docs: SearchResult[]): string {
-    if (docs.length === 0) return 'Nenhum documento relevante encontrado.'
-    return docs
-      .map((doc, i) => `[Documento ${i + 1} — ${doc.source}]\n${doc.content}`)
-      .join('\n\n---\n\n')
+  #buildRagSection(docs: SearchResult[]): string {
+    if (docs.length === 0) {
+      return '## BASE DE CONHECIMENTO\n\nNenhum documento relevante encontrado para esta consulta.'
+    }
+    const items = docs.map((doc, i) => {
+      const relevance = Math.round(doc.score * 100)
+      return `[Trecho ${i + 1} — ${doc.source} | Relevância: ${relevance}%]\n${doc.content}`
+    })
+    return `## BASE DE CONHECIMENTO\n\n${items.join('\n\n---\n\n')}`
   }
 }

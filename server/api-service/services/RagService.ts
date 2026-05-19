@@ -13,7 +13,8 @@ const DEFAULT_KB_PATH = join(__dirname, '..', 'llm/knowledge-base')
 
 export interface SearchResult {
   content: string
-  source: string
+  source:  string
+  score:   number
 }
 
 interface IndexedDoc {
@@ -98,8 +99,9 @@ export class RagService {
     return splitter.splitDocuments(docs)
   }
 
-  // Aguarda inicialização e realiza busca semântica por similaridade de cosseno
-  async search(query: string, k = 4): Promise<SearchResult[]> {
+  // Aguarda inicialização e realiza busca semântica por similaridade de cosseno.
+  // minScore filtra chunks com baixa relevância; use 0 para retornar todos.
+  async search(query: string, k = 4, minScore = 0): Promise<SearchResult[]> {
     await this.ready
 
     const queryEmbedding = await this.embeddings.embedQuery(query)
@@ -111,10 +113,14 @@ export class RagService {
 
     scored.sort((a, b) => b.score - a.score)
 
-    return scored.slice(0, k).map(({ doc }) => ({
-      content: doc.pageContent,
-      source:  (doc.metadata.source as string) ?? 'desconhecido',
-    }))
+    return scored
+      .filter(({ score }) => score >= minScore)
+      .slice(0, k)
+      .map(({ doc, score }) => ({
+        content: doc.pageContent,
+        source:  (doc.metadata.source as string) ?? 'desconhecido',
+        score,
+      }))
   }
 
   // Reindexar manualmente (útil se os arquivos mudarem em runtime)
