@@ -11,7 +11,22 @@ export async function createApp() {
   const app = express()
 
   app.use(helmet())
-  app.use(cors({ origin: process.env.ALLOWED_ORIGINS }))
+  app.use(cors({
+    origin: (origin, callback) => {
+      const { ALLOWED_ORIGINS } = process.env
+      if (!origin || !ALLOWED_ORIGINS) return callback(null, true);
+
+      const isAllowedOrigin = ALLOWED_ORIGINS?.split(',').includes(origin)
+
+      console.log(isAllowedOrigin, ALLOWED_ORIGINS, origin)
+
+      if (!isAllowedOrigin) {
+        const msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    }
+  }))
   app.use(express.json())
 
   const router = new APIRouter(app)
