@@ -50,18 +50,34 @@ export class PatientDataService {
       return 'Nenhum registro clínico encontrado para este paciente.'
     }
 
-    return rows
-      .map(row => {
+    const sections: string[] = []
+
+    // Prepend a risk alert banner based on the latest triagem
+    const latestTriagem = rows.find(r => r.type === 'triagem')
+    if (latestTriagem) {
+      try {
+        const d = JSON.parse(latestTriagem.details) as TriagemDetails
+        if (d.riskLevel === 'alto') {
+          sections.push(`⚠️ ALERTA CLÍNICO: Última triagem indica RISCO ALTO (NEWS2: ${d.news2Score}). Avaliação emergencial necessária.`)
+        } else if (d.riskLevel === 'moderado') {
+          sections.push(`⚡ ATENÇÃO CLÍNICA: Última triagem indica RISCO MODERADO (NEWS2: ${d.news2Score}). Avaliação médica urgente recomendada.`)
+        }
+      } catch { /* ignore malformed entry */ }
+    }
+
+    const records = rows
+      .map((row, index) => {
         const date = new Date(row.date).toLocaleDateString('pt-BR')
         let details: unknown = null
         try {
           details = JSON.parse(row.details)
-        } catch {
-          // Malformed DB entry — render header only
-        }
-        return PatientDataService.#formatRecord(row.type, row.patientName, row.summary, date, details)
+        } catch { /* malformed DB entry — render header only */ }
+        return PatientDataService.#formatRecord(row.type, row.patientName, row.summary, date, details, index === 0)
       })
       .join('\n\n---\n\n')
+
+    sections.push(records)
+    return sections.join('\n\n')
   }
 
   static #formatRecord(
@@ -70,9 +86,11 @@ export class PatientDataService {
     summary:     string,
     date:        string,
     details:     unknown,
+    isLatest     = false,
   ): string {
     const kind   = type === 'triagem' ? 'Triagem' : 'Exame'
-    const header = `[${kind} | ${date} | Paciente: ${patientName}]\nResumo: ${summary}`
+    const label  = isLatest ? ' ★ MAIS RECENTE' : ''
+    const header = `[${kind} | ${date} | Paciente: ${patientName}${label}]\nResumo: ${summary}`
 
     if (!details || typeof details !== 'object') return header
 
