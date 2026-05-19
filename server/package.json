@@ -6,7 +6,9 @@
   "author": "Pedro Ricardo de Almeida <dev.pedroricardo@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "tsx watch api-service/index.ts",
+    "dev:api": "tsx watch api-service/index.ts",
+    "dev:mqtt": "tsx watch mqtt-service/index.ts",
+    "dev": "concurrently --names \"api,mqtt\" --prefix-colors \"cyan,magenta\" \"yarn dev:api\" \"yarn dev:mqtt\"",
     "build": "rimraf dist && tsc",
     "start": "node dist/server.js",
     "lint": "eslint src/**/*.ts --fix",
@@ -45,6 +47,7 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^8.57.0",
     "@typescript-eslint/parser": "^8.57.0",
+    "concurrently": "^9.2.1",
     "drizzle-kit": "^0.31.10",
     "eslint": "^10.0.3",
     "eslint-config-prettier": "^10.1.8",
