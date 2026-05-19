@@ -1,4 +1,18 @@
 services:
+  mosquitto:
+    image: eclipse-mosquitto:2-openssl
+    container_name: careplus-mosquitto
+    ports:
+      - "${MQTT_PORT:-1883}:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   valkey:
     image: valkey/valkey:8-alpine
     container_name: careplus-valkey
