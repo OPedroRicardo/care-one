@@ -12,6 +12,7 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] })
   ],
   server: {
+    port: 5175,
     proxy: {
       '/totem': 'http://localhost:3333',
     },
