@@ -1,0 +1,27 @@
+.operadora-root,
+.operadora-root * {
+  scrollbar-width: thin;
+  scrollbar-color: #1e2d45 transparent;
+}
+
+.operadora-root ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.operadora-root ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.operadora-root ::-webkit-scrollbar-thumb {
+  background: #1e2d45;
+  border-radius: 999px;
+}
+
+.operadora-root ::-webkit-scrollbar-thumb:hover {
+  background: #2a3f5e;
+}
+
+.operadora-root ::-webkit-scrollbar-corner {
+  background: transparent;
+}

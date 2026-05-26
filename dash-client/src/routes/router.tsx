@@ -1,12 +1,14 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 
-import App            from '../App'
-import Chat           from '../pages/Chat'
-import ChatList       from '../pages/ChatList'
-import HistoryList    from '../pages/HistoryList'
-import HistoryDetails from '../pages/HistoryDetails'
+import App                from '../App'
+import Chat               from '../pages/Chat'
+import ChatList           from '../pages/ChatList'
+import HistoryList        from '../pages/HistoryList'
+import HistoryDetails     from '../pages/HistoryDetails'
+import OperadoraDashboard from '../pages/OperadoraDashboard'
 
 const router = createBrowserRouter([
+  { path: "operadora", element: <OperadoraDashboard /> },
   {
     path: "/",
     element: <App />,

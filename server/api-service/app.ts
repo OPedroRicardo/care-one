@@ -18,8 +18,6 @@ export async function createApp() {
 
       const isAllowedOrigin = ALLOWED_ORIGINS?.split(',').includes(origin)
 
-      console.log(isAllowedOrigin, ALLOWED_ORIGINS, origin)
-
       if (!isAllowedOrigin) {
         const msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
         return callback(new Error(msg), false);
