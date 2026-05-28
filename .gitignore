@@ -7,3 +7,5 @@ logs
 todo.md
 careplus.db
 laudos/
+.vercel
+vercel.json

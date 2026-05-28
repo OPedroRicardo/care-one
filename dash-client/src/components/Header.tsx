@@ -27,7 +27,7 @@ export default function Header() {
         <div />
       )}
 
-      <img src="src/assets/careplus-full.svg" alt="Care Plus" className="h-8" />
+      <div>Care One</div>
 
       <nav className="flex items-center gap-2">
         <NavLink

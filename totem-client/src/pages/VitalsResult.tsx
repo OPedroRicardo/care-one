@@ -42,7 +42,8 @@ export default function VitalsResult () {
     }
 
     try {
-      const res = await fetch('/totem/score/news2', {
+      const BASE = import.meta.env.VITE_API_URL ?? `http://localhost:3333`
+      const res = await fetch(`${BASE}/totem/score/news2`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(vitals),

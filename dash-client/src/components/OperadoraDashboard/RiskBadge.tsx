@@ -1,4 +1,4 @@
-import { C, MONO, riskColor, riskBg } from './theme'
+import { MONO, riskColor, riskBg } from './theme'
 
 export default function RiskBadge({ level }: { level: string }) {
   return (

@@ -16,14 +16,18 @@ export async function createApp() {
       const { ALLOWED_ORIGINS } = process.env
       if (!origin || !ALLOWED_ORIGINS) return callback(null, true);
 
-      const isAllowedOrigin = ALLOWED_ORIGINS?.split(',').includes(origin)
+      const isAllowedOrigin = ALLOWED_ORIGINS?.split(',').map(o => o.trim()).includes(origin)
 
       if (!isAllowedOrigin) {
         const msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
         return callback(new Error(msg), false);
       }
       return callback(null, true);
-    }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   }))
   app.use(express.json())
 

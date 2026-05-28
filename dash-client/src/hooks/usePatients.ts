@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { apiFetch } from '../lib/api'
 import type { Patient } from '../components/OperadoraDashboard/types'
 
 interface UsePatientsResult {
@@ -9,7 +10,7 @@ interface UsePatientsResult {
   lastUpdated: Date | null
 }
 
-const API = '/api/app/operadora'
+const API = '/app/operadora'
 
 export function usePatients(): UsePatientsResult {
   const [patients, setPatients] = useState<Patient[]>([])
@@ -23,11 +24,7 @@ export function usePatients(): UsePatientsResult {
     setLoading(true)
     setError(null)
 
-    fetch(`${API}/patients`)
-      .then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`)
-        return r.json()
-      })
+    apiFetch<{ patients: Patient[] }>(`${API}/patients`)
       .then(({ patients: pts }) => {
         if (cancelled) return
         setPatients(pts as Patient[])
