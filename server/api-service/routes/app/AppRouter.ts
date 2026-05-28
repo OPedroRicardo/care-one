@@ -4,6 +4,7 @@ import { APIRouter } from '@api-service/routes/api-router.ts';
 import AuthRouter from '@api-service/routes/app/AuthRouter.ts';
 import HistoryRouter from '@api-service/routes/app/HistoryRouter.ts';
 import ChatRouter from '@api-service/routes/app/ChatRouter.ts';
+import OperadoraRouter from '@api-service/routes/app/OperadoraRouter.ts';
 
 // Exemplo de middleware próprio do App
 const appMiddleware: RequestHandler = (req, res, next) => {
@@ -26,9 +27,12 @@ export default class AppRouter extends APIRouter {
     const historyRouter = new HistoryRouter(app)
     const chatRouter = new ChatRouter(app)
 
+    const operadoraRouter = new OperadoraRouter(app)
+
     this.addChild(authRouter)
         .addChild(historyRouter)
-        .addChild(chatRouter);
+        .addChild(chatRouter)
+        .addChild(operadoraRouter);
   }
 
   setupRoutes() {

@@ -1,0 +1,77 @@
+/* ── entrance ──────────────────────────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.93) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+@keyframes spinOnce {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── utility classes ──────────────────────────────────────────────────────── */
+.anim-fade-up {
+  animation: fadeSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-fade-in {
+  animation: fadeIn 0.32s ease both;
+}
+.anim-scale-in {
+  animation: scaleIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── skeleton shimmer ─────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #111827 0px,
+    #1e2d45 40%,
+    #111827 80%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
+/* ── spin (refresh btn active) ───────────────────────────────────────────── */
+.spin {
+  animation: spinOnce 0.6s linear;
+}
+
+/* ── tab content ─────────────────────────────────────────────────────────── */
+.tab-content {
+  animation: fadeSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── modal overlay ───────────────────────────────────────────────────────── */
+.modal-overlay {
+  animation: fadeIn 0.22s ease both;
+}
+.modal-box {
+  animation: scaleIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── alert pulse dot ─────────────────────────────────────────────────────── */
+.alert-dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+/* ── row hover ───────────────────────────────────────────────────────────── */
+.data-row {
+  transition: background 0.14s ease;
+}
