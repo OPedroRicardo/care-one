@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="vital">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Care One — Documentação da Plataforma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn" aria-label="Menu">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+</button>
+
+<div class="progress-rail"><div class="fill" id="progFill"></div></div>
+
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-block">
+      <a class="brand-mark" href="#top">
+        <span class="logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0B1120" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l2-6 4 13 3-9 2 5 4-3"/></svg>
+        </span>
+        <span class="wordmark">
+          <b><span class="wm-care">Care</span>One</b>
+          <span>Health Platform · Docs</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="aud-filter">
+      <div class="side-label">Visão por público <span class="en">/ audience lens</span></div>
+      <div class="aud-pills" id="audPills">
+        <button class="aud-pill" data-aud="all" aria-pressed="true"><span class="dot"></span>Tudo</button>
+        <button class="aud-pill" data-aud="exec" aria-pressed="false"><span class="dot"></span>Diretoria</button>
+        <button class="aud-pill" data-aud="comercial" aria-pressed="false"><span class="dot"></span>Comercial</button>
+        <button class="aud-pill" data-aud="tech" aria-pressed="false"><span class="dot"></span>Técnico</button>
+        <button class="aud-pill" data-aud="fiap" aria-pressed="false"><span class="dot"></span>Banca FIAP</button>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <a class="nav-item" href="#overview"><span class="nx">01</span><span class="nt">Visão geral</span></a>
+      <a class="nav-item" href="#solution"><span class="nx">02</span><span class="nt">Pilares da solução</span></a>
+      <a class="nav-item" href="#architecture"><span class="nx">03</span><span class="nt">Arquitetura técnica</span></a>
+      <a class="nav-item" href="#scoring"><span class="nx">04</span><span class="nt">Scores clínicos</span></a>
+      <a class="nav-item" href="#knowledge"><span class="nx">05</span><span class="nt">RAG & base de conhecimento</span></a>
+      <a class="nav-item" href="#api"><span class="nx">06</span><span class="nt">API Reference</span></a>
+      <a class="nav-item" href="#safety"><span class="nx">07</span><span class="nt">Segurança & ética</span></a>
+      <a class="nav-item" href="#impact"><span class="nx">08</span><span class="nt">Impacto & ROI</span></a>
+      <a class="nav-item" href="#roadmap"><span class="nx">09</span><span class="nt">Roadmap</span></a>
+      <a class="nav-item" href="#academic"><span class="nx">10</span><span class="nt">Contexto acadêmico</span></a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="side-label">Tema <span class="en">/ theme</span></div>
+      <div class="theme-switch" id="themeSwitch">
+        <button class="theme-btn theme-vital" data-theme="vital" aria-pressed="true"><span class="swatch"></span>Vital</button>
+        <button class="theme-btn theme-azure" data-theme="azure" aria-pressed="false"><span class="swatch"></span>Azure</button>
+        <button class="theme-btn theme-clinical" data-theme="clinical" aria-pressed="false"><span class="swatch"></span>Clínico</button>
+      </div>
+      <div class="side-meta">
+        <span class="live"><span class="beat"></span>PoC funcional · dados simulados</span>
+        <span>Care Plus / Bupa × FIAP 1CCPR</span>
+        <span>Grupo 1 · v1.0 · 2025</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- ===== HERO ===== -->
+    <header class="hero" id="top">
+      <div class="hero-grid-bg"></div>
+      <div class="hero-glow"></div>
+      <svg class="ecg-band" id="ecg" viewBox="0 0 1200 200" preserveAspectRatio="none" height="200" width="100%"></svg>
+      <div class="hero-inner">
+        <span class="hero-kicker"><span class="beat"></span>Medicina preventiva orientada a dados</span>
+        <h1>Care<span class="accent">One</span></h1>
+        <p class="tagline">Transformar <b>dados clínicos em prevenção</b> — e prevenção em vidas salvas. Um ecossistema que enxerga o risco no portfólio <b>antes</b> do evento caro acontecer.</p>
+        <div class="hero-meta">
+          <div class="hm"><span class="hv">15<span class="u">%</span></span><span class="hl">Redução potencial de sinistralidade</span></div>
+          <div class="hm"><span class="hv">80<span class="u">+</span></span><span class="hl">Pacientes analisados na PoC</span></div>
+          <div class="hm"><span class="hv">3</span><span class="hl">Scores clínicos validados</span></div>
+          <div class="hm"><span class="hv">R$0</span><span class="hl">Custo incremental de coleta</span></div>
+        </div>
+        <div class="hero-stack">
+          <span class="tech-chip"><b>Express</b> · API</span>
+          <span class="tech-chip"><b>React + Vite</b> · Frontend</span>
+          <span class="tech-chip"><b>SQLite</b> · Data</span>
+          <span class="tech-chip"><b>Ollama</b> · RAG + LLM</span>
+        </div>
+      </div>
+      <div class="scroll-cue"><span>Role para explorar</span><span class="ln"></span></div>
+    </header>
+
+    <!-- ===== 01 OVERVIEW ===== -->
+    <section class="section" id="overview" data-aud="all exec comercial tech fiap">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">01</span> / Visão geral <span class="en">overview</span></span>
+          <h2 class="sec-title">O que é o Care One</h2>
+          <p class="sec-lede">Care One é uma plataforma de <b>medicina preventiva orientada a dados</b>, desenvolvida como PoC acadêmica na FIAP em parceria com a Care Plus / Bupa. Ela troca um modelo de saúde <em>reativo</em> — em que o beneficiário só age quando já está doente — por um modelo <b>preditivo e preventivo</b>, em que risco vira ação antes do evento agudo.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Para todos os públicos</span>
+          </div>
+        </div>
+
+        <div class="grid g2" data-reveal>
+          <div class="card">
+            <span class="kicker-sm">O problema, em uma frase</span>
+            <h3 style="margin-top:10px">Sinistralidade gerada por falta de prevenção</h3>
+            <p>O app reativo só engaja quem já adoeceu, e a operadora não enxerga o risco do portfólio antes de eventos caros. <b>66% dos pacientes</b> apresentam sinais clínicos anormais até <b>6 horas antes</b> de um evento grave — uma janela de prevenção que hoje passa despercebida.</p>
+          </div>
+          <div class="card">
+            <span class="kicker-sm">A solução, em dois pilares</span>
+            <h3 style="margin-top:10px">Check-up conversacional + Dashboard analítico</h3>
+            <p>Um <b>chatbot clínico</b> que faz a autoavaliação do beneficiário e detecta red flags, somado a um <b>dashboard preventivo</b> que estratifica o risco de toda a carteira e projeta o ROI da prevenção. <span class="en">Conversational check-up + analytic dashboard.</span></p>
+          </div>
+        </div>
+
+        <div class="stat-row" data-reveal style="margin-top:18px">
+          <div class="stat"><div class="v">R$ 10,1<span class="u">k</span></div><div class="l">Custo médio de uma internação no Brasil — o que a prevenção ataca</div></div>
+          <div class="stat"><div class="v">66<span class="u">%</span></div><div class="l">Pacientes com sinais anormais até 6h antes de evento grave</div></div>
+          <div class="stat"><div class="v">+38<span class="u">%</span></div><div class="l">Crescimento do mercado HealthTech em 2024</div></div>
+          <div class="stat"><div class="v">PoC</div><div class="l">Status atual: protótipo funcional com dados simulados</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 02 SOLUTION ===== -->
+    <section class="section" id="solution" data-aud="comercial exec all fiap">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">02</span> / Pilares da solução <span class="en">the two products</span></span>
+          <h2 class="sec-title">Dois produtos, um ecossistema</h2>
+          <p class="sec-lede">O Care One entrega valor por duas frentes complementares: uma voltada ao <b>beneficiário</b> em autoavaliação, outra ao <b>operador clínico</b> que gerencia risco em escala.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Comercial</span>
+            <span class="aud-tag"><span class="dot" style="background:var(--brand)"></span>Diretoria</span>
+          </div>
+        </div>
+
+        <div class="grid g2" data-reveal>
+          <div class="pillar">
+            <div class="pico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10h8M8 14h5"/><path d="M21 12a8 8 0 0 1-11.5 7.2L3 21l1.8-6.5A8 8 0 1 1 21 12Z"/></svg></div>
+            <h3>BluaDiagnostics</h3>
+            <div class="psub">Check-up Digital · beneficiário</div>
+            <p>Chatbot clínico conversacional integrado ao app Blua. Faz a triagem por linguagem natural, detecta <b>red flags</b> e encaminha o beneficiário <b>antes</b> do evento agudo.</p>
+            <div class="flow">
+              <span class="flow-node">Conversa</span><span class="flow-arr">→</span>
+              <span class="flow-node">RAG clínico</span><span class="flow-arr">→</span>
+              <span class="flow-node">Guardrail</span><span class="flow-arr">→</span>
+              <span class="flow-node">Encaminhamento</span>
+            </div>
+            <ul class="feat">
+              <li>RAG sobre base de conhecimento clínico + system prompt com guardrails</li>
+              <li>Function calling para histórico e agendamento</li>
+              <li>Diferencial: intercepta o risco antes do evento agudo</li>
+            </ul>
+          </div>
+
+          <div class="pillar">
+            <div class="pico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="13" width="3" height="4"/></svg></div>
+            <h3>Dashboard Preventivo</h3>
+            <div class="psub">Estratificação de risco · operador clínico</div>
+            <p>Estratifica o risco do portfólio de beneficiários com <b>scores clínicos validados</b> calculados sobre exames que já existem — projetando o ROI da sinistralidade evitável.</p>
+            <div class="flow">
+              <span class="flow-node">Exame existente</span><span class="flow-arr">→</span>
+              <span class="flow-node">Score</span><span class="flow-arr">→</span>
+              <span class="flow-node">Estratificação</span><span class="flow-arr">→</span>
+              <span class="flow-node">Alerta + ROI</span>
+            </div>
+            <ul class="feat">
+              <li>Scores Framingham, HOMA-IR e eGFR sobre exames já existentes</li>
+              <li>Projeção de ROI em sinistralidade evitável + curva de Pareto</li>
+              <li>Diferencial: zero fricção de adoção — não pede exames novos</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dec" data-reveal style="margin-top:18px">
+          <span class="dq">why?</span>
+          <div><b>Por que reutilizar exames existentes?</b><p>Pedir exames novos cria fricção de adoção e custo. Ao calcular scores sobre laudos que o beneficiário já possui, o custo incremental de coleta é <b>zero</b> e o valor aparece no primeiro dia.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 03 ARCHITECTURE ===== -->
+    <section class="section" id="architecture" data-aud="tech fiap">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">03</span> / Arquitetura técnica <span class="en">system architecture</span></span>
+          <h2 class="sec-title">Como o sistema é construído</h2>
+          <p class="sec-lede">Cinco camadas, do frontend ao motor analítico. Passe o mouse sobre cada camada para destacá-la.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Time técnico</span>
+            <span class="aud-tag"><span class="dot" style="background:var(--brand)"></span>Banca FIAP</span>
+          </div>
+        </div>
+
+        <div class="arch" data-reveal id="archDiagram">
+          <div class="arch-layer" style="--lc:var(--vital)">
+            <div class="al-tag"><span class="ali"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8"/></svg></span><b>Frontend</b><span>layer 01</span></div>
+            <div class="al-body"><span class="node"><b>React + Vite</b> App</span><span class="node">Dashboard <b>React</b></span><span class="node">Chatbot UI</span></div>
+          </div>
+          <div class="arch-conn">↓</div>
+          <div class="arch-layer" style="--lc:var(--brand)">
+            <div class="al-tag"><span class="ali"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><b>API</b><span>layer 02</span></div>
+            <div class="al-body"><span class="node"><b>Express</b> REST</span><span class="node">patients</span><span class="node">exams</span><span class="node">risk-scoring</span><span class="node">chat</span><span class="node">knowledge-base</span></div>
+          </div>
+          <div class="arch-conn">↓</div>
+          <div class="arch-layer" style="--lc:var(--med)">
+            <div class="al-tag"><span class="ali"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg></span><b>AI</b><span>layer 03</span></div>
+            <div class="al-body"><span class="node"><b>Ollama</b> LLaMA 3.2</span><span class="flow-arr">→</span><span class="node">RAG Engine</span><span class="flow-arr">→</span><span class="node">LangChain</span><span class="node">Embeddings <span style="opacity:.6">(cosine)</span></span></div>
+          </div>
+          <div class="arch-conn">↓</div>
+          <div class="arch-layer" style="--lc:var(--low)">
+            <div class="al-tag"><span class="ali"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><b>Data</b><span>layer 04</span></div>
+            <div class="al-body"><span class="node"><b>SQLite</b> libSQL</span><span class="node">Vector Store</span><span class="node">Knowledge Base</span></div>
+          </div>
+          <div class="arch-conn">↓</div>
+          <div class="arch-layer" style="--lc:var(--high)">
+            <div class="al-tag"><span class="ali"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></span><b>Analytics</b><span>layer 05</span></div>
+            <div class="al-body"><span class="node">Score Engine</span><span class="node">Framingham</span><span class="node">HOMA-IR</span><span class="node">eGFR</span><span class="node">pesos adaptativos</span></div>
+          </div>
+        </div>
+
+        <h3 style="font-family:'Space Grotesk';font-size:18px;margin:40px 0 16px;color:var(--ink)" data-reveal>Fluxos principais <span class="en">core flows</span></h3>
+        <div class="grid g2" data-reveal>
+          <div class="card">
+            <span class="kicker-sm">Fluxo do chatbot</span>
+            <div class="pipe" style="margin-top:14px">
+              <div class="pipe-step"><span class="ps-n">01</span><span class="ps-t">Entrada</span><span class="ps-d">Mensagem do beneficiário</span></div>
+              <div class="pipe-step"><span class="ps-n">02</span><span class="ps-t">RAG</span><span class="ps-d">Busca na base clínica</span></div>
+              <div class="pipe-step"><span class="ps-n">03</span><span class="ps-t">Guardrail</span><span class="ps-d">Valida cobertura e escopo</span></div>
+              <div class="pipe-step"><span class="ps-n">04</span><span class="ps-t">Resposta</span><span class="ps-d">Com disclaimer clínico</span></div>
+              <div class="pipe-step"><span class="ps-n">05</span><span class="ps-t">Log</span><span class="ps-d">Registro auditável</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <span class="kicker-sm">Fluxo de scoring</span>
+            <div class="pipe" style="margin-top:14px">
+              <div class="pipe-step"><span class="ps-n">01</span><span class="ps-t">Exame</span><span class="ps-d">Laudo recebido</span></div>
+              <div class="pipe-step"><span class="ps-n">02</span><span class="ps-t">Score</span><span class="ps-d">Cálculo clínico</span></div>
+              <div class="pipe-step"><span class="ps-n">03</span><span class="ps-t">Estratificação</span><span class="ps-d">Alto / médio / baixo</span></div>
+              <div class="pipe-step"><span class="ps-n">04</span><span class="ps-t">Alerta</span><span class="ps-d">Para o operador clínico</span></div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-family:'Space Grotesk';font-size:18px;margin:40px 0 16px;color:var(--ink)" data-reveal>Decisões técnicas <span class="en">key decisions</span></h3>
+        <div class="grid g3" data-reveal>
+          <div class="dec"><span class="dq">01</span><div><b>Ollama local, sem API externa</b><p>Latência zero de rede, custo de inferência nulo e dados clínicos nunca saem da infraestrutura — privacidade por design.</p></div></div>
+          <div class="dec"><span class="dq">02</span><div><b>Exames existentes como fonte</b><p>Elimina a fricção de adoção — nada de pedir coleta nova ao beneficiário.</p></div></div>
+          <div class="dec"><span class="dq">03</span><div><b>Scores validados, não ML proprietário</b><p>Auditabilidade total e sem dependência de dados reais na PoC.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 04 CLINICAL SCORING ===== -->
+    <section class="section" id="scoring" data-aud="fiap tech exec">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">04</span> / Scores clínicos <span class="en">clinical scoring</span></span>
+          <h2 class="sec-title">Três equações validadas pela literatura</h2>
+          <p class="sec-lede">O motor analítico não usa ML proprietário: usa fórmulas clínicas reconhecidas e auditáveis. Cada score lê os exames que já existem e produz uma estratificação de risco com threshold publicado.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--brand)"></span>Banca FIAP</span>
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Time técnico</span>
+          </div>
+        </div>
+
+        <div class="grid g3" data-reveal id="gauges">
+          <div class="card gauge-card" data-score="framingham" data-pct="78">
+            <div class="gauge-wrap"><svg viewBox="0 0 168 168" class="gauge-svg"></svg><div class="gval"><span class="gn">24<span style="font-size:18px">%</span></span><span class="gu">risco 10 anos</span></div></div>
+            <h3>Framingham</h3>
+            <div class="gsub">Risco cardiovascular</div>
+            <p class="gdesc">Probabilidade de evento cardiovascular em 10 anos.</p>
+            <div class="gthr">
+              <div class="thr-bar"><div class="fill" style="width:100%;background:linear-gradient(90deg,var(--low),var(--med) 55%,var(--high))"></div></div>
+              <div class="thr-row"><span>baixo</span><span>&gt; 20% = alto risco</span><span>alto</span></div>
+            </div>
+            <div class="chip brand mono" style="margin-top:14px">fonte: AHA / ACC</div>
+          </div>
+
+          <div class="card gauge-card" data-score="homa" data-pct="62">
+            <div class="gauge-wrap"><svg viewBox="0 0 168 168" class="gauge-svg"></svg><div class="gval"><span class="gn">3.1</span><span class="gu">índice HOMA-IR</span></div></div>
+            <h3>HOMA-IR</h3>
+            <div class="gsub">Resistência à insulina</div>
+            <p class="gdesc">Glicose × insulina ÷ 405. Marca pré-diabetes e síndrome metabólica.</p>
+            <div class="gthr">
+              <div class="thr-bar"><div class="fill" style="width:100%;background:linear-gradient(90deg,var(--low),var(--med) 50%,var(--high))"></div></div>
+              <div class="thr-row"><span>normal</span><span>&gt; 2.5 = resistência</span><span>alto</span></div>
+            </div>
+            <div class="chip brand mono" style="margin-top:14px">fonte: literatura clínica</div>
+          </div>
+
+          <div class="card gauge-card" data-score="egfr" data-pct="46">
+            <div class="gauge-wrap"><svg viewBox="0 0 168 168" class="gauge-svg"></svg><div class="gval"><span class="gn">72</span><span class="gu">ml/min/1.73m²</span></div></div>
+            <h3>eGFR <span style="font-size:12px;color:var(--ink-faint)">CKD-EPI</span></h3>
+            <div class="gsub">Função renal</div>
+            <p class="gdesc">Taxa de filtração glomerular estimada. Abaixo de 60 = função comprometida.</p>
+            <div class="gthr">
+              <div class="thr-bar"><div class="fill" style="width:100%;background:linear-gradient(90deg,var(--high),var(--med) 45%,var(--low))"></div></div>
+              <div class="thr-row"><span>&lt; 60 comprometido</span><span></span><span>saudável</span></div>
+            </div>
+            <div class="chip brand mono" style="margin-top:14px">fonte: KDIGO 2021</div>
+          </div>
+        </div>
+
+        <div class="grid g2" data-reveal style="margin-top:18px">
+          <div class="note">
+            <span class="ni"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg></span>
+            <div><b>Exames ausentes? Pesos adaptativos.</b><p>Quando um exame falta, o sistema redistribui os pesos das variáveis disponíveis e exibe um <b>indicador de confiança</b> — o score nunca é silenciosamente impreciso.</p></div>
+          </div>
+          <div class="note warn">
+            <span class="ni"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>
+            <div><b>Limitação explícita</b><p>Os scores são ferramenta de <b>triagem, não de diagnóstico</b>. Sinalizam quem merece atenção médica — a decisão clínica é sempre de um profissional.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 05 KNOWLEDGE BASE ===== -->
+    <section class="section" id="knowledge" data-aud="tech fiap">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">05</span> / RAG & base de conhecimento <span class="en">retrieval-augmented generation</span></span>
+          <h2 class="sec-title">De onde o chatbot tira respostas confiáveis</h2>
+          <p class="sec-lede">O assistente não inventa: ele recupera trechos de documentos clínicos curados e responde ancorado neles. Esta é a espinha dorsal da segurança do BluaDiagnostics.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Time técnico</span>
+            <span class="aud-tag"><span class="dot" style="background:var(--brand)"></span>Banca FIAP</span>
+          </div>
+        </div>
+
+        <div class="card" data-reveal>
+          <span class="kicker-sm">Pipeline RAG</span>
+          <div class="pipe" style="margin-top:14px">
+            <div class="pipe-step"><span class="ps-n">01</span><span class="ps-t">Chunking</span><span class="ps-d">Documentos segmentados em trechos</span></div>
+            <div class="pipe-step"><span class="ps-n">02</span><span class="ps-t">Embedding</span><span class="ps-d">Vetorização semântica</span></div>
+            <div class="pipe-step"><span class="ps-n">03</span><span class="ps-t">Retrieval</span><span class="ps-d">Busca por similaridade</span></div>
+            <div class="pipe-step"><span class="ps-n">04</span><span class="ps-t">Geração</span><span class="ps-d">Resposta ancorada no contexto</span></div>
+          </div>
+          <div class="note" style="margin-top:18px">
+            <span class="ni"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <div><b>Buscar no RAG vs. responder direto</b><p>O sistema decide quando recuperar contexto: perguntas clínicas acionam a busca semântica; interações triviais são respondidas diretamente, economizando latência e custo.</p></div>
+          </div>
+        </div>
+
+        <div class="card" data-reveal style="margin-top:18px">
+          <span class="kicker-sm" style="margin-bottom:16px;display:block">Base de conhecimento <span class="en">knowledge sources</span></span>
+          <table class="tbl">
+            <thead><tr><th>Documento</th><th>Tipo</th><th>Papel no sistema</th><th>Status PoC</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Protocolo Manchester</strong></td><td>Clínico</td><td>Classificação de urgência</td><td><span class="chip warn">simulado</span></td></tr>
+              <tr><td><strong>Políticas Care Plus</strong></td><td>Regulatório</td><td>Guardrails de cobertura</td><td><span class="chip warn">simulado</span></td></tr>
+              <tr><td><strong>Bulas / interações</strong></td><td>Farmacologia</td><td>Validação pré-prescrição</td><td><span class="chip warn">simulado</span></td></tr>
+              <tr><td><strong>Diretrizes AHA/ESC</strong></td><td>Diretriz clínica</td><td>Base para Framingham</td><td><span class="chip ok">incluído</span></td></tr>
+              <tr><td><strong>Cartilha preventiva Care Plus</strong></td><td>Institucional</td><td>Tom de voz ao beneficiário</td><td><span class="chip hi">a incluir</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 06 API ===== -->
+    <section class="section" id="api" data-aud="tech">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">06</span> / API Reference <span class="en">endpoints</span></span>
+          <h2 class="sec-title">Contratos da API</h2>
+          <p class="sec-lede">Os endpoints core para devs e integradores. Clique para ver a estrutura de resposta simplificada.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Time técnico</span>
+          </div>
+        </div>
+
+        <div class="api-list" data-reveal id="apiList">
+
+          <!-- OPERADORA -->
+          <div class="api-group-label">Operadora</div>
+
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/operadora/patients</span><span class="desc">Lista pacientes com scores (cache 15 min)</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"patients"</span>: [{ <span class="k">"id"</span>: <span class="n">42</span>, <span class="k">"nome"</span>: <span class="s">"—"</span>,
+  <span class="k">"risco"</span>: <span class="s">"alto"</span>, <span class="k">"scores"</span>: {
+    <span class="k">"framingham"</span>: <span class="n">24</span>, <span class="k">"homaIr"</span>: <span class="n">3.1</span>, <span class="k">"egfr"</span>: <span class="n">72</span> } }],
+  <span class="k">"total"</span>: <span class="n">5000</span>, <span class="k">"updatedAt"</span>: <span class="s">"2025-06-07T…"</span> }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/operadora/patients/refresh</span><span class="desc">Invalida cache e recarrega dados do Python</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK — mesma estrutura de /patients, dados frescos</span>
+{ <span class="k">"patients"</span>: […], <span class="k">"total"</span>: <span class="n">5000</span>, <span class="k">"updatedAt"</span>: <span class="s">"…"</span> }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/operadora/patients/:id</span><span class="desc">Detalhe de um paciente pelo id numérico</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"id"</span>: <span class="n">42</span>, <span class="k">"risco"</span>: <span class="s">"alto"</span>, <span class="k">"scores"</span>: {…},
+  <span class="k">"trend"</span>: [{ <span class="k">"mes"</span>: <span class="s">"2024-12"</span>, <span class="k">"composite"</span>: <span class="n">0.71</span> }] }
+<span class="c">// 404 se não encontrado</span></pre></div></div>
+          </div>
+
+          <!-- CHAT (RAG) -->
+          <div class="api-group-label">Chat RAG</div>
+
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/chat/list</span><span class="desc">Lista sessões de chat com preview da 1ª mensagem</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"chats"</span>: [{ <span class="k">"id"</span>: <span class="s">"uuid"</span>, <span class="k">"createdAt"</span>: <span class="n">1749…</span>,
+  <span class="k">"preview"</span>: <span class="s">"Tenho dor no peito…"</span> }] }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/chat/:id</span><span class="desc">Mensagens completas de uma sessão</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"chat"</span>: { <span class="k">"id"</span>: <span class="s">"uuid"</span>, <span class="k">"messages"</span>: [
+  { <span class="k">"role"</span>: <span class="s">"user"</span>, <span class="k">"content"</span>: <span class="s">"…"</span> },
+  { <span class="k">"role"</span>: <span class="s">"assistant"</span>, <span class="k">"content"</span>: <span class="s">"…"</span> }] } }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/chat/new</span><span class="desc">Cria nova sessão de chat com system prompt clínico</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body (opcional)</span>
+{ <span class="k">"context"</span>: <span class="s">"dados clínicos do paciente"</span> }
+<span class="c">// 201 Created</span>
+{ <span class="k">"chatId"</span>: <span class="s">"uuid"</span> }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/chat/message</span><span class="desc">Envia mensagem — resposta completa com fontes RAG</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body</span>
+{ <span class="k">"chatId"</span>: <span class="s">"uuid"</span>, <span class="k">"message"</span>: <span class="s">"Tenho dor no peito"</span> }
+<span class="c">// 200 OK</span>
+{ <span class="k">"reply"</span>: <span class="s">"…"</span>, <span class="k">"sources"</span>: [<span class="s">"careplus.md §2"</span>] }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/chat/message/stream</span><span class="desc">Envia mensagem — resposta em streaming (SSE)</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body igual ao /message</span>
+<span class="c">// stream: text/event-stream</span>
+<span class="k">data:</span> { <span class="k">"type"</span>: <span class="s">"token"</span>, <span class="k">"value"</span>: <span class="s">"Com"</span> }
+<span class="k">data:</span> { <span class="k">"type"</span>: <span class="s">"token"</span>, <span class="k">"value"</span>: <span class="s">"base em…"</span> }
+<span class="k">data:</span> { <span class="k">"type"</span>: <span class="s">"done"</span>, <span class="k">"reply"</span>: <span class="s">"…"</span>, <span class="k">"sources"</span>: […] }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/chat/message/cancel</span><span class="desc">Cancela geração de resposta em andamento</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body</span>
+{ <span class="k">"chatId"</span>: <span class="s">"uuid"</span> }
+<span class="c">// 200 OK</span>
+{ <span class="k">"ok"</span>: <span class="n">true</span> }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/chat/delete</span><span class="desc">Remove sessão de chat e todas as mensagens</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body</span>
+{ <span class="k">"chatId"</span>: <span class="s">"uuid"</span> }
+<span class="c">// 200 OK</span>
+{ <span class="k">"ok"</span>: <span class="n">true</span> }</pre></div></div>
+          </div>
+
+          <!-- HISTÓRICO -->
+          <div class="api-group-label">Histórico clínico</div>
+
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/history</span><span class="desc">Lista triagens e exames do histórico do paciente</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+[{ <span class="k">"id"</span>: <span class="s">"uuid"</span>, <span class="k">"type"</span>: <span class="s">"triagem"</span>,
+   <span class="k">"patientName"</span>: <span class="s">"—"</span>, <span class="k">"date"</span>: <span class="n">1749…</span>,
+   <span class="k">"summary"</span>: <span class="s">"NEWS2 = 3"</span> }]</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/history/:id</span><span class="desc">Detalhes de um registro (triagem ou exame)</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"id"</span>: <span class="s">"uuid"</span>, <span class="k">"type"</span>: <span class="s">"triagem"</span>,
+  <span class="k">"details"</span>: { <span class="k">"score"</span>: <span class="n">3</span>, <span class="k">"level"</span>: <span class="s">"low"</span>,
+    <span class="k">"parameters"</span>: {…} } }</pre></div></div>
+          </div>
+
+          <!-- AGENDAMENTOS -->
+          <div class="api-group-label">Agendamentos</div>
+
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/agendamentos</span><span class="desc">Lista todos os agendamentos ordenados por data</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"appointments"</span>: [{ <span class="k">"id"</span>: <span class="s">"uuid"</span>,
+  <span class="k">"type"</span>: <span class="s">"telechamada"</span>, <span class="k">"status"</span>: <span class="s">"pending"</span>,
+  <span class="k">"scheduledAt"</span>: <span class="n">1749…</span>, <span class="k">"notes"</span>: <span class="s">"…"</span> }] }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/agendamentos</span><span class="desc">Cria agendamento (presencial ou telechamada)</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body</span>
+{ <span class="k">"patientName"</span>: <span class="s">"Ana"</span>,
+  <span class="k">"type"</span>: <span class="s">"presencial"</span> <span class="c">| "telechamada"</span>,
+  <span class="k">"scheduledAt"</span>: <span class="n">1749859200000</span>, <span class="k">"notes"</span>: <span class="s">"…"</span> }
+<span class="c">// 201 Created</span>
+{ <span class="k">"id"</span>: <span class="s">"uuid"</span> }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m put">PUT</span><span class="path">/app/agendamentos/:id/confirm</span><span class="desc">Médico confirma o agendamento</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"ok"</span>: <span class="n">true</span> }
+<span class="c">// status muda: pending → confirmed</span></pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m put">PUT</span><span class="path">/app/agendamentos/:id/cancel</span><span class="desc">Cancela o agendamento</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"ok"</span>: <span class="n">true</span> }
+<span class="c">// status muda: pending | confirmed → cancelled</span></pre></div></div>
+          </div>
+
+          <!-- EXAMES -->
+          <div class="api-group-label">Exames</div>
+
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/exames</span><span class="desc">Lista todos os exames do paciente (sem fileData)</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"exams"</span>: [{ <span class="k">"id"</span>: <span class="s">"uuid"</span>, <span class="k">"examType"</span>: <span class="s">"hemograma"</span>,
+  <span class="k">"fileName"</span>: <span class="s">"hemo.pdf"</span>, <span class="k">"shared"</span>: <span class="n">false</span>,
+  <span class="k">"sharedUntil"</span>: <span class="n">null</span> }] }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/exames/compartilhados</span><span class="desc">Exames atualmente compartilhados e dentro do prazo</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK — filtra shared=true AND sharedUntil > now()</span>
+{ <span class="k">"exams"</span>: [{ <span class="k">"id"</span>: <span class="s">"uuid"</span>, <span class="k">"examType"</span>: <span class="s">"glicemia"</span>,
+  <span class="k">"shared"</span>: <span class="n">true</span>, <span class="k">"sharedUntil"</span>: <span class="n">1750464000000</span> }] }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/exames/upload</span><span class="desc">Upload de exame pelo paciente (base64 na PoC)</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body</span>
+{ <span class="k">"patientName"</span>: <span class="s">"Ana"</span>, <span class="k">"examType"</span>: <span class="s">"hemograma"</span>,
+  <span class="k">"fileName"</span>: <span class="s">"hemo.pdf"</span>, <span class="k">"fileData"</span>: <span class="s">"base64…"</span> }
+<span class="c">// 201 Created</span>
+{ <span class="k">"id"</span>: <span class="s">"uuid"</span> }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/exames/:id/share</span><span class="desc">Compartilha exame com o médico (padrão: 7 dias)</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body (sharedUntil opcional — default: now + 7 dias)</span>
+{ <span class="k">"sharedUntil"</span>: <span class="n">1750464000000</span> }
+<span class="c">// 200 OK</span>
+{ <span class="k">"ok"</span>: <span class="n">true</span>, <span class="k">"sharedUntil"</span>: <span class="n">1750464000000</span> }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m del">DELETE</span><span class="path">/app/exames/:id/share</span><span class="desc">Revoga o compartilhamento imediatamente</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"ok"</span>: <span class="n">true</span> }
+<span class="c">// shared volta a false, sharedUntil = null</span></pre></div></div>
+          </div>
+
+          <!-- MÉDICO -->
+          <div class="api-group-label">Médico</div>
+
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/medico/patients</span><span class="desc">Carteira de pacientes do médico com indicadores</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+[{ <span class="k">"nome"</span>: <span class="s">"Ana"</span>, <span class="k">"risco"</span>: <span class="s">"medio"</span>,
+   <span class="k">"ultimaTriagem"</span>: <span class="n">1749…</span> }]</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/medico/agenda</span><span class="desc">Agenda do médico (todas as consultas)</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+[{ <span class="k">"id"</span>: <span class="s">"uuid"</span>, <span class="k">"patientName"</span>: <span class="s">"Ana"</span>,
+   <span class="k">"type"</span>: <span class="s">"telechamada"</span>, <span class="k">"status"</span>: <span class="s">"pending"</span>,
+   <span class="k">"scheduledAt"</span>: <span class="n">1749…</span> }]</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/medico/exames</span><span class="desc">Exames compartilhados com o médico no momento</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK — alias de /app/exames/compartilhados</span>
+{ <span class="k">"exams"</span>: [{ <span class="k">"examType"</span>: <span class="s">"glicemia"</span>,
+  <span class="k">"patientName"</span>: <span class="s">"Ana"</span>, <span class="k">"sharedUntil"</span>: <span class="n">1750…</span> }] }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m get">GET</span><span class="path">/app/medico/conversa/:patientName</span><span class="desc">Timeline unificada: mensagens + histórico clínico</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// 200 OK</span>
+{ <span class="k">"messages"</span>: [{ <span class="k">"senderRole"</span>: <span class="s">"medico"</span>,
+    <span class="k">"content"</span>: <span class="s">"…"</span>, <span class="k">"createdAt"</span>: <span class="n">1749…</span> }],
+  <span class="k">"records"</span>: [{ <span class="k">"type"</span>: <span class="s">"triagem"</span>,
+    <span class="k">"summary"</span>: <span class="s">"NEWS2 = 2"</span>, <span class="k">"details"</span>: {…} }] }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/app/medico/conversa/:patientName</span><span class="desc">Envia mensagem na conversa médico ↔ paciente</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body</span>
+{ <span class="k">"content"</span>: <span class="s">"Seus exames chegaram."</span>,
+  <span class="k">"senderRole"</span>: <span class="s">"medico"</span> <span class="c">| "paciente"</span> }
+<span class="c">// 201 Created</span>
+{ <span class="k">"ok"</span>: <span class="n">true</span> }</pre></div></div>
+          </div>
+
+          <!-- TOTEM -->
+          <div class="api-group-label">Totem clínico</div>
+
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/totem/score/news2</span><span class="desc">Calcula score NEWS2 a partir dos sinais vitais</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body</span>
+{ <span class="k">"fr"</span>: <span class="n">18</span>, <span class="k">"fc"</span>: <span class="n">72</span>, <span class="k">"spo2"</span>: <span class="n">97</span>, <span class="k">"temp"</span>: <span class="n">36.8</span>,
+  <span class="k">"pa"</span>: <span class="n">120</span>, <span class="k">"oxygen"</span>: <span class="n">false</span>, <span class="k">"hipercapnia"</span>: <span class="n">false</span> }
+<span class="c">// 200 OK</span>
+{ <span class="k">"score"</span>: <span class="n">0</span>, <span class="k">"level"</span>: <span class="s">"low"</span>,
+  <span class="k">"parameters"</span>: { <span class="k">"fr"</span>: <span class="n">0</span>, <span class="k">"fc"</span>: <span class="n">0</span>, <span class="k">"spo2"</span>: <span class="n">0</span>,
+    <span class="k">"temp"</span>: <span class="n">0</span>, <span class="k">"pa"</span>: <span class="n">0</span>, <span class="k">"oxygen"</span>: <span class="n">0</span> } }</pre></div></div>
+          </div>
+          <div class="api-row">
+            <div class="api-head"><span class="m post">POST</span><span class="path">/totem/measure</span><span class="desc">Registra aferição de sinais vitais no histórico</span><span class="exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            <div class="api-body"><div class="api-body-inner"><pre class="code"><span class="c">// body — mesmos campos do score/news2</span>
+{ <span class="k">"patientName"</span>: <span class="s">"Ana"</span>, <span class="k">"fr"</span>: <span class="n">18</span>, <span class="k">"fc"</span>: <span class="n">72</span>, … }
+<span class="c">// 201 Created — persiste no history_records</span>
+{ <span class="k">"id"</span>: <span class="s">"uuid"</span> }</pre></div></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 07 SAFETY ===== -->
+    <section class="section" id="safety" data-aud="all exec fiap comercial tech">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">07</span> / Segurança, ética & compliance <span class="en">safety</span></span>
+          <h2 class="sec-title">IA de apoio à decisão — com humano no loop</h2>
+          <p class="sec-lede">Produto de saúde com IA exige rigor. Mapeamos os riscos e como cada um foi tratado na PoC.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Obrigatório · todos</span>
+          </div>
+        </div>
+
+        <div class="grid g2" data-reveal>
+          <div class="risk-card" style="--lc:var(--high)">
+            <div class="rtop"><h4>Alucinação clínica</h4><span class="chip ok">mitigado</span></div>
+            <p>O risco de a IA gerar informação clínica falsa.</p>
+            <div class="mit"><span class="mi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg></span><span>RAG restrito + disclaimer em toda resposta + human-in-the-loop (HITL)</span></div>
+          </div>
+          <div class="risk-card" style="--lc:var(--brand)">
+            <div class="rtop"><h4>LGPD</h4><span class="chip ok">mitigado na PoC</span></div>
+            <p>Privacidade e proteção de dados pessoais sensíveis.</p>
+            <div class="mit"><span class="mi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg></span><span>Dados anonimizados na PoC, pseudonimização planejada para o piloto</span></div>
+          </div>
+          <div class="risk-card" style="--lc:var(--vital)">
+            <div class="rtop"><h4>Responsabilidade clínica</h4><span class="chip ok">mitigado</span></div>
+            <p>Quem responde por uma conduta sugerida pela IA.</p>
+            <div class="mit"><span class="mi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg></span><span>A IA sugere, o médico aprova — nunca prescreve sozinha</span></div>
+          </div>
+          <div class="risk-card" style="--lc:var(--med)">
+            <div class="rtop"><h4>Viés algorítmico</h4><span class="chip warn">monitorar</span></div>
+            <p>Risco de desigualdade embutida em modelos de risco.</p>
+            <div class="mit"><span class="mi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg></span><span>Scores baseados em equações validadas, não ML proprietário opaco</span></div>
+          </div>
+        </div>
+
+        <div class="principle" data-reveal>
+          <p class="pq">A IA é uma ferramenta de <span class="hl">apoio à decisão médica</span> — com humano no loop em todos os pontos críticos.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 08 IMPACT / ROI ===== -->
+    <section class="section" id="impact" data-aud="exec comercial fiap">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">08</span> / Impacto & ROI <span class="en">business case</span></span>
+          <h2 class="sec-title">O retorno da prevenção, em números</h2>
+          <p class="sec-lede">A lógica é a curva de Pareto: <b>20% do portfólio geram 80% do custo</b>. Identificar e intervir nesse grupo cedo é onde está o retorno.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--brand)"></span>Diretoria</span>
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Comercial</span>
+          </div>
+        </div>
+
+        <div class="grid g2" data-reveal style="align-items:start">
+          <div class="chart-card">
+            <div class="ch-head"><div><h3>Curva de Pareto</h3><p>Custo acumulado por fatia do portfólio, ordenado por risco.</p></div></div>
+            <svg id="paretoChart" viewBox="0 0 460 280" width="100%"></svg>
+            <div class="legend">
+              <span class="lg"><span class="sw" style="background:var(--high)"></span>Custo por estrato</span>
+              <span class="lg"><span class="sw" style="background:var(--vital)"></span>Custo acumulado</span>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="ch-head"><div><h3>Distribuição de risco</h3><p>Estratificação da carteira analisada na PoC.</p></div></div>
+            <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:8px">
+              <svg id="donutChart" viewBox="0 0 180 180" width="180" height="180"></svg>
+              <div style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:140px">
+                <div style="display:flex;align-items:center;gap:10px"><span class="sw" style="width:12px;height:12px;border-radius:4px;background:var(--high);flex:none"></span><div style="white-space:nowrap"><b style="color:var(--ink);font-family:'Space Grotesk'">18%</b> <span style="color:var(--ink-faint);font-size:13px">alto risco</span></div></div>
+                <div style="display:flex;align-items:center;gap:10px"><span class="sw" style="width:12px;height:12px;border-radius:4px;background:var(--med);flex:none"></span><div style="white-space:nowrap"><b style="color:var(--ink);font-family:'Space Grotesk'">31%</b> <span style="color:var(--ink-faint);font-size:13px">médio risco</span></div></div>
+                <div style="display:flex;align-items:center;gap:10px"><span class="sw" style="width:12px;height:12px;border-radius:4px;background:var(--low);flex:none"></span><div style="white-space:nowrap"><b style="color:var(--ink);font-family:'Space Grotesk'">51%</b> <span style="color:var(--ink-faint);font-size:13px">baixo risco</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="roi-calc" data-reveal style="margin-top:18px">
+          <div class="rc-head">
+            <div><span class="kicker-sm">Calculadora de impacto</span><h3 style="font-family:'Space Grotesk';font-size:20px;color:var(--ink);margin-top:6px">Simule a economia projetada</h3></div>
+            <span class="chip brand">projeção ilustrativa</span>
+          </div>
+          <div class="slider-wrap">
+            <div class="slider-row"><span class="sl-label">Beneficiários ativos na plataforma</span><span class="sl-val" id="benVal">50.000</span></div>
+            <input type="range" class="rng" id="benRange" min="5000" max="200000" step="5000" value="50000" />
+          </div>
+          <div class="slider-wrap">
+            <div class="slider-row"><span class="sl-label">Eventos evitáveis por ano (por mil benef.)</span><span class="sl-val" id="evVal">12</span></div>
+            <input type="range" class="rng" id="evRange" min="4" max="30" step="1" value="12" />
+          </div>
+          <div class="roi-out">
+            <div class="ro"><div class="rov" id="roEvents">600</div><div class="rol">Eventos potencialmente interceptáveis / ano</div></div>
+            <div class="ro"><div class="rov" id="roSaving">R$ 913k</div><div class="rol">Economia projetada (15% × R$ 10,1k por evento)</div></div>
+            <div class="ro"><div class="rov" id="roPerBen">R$ 18</div><div class="rol">Economia por beneficiário ativo / ano</div></div>
+          </div>
+          <div class="disclaimer">Os números da PoC são <b>projeções baseadas em literatura</b> (15% de redução de sinistralidade; R$ 10.153 de custo médio por internação). Validação com dados reais Care Plus é o próximo passo — ver Roadmap, Fase 1.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 09 ROADMAP ===== -->
+    <section class="section" id="roadmap" data-aud="exec comercial fiap">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">09</span> / Roadmap <span class="en">what comes next</span></span>
+          <h2 class="sec-title">Do protótipo ao rollout</h2>
+          <p class="sec-lede">Quatro fases, da PoC concluída à expansão para medicina ocupacional.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--brand)"></span>Diretoria</span>
+            <span class="aud-tag"><span class="dot" style="background:var(--vital)"></span>Comercial</span>
+          </div>
+        </div>
+
+        <div class="timeline" data-reveal>
+          <div class="tl-phase done">
+            <div class="tl-track"><div class="tl-fill" style="width:100%"></div><div class="tl-dot"></div></div>
+            <div class="tl-ph">Fase 0</div><div class="tl-when">Concluído</div>
+            <div class="tl-mark">PoC funcional com dados simulados</div>
+            <div class="tl-stat"><span class="chip ok">entregue</span></div>
+          </div>
+          <div class="tl-phase active">
+            <div class="tl-track"><div class="tl-fill" style="width:30%"></div><div class="tl-dot"></div></div>
+            <div class="tl-ph">Fase 1</div><div class="tl-when">0–3 meses</div>
+            <div class="tl-mark">Piloto interno com dados reais anonimizados + validação clínica</div>
+            <div class="tl-stat"><span class="chip brand">próximo</span></div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-track"><div class="tl-fill" style="width:0%"></div><div class="tl-dot"></div></div>
+            <div class="tl-ph">Fase 2</div><div class="tl-when">3–6 meses</div>
+            <div class="tl-mark">Piloto com grupo restrito de beneficiários no Blua</div>
+            <div class="tl-stat"><span class="chip">planejado</span></div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-track"><div class="tl-fill" style="width:0%"></div><div class="tl-dot"></div></div>
+            <div class="tl-ph">Fase 3</div><div class="tl-when">6–12 meses</div>
+            <div class="tl-mark">Rollout + vertical de medicina ocupacional (NR-1)</div>
+            <div class="tl-stat"><span class="chip">planejado</span></div>
+          </div>
+        </div>
+
+        <div class="endorse" data-reveal>
+          <span class="ei"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></span>
+          <div><b>Expansão endossada pela própria Care Plus</b><p>A vertical de <b>medicina ocupacional (NR-1)</b> foi sugerida diretamente pelos mentores Juliana Hungaro Fidelis e Renato Rossi na reunião de feedback — uma oportunidade validada pela operadora, não apenas uma ideia interna.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 10 ACADEMIC ===== -->
+    <section class="section" id="academic" data-aud="fiap">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <span class="eyebrow"><span class="num">10</span> / Contexto acadêmico <span class="en">FIAP delivery map</span></span>
+          <h2 class="sec-title">Mapeamento de entregas por disciplina</h2>
+          <p class="sec-lede">Como o Care One integra as competências de seis disciplinas do 1º semestre CCPR — uma única plataforma costurando todo o currículo.</p>
+          <div class="aud-tags">
+            <span class="aud-tag"><span class="dot" style="background:var(--brand)"></span>Banca FIAP</span>
+          </div>
+        </div>
+
+        <div class="disc-grid" data-reveal>
+          <div class="disc"><div class="dhead"><span class="dname">PAI — Prompt & IA</span><span class="dsprints">sprints 1–4</span></div><span class="ddeliv">Chatbot RAG + function calling (notebook Python)</span></div>
+          <div class="disc"><div class="dhead"><span class="dname">Modelagem Matemática</span><span class="dsprints">sprints 2–3</span></div><span class="ddeliv">Regressão clínica, sistemas lineares</span></div>
+          <div class="disc"><div class="dhead"><span class="dname">Machine Learning</span><span class="dsprints">sprint 3</span></div><span class="ddeliv">Regressão logística, sklearn, AUC-ROC, F1</span></div>
+          <div class="disc"><div class="dhead"><span class="dname">Python Automação</span><span class="dsprints">sprints 2–3</span></div><span class="ddeliv">Pipeline de dados, CodeCarbon</span></div>
+          <div class="disc"><div class="dhead"><span class="dname">Estrutura de Dados (C)</span><span class="dsprints">sprints 3–4</span></div><span class="ddeliv">Fila de pacientes, pilha com undo, visualizador ANSI</span></div>
+          <div class="disc"><div class="dhead"><span class="dname">Energia / IoT</span><span class="dsprints">sprint 4</span></div><span class="ddeliv">Cálculo de emissões CO₂, ESP32</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="foot">
+      <div class="fmark"><span class="a">Care</span>One</div>
+      <div class="fmeta">Care Plus / Bupa × FIAP · 1CCPR · Grupo 1 · 2025</div>
+      <p class="fdisc">Documentação técnica e de produto da PoC. As capacidades do chatbot descritas operam com disclaimer clínico permanente: a IA é apoio à decisão médica, nunca substituta. Dados desta versão são simulados.</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/charts.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
