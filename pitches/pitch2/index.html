@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Care One · Care Plus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="careone/cinematic.css">
+</head>
+<body>
+
+<!-- atmosphere -->
+<div class="atmos vignette"></div>
+<div class="atmos grain"></div>
+
+<!-- progress -->
+<div class="rail"><div class="fill" id="railFill"></div></div>
+
+<!-- HUD -->
+<div class="hud top">
+  <div class="mark"><span class="dot"></span> Care One</div>
+  <div class="sceneno" id="sceneNo"><b>01</b> / 10</div>
+</div>
+<div class="hud bot">
+  <div>Saúde 4.0 · Pré-triagem preditiva</div>
+  <div>Equipe #1 → Care Plus</div>
+</div>
+
+<main class="deck">
+
+  <!-- 01 · HERO -->
+  <section class="scene hero in" data-screen-label="01 · Abertura">
+    <canvas class="hero-field" id="heroField"></canvas>
+    <div class="dust" data-dust="16"></div>
+    <div class="scene-inner">
+      <div class="kicker" data-reveal style="--i:0; justify-content:center;">Boa noite, Care Plus</div>
+      <h1 class="wordmark" data-reveal style="--i:1; margin-top:22px;">Care <span class="one">One</span></h1>
+      <p class="tag" data-reveal style="--i:2;">A fronteira da <b>Saúde 4.0</b> não é uma promessa distante.</p>
+      <p class="start" data-reveal style="--i:3;">Ela começa agora.</p>
+    </div>
+    <div class="scroll-cue"></div>
+  </section>
+
+  <!-- 02 · STORY / DETERIORAÇÃO -->
+  <!-- <section class="scene" data-screen-label="02 · Deterioração silenciosa" data-flat>
+    <div class="scene-inner">
+      <div class="kicker crit" data-reveal style="--i:0;">Imagine um paciente</div>
+      <h2 class="headline" data-reveal style="--i:1; margin-top:18px; max-width:18ch;">
+        Sintomas leves. Triagem manual. <span class="danger">Liberado.</span>
+      </h2>
+
+      <div class="monitor-wrap" data-reveal style="--i:2;">
+        <div class="monitor-head">
+          <span>Leito 14 · monitoramento contínuo</span>
+          <span class="bpm" data-live data-base="78" data-jitter="3">78</span>
+        </div>
+        <svg class="monitor-svg" id="monitorSvg"></svg>
+        <div class="monitor-blip"></div>
+      </div>
+
+      <div class="beat-steps" data-reveal style="--i:3;">
+        <div class="step"><div class="n">00:00</div><div class="t">Chega com sintomas leves</div></div>
+        <div class="step"><div class="n">00:18</div><div class="t">Passa pela triagem manual</div></div>
+        <div class="step"><div class="n">00:42</div><div class="t">É liberado para casa</div></div>
+        <div class="step danger"><div class="n">+6h00</div><div class="t">Retorna em estado crítico</div></div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- 03 · BIG STAT 66% -->
+  <section class="scene stat-scene" data-screen-label="03 · 66%">
+    <div class="aurora"><span class="a1"></span><span class="a2"></span></div>
+    <div class="scene-inner">
+      <div class="kicker muted" data-reveal style="--i:0; justify-content:center;">Deterioração silenciosa</div>
+      <div class="matrix-wrap" data-reveal style="--i:1; margin-top:28px;">
+        <div class="matrix" data-matrix data-on="66" data-total="100" aria-hidden="true"></div>
+        <div class="matrix-side">
+          <div class="bignum" style="font-size:clamp(4rem,14vw,11rem);"><span data-count="66">0</span><span class="pct">%</span></div>
+          <p class="lede" style="margin-top:14px;">
+            dos pacientes apresentam sinais clínicos anormais até <b style="color:var(--ink)">6 horas antes</b>
+            de uma parada cardíaca ou evento grave.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · DESAFIO -->
+  <section class="scene" data-screen-label="04 · O desafio">
+    <div class="aurora"><span class="a1"></span><span class="a2"></span></div>
+    <div class="scene-inner split">
+      <div>
+        <div class="kicker" data-reveal style="--i:0;">O desafio</div>
+        <h2 class="headline" data-reveal style="--i:1; margin-top:18px;">
+          Enxergar o risco antes que ele vire <span class="danger">prejuízo.</span>
+        </h2>
+        <p class="lede" data-reveal style="--i:2; margin-top:22px;">
+          Hoje a deterioração escapa por brechas no processo.
+        </p>
+      </div>
+      <div class="causes">
+        <div class="cause" data-reveal style="--i:2;"><span class="idx">01</span><span class="label">falhas humanas</span></div>
+        <div class="cause" data-reveal style="--i:3;"><span class="idx">02</span><span class="label">lentidão da triagem manual</span></div>
+        <div class="cause" data-reveal style="--i:4;"><span class="idx">03</span><span class="label">excesso de carga cognitiva</span></div>
+        <div class="cause" data-reveal style="--i:5;"><span class="idx">04</span><span class="label">ausência de modelos analíticos de risco</span></div>
+        <div class="cause" data-reveal style="--i:6;"><span class="idx">05</span><span class="label">falta de conexão dos dados coletados</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · RESULTADO + CUSTO -->
+  <section class="scene" data-screen-label="05 · Resultado e custo">
+    <div class="aurora warm"><span class="a1"></span><span class="a2"></span></div>
+    <div class="dust" data-dust="14"></div>
+    <div class="scene-inner">
+      <div class="kicker crit" data-reveal style="--i:0;">O resultado</div>
+      <h2 class="headline" data-reveal style="--i:1; margin-top:18px; max-width:16ch;">
+        Cada brecha tem um custo.
+      </h2>
+      <div class="results">
+        <span class="chip" data-reveal style="--i:2;">vidas em risco</span>
+        <span class="chip" data-reveal style="--i:3;">sinistros evitáveis</span>
+        <span class="chip" data-reveal style="--i:4;">sobrecarga clínica</span>
+      </div>
+      <div class="cost" data-reveal style="--i:5;">
+        <div class="val">R$ <span data-count="10153" data-money="1">0</span></div>
+        <div class="desc">é o custo médio de uma internação no Brasil — e o número que viemos reduzir diretamente.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · SOLUÇÃO -->
+  <section class="scene sol-head" data-screen-label="06 · A solução">
+    <div class="aurora"><span class="a1"></span><span class="a2"></span></div>
+    <div class="scene-inner">
+      <div class="kicker" data-reveal style="--i:0;">A solução</div>
+      <h2 class="headline" data-reveal style="--i:1; margin-top:18px; max-width:20ch;">
+        Rigor clínico <span class="glow">+</span> potência analítica.
+      </h2>
+      <p class="lede" data-reveal style="--i:2; margin-top:20px; max-width:54ch;">
+        Unimos o protocolo <b style="color:var(--ink)">NEWS2</b> a modelos preditivos para transformar
+        dados brutos em insights mastigados.
+      </p>
+      <div class="pillars">
+        <div class="pillar-link">+</div>
+        <div class="pillar" data-reveal style="--i:3;">
+          <div class="pk">01 · Hardware</div>
+          <h3>Totem Hub Sensorial</h3>
+          <p>Captura automática e plug-and-play dos sinais vitais, na ponta física.</p>
+        </div>
+        <div class="pillar" data-reveal style="--i:4;">
+          <div class="pk">02 · Inteligência</div>
+          <h3>Ecossistema analítico</h3>
+          <p>Score NEWS2 em tempo real e modelos preditivos para decisão clínica.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · TOTEM -->
+  <section class="scene" data-screen-label="07 · Totem Hub Sensorial">
+    <div class="scene-inner">
+      <div class="kicker" data-reveal style="--i:0;">Hardware · ponta física</div>
+      <h2 class="headline" data-reveal style="--i:1; margin:14px 0 36px; max-width:16ch;">
+        Ele não só mede. Ele <span class="glow">automatiza.</span>
+      </h2>
+      <div class="totem-grid">
+        <div class="totem-stage" data-reveal style="--i:2;">
+          <div class="totem-glow"></div>
+          <div class="kiosk">
+            <div class="screen">
+              <div class="ph">carregando totem…</div>
+              <iframe src="https://careplus-totem.vercel.app/" title="Care Plus — Totem de Pré-Triagem" loading="lazy" data-frame="kiosk"></iframe>
+              <div class="glare"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="vitals">
+            <div class="vital-card" data-reveal style="--i:3;">
+              <svg class="spark"></svg>
+              <div class="vk">Pressão arterial</div>
+              <div class="vv"><span data-live data-base="122" data-jitter="2">122</span>/<span data-live data-base="80" data-jitter="2">80</span><span class="u">mmHg</span></div>
+            </div>
+            <div class="vital-card" data-reveal style="--i:4;">
+              <svg class="spark"></svg>
+              <div class="vk">Oxigenação SpO₂</div>
+              <div class="vv"><span data-live data-base="97" data-jitter="1">97</span><span class="u">%</span></div>
+            </div>
+            <div class="vital-card" data-reveal style="--i:5;">
+              <svg class="spark"></svg>
+              <div class="vk">Freq. cardíaca</div>
+              <div class="vv"><span data-live data-base="78" data-jitter="3">78</span><span class="u">bpm</span></div>
+            </div>
+            <div class="vital-card" data-reveal style="--i:6;">
+              <svg class="spark"></svg>
+              <div class="vk">Temperatura</div>
+              <div class="vv"><span data-live data-base="36.5" data-jitter="0.2" data-dec="1">36.5</span><span class="u">°C</span></div>
+            </div>
+          </div>
+          <div class="news2" data-reveal style="--i:7;">
+            <div class="ring">
+              <svg viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="42"></circle>
+                <circle class="fg" cx="50" cy="50" r="42"></circle>
+              </svg>
+              <div class="score"><b>3</b><span>NEWS2</span></div>
+            </div>
+            <div class="meta">
+              <div class="nk">Score em tempo real</div>
+              <h4>Cálculo matemático do NEWS2</h4>
+              <p>Sensores precisos minimizam erros de medição — o risco é classificado no momento da captura.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · DASHBOARDS -->
+  <section class="scene" data-screen-label="08 · Inteligência e Dashboard">
+    <div class="scene-inner">
+      <div class="kicker" data-reveal style="--i:0;">Inteligência · dois mundos</div>
+      <h2 class="headline" data-reveal style="--i:1; margin-top:14px; max-width:18ch;">
+        Uma plataforma. <span class="glow">Duas visões.</span>
+      </h2>
+
+      <div class="showcase" data-reveal style="--i:2;">
+        <!-- Operadora dashboard (live) -->
+        <div class="browser">
+          <div class="chrome">
+            <span class="dots"><i></i><i></i><i></i></span>
+          </div>
+          <div class="viewport">
+            <div class="ph">carregando dashboard da operadora…</div>
+            <iframe src="https://dash-client-eta.vercel.app/operadora" title="Care Plus — Dashboard da Operadora" loading="lazy" data-frame="browser"></iframe>
+            <div class="glare"></div>
+          </div>
+        </div>
+        <!-- Patient chatbot (floating) -->
+        <div class="float-phone">
+          <div class="pbar"><span class="blip"></span> Paciente · CHAT</div>
+          <div class="body">
+            <div class="chat">
+              <div class="bubble bot">Seus sinais de hoje estão <b>estáveis</b>.</div>
+              <div class="bubble user">Minha pressão mudou essa semana?</div>
+              <div class="bubble bot">Caiu de <b>128/84</b> para <b>122/80</b> — sem alertas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-caption">
+        <div class="dc" data-reveal style="--i:3;">
+          <div class="h">Paciente · linguagem natural</div>
+          <p>Arquitetura RAG: o paciente conversa com os próprios dados. Sem tabelas complexas — e compartilha exames com o médico em poucos cliques.</p>
+        </div>
+        <div class="dc" data-reveal style="--i:4;">
+          <div class="h">Operadora · análise preditiva</div>
+          <p>Classificação de risco, probabilidade de sinistro, Framingham, HOMA-IR, projeções de custo e tendências — tecnologia para facilitar a decisão final humana.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · IMPACTO -->
+  <!-- <section class="scene impact-scene" data-screen-label="09 · Impacto">
+    <div class="aurora"><span class="a1"></span><span class="a2"></span></div>
+    <div class="dust" data-dust="14"></div>
+    <div class="scene-inner">
+      <div class="kicker" data-reveal style="--i:0; justify-content:center;">Impacto humano e financeiro</div>
+      <div class="impact-num" data-reveal style="--i:1; margin-top:16px;">
+        <span class="v"><span data-count="91%">0</span></span><span class="pct">%</span>
+      </div>
+      <p class="lede" data-reveal style="--i:2; padding-bottom: 20px; margin:14px auto 0; text-align:center;">
+        de <b style="color:var(--ink)">pacientes de alto risco</b> identificados antes do evento pelo modelo.
+      </p>
+      <div class="impact-list">
+        <span class="ip" data-reveal style="--i:4;">menos eventos graves</span>
+        <span class="ip" data-reveal style="--i:5;">menos internações evitáveis</span>
+        <span class="ip" data-reveal style="--i:6;">mais eficiência clínica</span>
+        <span class="ip" data-reveal style="--i:7;">mais previsibilidade</span>
+      </div>
+      <div class="market" data-reveal style="--i:8;">
+        <div class="mv">+<span data-count="38">0</span><span class="pct">%</span></div>
+        <div class="md">foi o crescimento do mercado de HealthTech apenas em 2024. Permanecer no analógico não é mais opção para quem quer liderar.</div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- 10 · FECHAMENTO -->
+  <section class="scene close-scene" data-screen-label="10 · Fechamento">
+    <div class="aurora"><span class="a1"></span><span class="a2"></span></div>
+    <div class="dust" data-dust="20"></div>
+    <div class="scene-inner">
+      <div class="kicker" data-reveal style="--i:0; justify-content:center;">Nosso objetivo é simples</div>
+      <div class="transform-chain" data-reveal style="--i:1;">
+        <span class="word w1">dados</span><span class="arrow">→</span>
+        <span class="word w2">decisões</span><span class="arrow">→</span>
+        <span class="word w3">prevenção</span><span class="arrow">→</span>
+        <span class="word hl">vidas salvas</span>
+      </div>
+      <div class="close-mark" data-reveal style="--i:2;">Este é o Care <span class="one">One</span>.</div>
+      <div class="team" data-reveal style="--i:3;">Equipe #1 · pronta para construir o futuro com a Care Plus</div>
+      <div class="thanks" data-reveal style="--i:4;">Muito obrigado.</div>
+    </div>
+  </section>
+
+</main>
+
+<script src="careone/cinematic.js"></script>
+</body>
+</html>
