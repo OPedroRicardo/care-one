@@ -5,6 +5,9 @@ import AuthRouter from '@api-service/routes/app/AuthRouter.ts';
 import HistoryRouter from '@api-service/routes/app/HistoryRouter.ts';
 import ChatRouter from '@api-service/routes/app/ChatRouter.ts';
 import OperadoraRouter from '@api-service/routes/app/OperadoraRouter.ts';
+import AppointmentRouter from '@api-service/routes/app/AppointmentRouter.ts';
+import ExamRouter from '@api-service/routes/app/ExamRouter.ts';
+import MedicoRouter from '@api-service/routes/app/MedicoRouter.ts';
 
 // Exemplo de middleware próprio do App
 const appMiddleware: RequestHandler = (req, res, next) => {
@@ -23,16 +26,21 @@ export default class AppRouter extends APIRouter {
   constructor(app: Express) {
     super(app, [appMiddleware]);
 
-    const authRouter = new AuthRouter(app)
-    const historyRouter = new HistoryRouter(app)
-    const chatRouter = new ChatRouter(app)
-
-    const operadoraRouter = new OperadoraRouter(app)
+    const authRouter        = new AuthRouter(app)
+    const historyRouter     = new HistoryRouter(app)
+    const chatRouter        = new ChatRouter(app)
+    const operadoraRouter   = new OperadoraRouter(app)
+    const appointmentRouter = new AppointmentRouter(app)
+    const examRouter        = new ExamRouter(app)
+    const medicoRouter      = new MedicoRouter(app)
 
     this.addChild(authRouter)
         .addChild(historyRouter)
         .addChild(chatRouter)
-        .addChild(operadoraRouter);
+        .addChild(operadoraRouter)
+        .addChild(appointmentRouter)
+        .addChild(examRouter)
+        .addChild(medicoRouter);
   }
 
   setupRoutes() {

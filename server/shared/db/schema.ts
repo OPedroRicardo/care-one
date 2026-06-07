@@ -33,3 +33,39 @@ export const historyRecords = sqliteTable('history_records', {
   details:     text('details').notNull(), // JSON serializado
   createdAt:   integer('created_at').notNull(),
 })
+
+// ── Agendamentos (paciente ↔ médico)
+
+export const appointments = sqliteTable('appointments', {
+  id:          text('id').primaryKey(),
+  patientName: text('patient_name').notNull(),
+  doctorName:  text('doctor_name').notNull().default('Dr. Silva'),
+  type:        text('type', { enum: ['presencial', 'telechamada'] }).notNull(),
+  status:      text('status', { enum: ['pending', 'confirmed', 'cancelled'] }).notNull().default('pending'),
+  scheduledAt: integer('scheduled_at').notNull(),
+  notes:       text('notes'),
+  createdAt:   integer('created_at').notNull(),
+})
+
+// ── Mensagens médico ↔ paciente
+
+export const patientMessages = sqliteTable('patient_messages', {
+  id:          integer('id').primaryKey({ autoIncrement: true }),
+  patientName: text('patient_name').notNull(),
+  senderRole:  text('sender_role', { enum: ['medico', 'paciente'] }).notNull(),
+  content:     text('content').notNull(),
+  createdAt:   integer('created_at').notNull(),
+})
+
+// ── Exames enviados pelo paciente
+
+export const exams = sqliteTable('exams', {
+  id:          text('id').primaryKey(),
+  patientName: text('patient_name').notNull(),
+  examType:    text('exam_type').notNull(),
+  fileName:    text('file_name').notNull(),
+  fileData:    text('file_data'),   // base64 (PoC)
+  shared:      integer('shared', { mode: 'boolean' }).notNull().default(false),
+  sharedUntil: integer('shared_until'),
+  createdAt:   integer('created_at').notNull(),
+})
