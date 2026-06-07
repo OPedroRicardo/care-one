@@ -160,7 +160,7 @@ def safe_int(v, default=0):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--data', default=str(
-        Path(__file__).parent.parent / 'data' / 'laudos_sample.parquet'))
+        Path(__file__).parent.parent / 'analysis' / 'data' / 'laudos_sample.parquet'))
     ap.add_argument('--limit', type=int, default=0,
                     help='Limit number of patients (0 = all)')
     ap.add_argument('--patient', default=None,
