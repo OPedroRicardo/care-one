@@ -3,7 +3,7 @@ import { Express, Request, Response, RequestHandler } from 'express';
 import { APIRouter } from '@api-service/routes/api-router.ts';
 import AuthRouter from '@api-service/routes/app/AuthRouter.ts';
 import HistoryRouter from '@api-service/routes/app/HistoryRouter.ts';
-import ChatRouter from '@api-service/routes/app/ChatRouter.ts';
+// import ChatRouter from '@api-service/routes/app/ChatRouter.ts';
 import OperadoraRouter from '@api-service/routes/app/OperadoraRouter.ts';
 import AppointmentRouter from '@api-service/routes/app/AppointmentRouter.ts';
 import ExamRouter from '@api-service/routes/app/ExamRouter.ts';
