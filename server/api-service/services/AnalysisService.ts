@@ -3,7 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const SCRIPT = path.resolve(__dirname, '../../../analises/compute_dashboard.py')
+const SCRIPT = path.resolve(__dirname, '../../../analysis/compute_dashboard.py')
 const CACHE_TTL_MS = 15 * 60 * 1000
 
 interface CacheEntry {

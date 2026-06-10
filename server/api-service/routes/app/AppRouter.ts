@@ -28,7 +28,7 @@ export default class AppRouter extends APIRouter {
 
     const authRouter        = new AuthRouter(app)
     const historyRouter     = new HistoryRouter(app)
-    const chatRouter        = new ChatRouter(app)
+    // const chatRouter        = new ChatRouter(app)
     const operadoraRouter   = new OperadoraRouter(app)
     const appointmentRouter = new AppointmentRouter(app)
     const examRouter        = new ExamRouter(app)
@@ -36,7 +36,7 @@ export default class AppRouter extends APIRouter {
 
     this.addChild(authRouter)
         .addChild(historyRouter)
-        .addChild(chatRouter)
+        // .addChild(chatRouter)
         .addChild(operadoraRouter)
         .addChild(appointmentRouter)
         .addChild(examRouter)
