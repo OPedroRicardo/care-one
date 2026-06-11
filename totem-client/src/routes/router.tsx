@@ -6,6 +6,7 @@ import Home from '../pages/Home'
 import Login from '../pages/Login'
 import Questions from '../pages/Questions'
 import PreVitals from '../pages/PreVitals'
+import TakingVitals from '../pages/TakingVitals'
 import VitalsResult from '../pages/VitalsResult'
 import ScoreResult from '../pages/ScoreResult'
 
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <Login /> },
       { path: "/questions", element: <Questions /> },
       { path: "/pre-vitals", element: <PreVitals /> },
+      { path: "/taking-vitals", element: <TakingVitals /> },
       { path: "/vitals-result", element: <VitalsResult /> },
       { path: "/score-result", element: <ScoreResult /> },
     ]

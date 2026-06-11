@@ -27,20 +27,20 @@ export default function Perguntas () {
   const resetForm = () => setCurrQuestion(0)
 
   return (
-  <main className="h-[calc(100vh)] text-primary-dark flex flex-col justify-center items-center">
+  <main className="h-[calc(100vh)] text-primary-dark flex flex-col justify-center items-center animate-fade-in-up">
     <h1 className="mada-bold pt-10 pb-4">Perguntas Clínicas</h1>
     {
       currQuestion > questions.length - 1 ?
 
-      (<section className="flex flex-col gap-10">
+      (<section className="flex flex-col gap-10 animate-fade-in-up">
         <div className="text-center text-3xl">Por favor, verifique se suas respostas estão corretas.</div>
         {questions.map((question, idx) => (
-          <div key={idx}>
+          <div key={idx} style={{ animationDelay: `${idx * 80}ms` }} className="animate-fade-in-up">
             <div  className="px-10 pb-2 text-3xl">
               <strong>P</strong>: {question}
             </div>
 
-            <div key={idx} className="px-10 text-4xl">
+            <div className="px-10 text-4xl">
               <strong>R:</strong> {answers[idx] === 'S' ? 'Sim' : 'Não'}
             </div>
           </div>
@@ -52,8 +52,16 @@ export default function Perguntas () {
         </div>
       </section>) :
 
-    (<>
+    (<div key={currQuestion} className="flex flex-col items-center animate-fade-in-up">
       <div className="text-4xl mada-medium">Pergunta {currQuestion + 1} / {questions.length}</div>
+
+      <div className="w-[calc(100vw-120px)] max-w-md h-2 bg-primary-lighter rounded-full overflow-hidden my-6">
+        <div
+          className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+          style={{ width: `${((currQuestion) / questions.length) * 100}%` }}
+        />
+      </div>
+
       <div className="text-center px-22.5 text-4xl">{ questions[currQuestion] }</div>
 
       <div className="pt-6 flex gap-10">
@@ -67,7 +75,7 @@ export default function Perguntas () {
           onClick={() => setAnswer('S')}
         >Sim</button>
       </div>
-      </>)
+      </div>)
     }
   </main>
   )

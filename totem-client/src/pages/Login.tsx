@@ -9,7 +9,7 @@ export default function Login () {
   }
 
   return (
-  <main className="h-[calc(100vh)] text-primary-dark flex flex-col justify-center items-center">
+  <main className="h-[calc(100vh)] text-primary-dark flex flex-col justify-center items-center animate-fade-in-up">
     <h1 className="mada-bold pb-3.5">Identificação</h1>
     <form className="w-full flex flex-col items-center" action={handleLogin}>
       <div className="w-full px-22.5 flex flex-col gap-5 mb-20">

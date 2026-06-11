@@ -15,6 +15,39 @@
   --primary-dark: #00335B;
   --succcess: #1EA04A;
   --negative: #FF1F1F;
+  --warning: #F2A900;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes pulseRing {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 121, 200, 0.35); }
+  50% { box-shadow: 0 0 0 12px rgba(0, 121, 200, 0); }
+}
+@keyframes progressStripes {
+  from { background-position: 0 0; }
+  to { background-position: 40px 0; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out both;
+}
+.animate-scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.animate-pulse-ring {
+  animation: pulseRing 1.4s ease-out infinite;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
 }
 
 .mada-extralight {
@@ -52,10 +85,13 @@
   color: var(--primary-dark);
 }
 .text-success {
-  color: var(--succes);
+  color: var(--succcess);
 }
 .text-negative {
   color: var(--negative);
+}
+.text-warning {
+  color: var(--warning);
 }
 
 input {
@@ -72,38 +108,40 @@ input::placeholder {
 	color: var(--primary-light);
 }
 
-button.primary {
+button.primary, button.secondary, button.positive, button.negative {
 	font-size: 30px;
-	background: var(--primary);
-	color: white;
 	font-weight: 400;
 	padding: 20px 44px;
 	border-radius: 15px;
+	transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+}
+button.primary:not(:disabled):hover, button.secondary:not(:disabled):hover, button.positive:not(:disabled):hover, button.negative:not(:disabled):hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 18px rgba(0, 51, 91, 0.18);
+}
+button.primary:not(:disabled):active, button.secondary:not(:disabled):active, button.positive:not(:disabled):active, button.negative:not(:disabled):active {
+	transform: scale(0.96) translateY(0);
+}
+button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+button.primary {
+	background: var(--primary);
+	color: white;
 }
 button.secondary {
-	font-size: 30px;
 	background: white;
 	color: var(--primary);
 	border: 2px solid var(--primary);
-	font-weight: 400;
-	padding: 20px 44px;
-	border-radius: 15px;
 }
 button.positive {
-	font-size: 30px;
 	background: white;
 	color: var(--succcess);
 	border: 2px solid var(--succcess);
-	font-weight: 400;
-	padding: 20px 44px;
-	border-radius: 15px;
 }
 button.negative {
-	font-size: 30px;
 	background: white;
 	color: var(--negative);
 	border: 2px solid var(--negative);
-	font-weight: 400;
-	padding: 20px 44px;
-	border-radius: 15px;
 }

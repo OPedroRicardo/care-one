@@ -52,7 +52,7 @@ export default function VitalsResult () {
       if (!res.ok) throw new Error(`Erro ${res.status}`)
 
       const data = await res.json()
-      navigate('/score-result', { state: { score: data.score } })
+      navigate('/score-result', { state: { score: data.score }, viewTransition: true })
     } catch (err) {
       setError('Falha ao enviar os dados. Tente novamente.')
       setLoading(false)
@@ -60,7 +60,7 @@ export default function VitalsResult () {
   }
 
   return (
-  <main className="h-[calc(100vh)] text-primary-dark flex flex-col justify-center items-center">
+  <main className="h-[calc(100vh)] text-primary-dark flex flex-col justify-center items-center animate-fade-in-up">
     <h1 className="text-center mada-bold pb-3.5">Resultado da<br/>Coleta de Sinais Vitais</h1>
     <table className="w-[calc(100vw-80px)] mb-10 px-20">
       <tbody className="w-full text-3xl">
@@ -68,7 +68,8 @@ export default function VitalsResult () {
           dummyResult.map(({ type, val }, idx) => (
               <tr
                 key={type}
-                className={`flex justify-between py-4 border-b-blue-400 ${idx < dummyResult.length - 1 && 'border-b'}`}
+                style={{ animationDelay: `${idx * 80}ms` }}
+                className={`flex justify-between py-4 border-b-blue-400 animate-fade-in-up ${idx < dummyResult.length - 1 && 'border-b'}`}
               >
                 <td>{resultStrategy[type].label}</td>
                 <td>{val} {resultStrategy[type].unit}</td>
@@ -79,11 +80,11 @@ export default function VitalsResult () {
     </table>
 
     {error && (
-      <p className="mb-4 text-red-500 text-xl">{error}</p>
+      <p className="mb-4 text-red-500 text-xl animate-fade-in-up">{error}</p>
     )}
 
     <div className="mx-auto flex gap-4">
-      <button className="secondary" onClick={() => navigate('/pre-vitals')}>Coletar Novamente</button>
+      <button className="secondary" onClick={() => navigate('/pre-vitals', { viewTransition: true })}>Coletar Novamente</button>
       <button className="primary w-75" onClick={handleSend} disabled={loading}>
         {loading ? 'Enviando...' : 'Enviar'}
       </button>
