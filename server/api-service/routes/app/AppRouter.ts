@@ -8,6 +8,9 @@ import OperadoraRouter from '@api-service/routes/app/OperadoraRouter.ts';
 import AppointmentRouter from '@api-service/routes/app/AppointmentRouter.ts';
 import ExamRouter from '@api-service/routes/app/ExamRouter.ts';
 import MedicoRouter from '@api-service/routes/app/MedicoRouter.ts';
+import PatientRouter from '@api-service/routes/app/PatientRouter.ts';
+import NotificationRouter from '@api-service/routes/app/NotificationRouter.ts';
+import PacienteRouter from '@api-service/routes/app/PacienteRouter.ts';
 
 // Exemplo de middleware próprio do App
 const appMiddleware: RequestHandler = (req, res, next) => {
@@ -33,6 +36,9 @@ export default class AppRouter extends APIRouter {
     const appointmentRouter = new AppointmentRouter(app)
     const examRouter        = new ExamRouter(app)
     const medicoRouter      = new MedicoRouter(app)
+    const patientRouter     = new PatientRouter(app)
+    const notificationRouter = new NotificationRouter(app)
+    const pacienteRouter    = new PacienteRouter(app)
 
     this.addChild(authRouter)
         .addChild(historyRouter)
@@ -40,7 +46,10 @@ export default class AppRouter extends APIRouter {
         .addChild(operadoraRouter)
         .addChild(appointmentRouter)
         .addChild(examRouter)
-        .addChild(medicoRouter);
+        .addChild(medicoRouter)
+        .addChild(patientRouter)
+        .addChild(notificationRouter)
+        .addChild(pacienteRouter);
   }
 
   setupRoutes() {

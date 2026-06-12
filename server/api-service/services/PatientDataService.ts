@@ -1,6 +1,6 @@
-import { desc } from 'drizzle-orm'
-import { db }             from '../../shared/db/index.ts'
-import { historyRecords } from '../../shared/db/schema.ts'
+import { desc, eq } from 'drizzle-orm'
+import { db }                    from '../../shared/db/index.ts'
+import { historyRecords, exams, wearableConnections } from '../../shared/db/schema.ts'
 
 // These mirror the shapes stored as JSON in history_records.details
 interface VitalsRecord {
@@ -77,6 +77,34 @@ export class PatientDataService {
       .join('\n\n---\n\n')
 
     sections.push(records)
+
+    // Append exams shared by the patient (incl. those attached in the doctor
+    // conversation), so the assistant can reference them too.
+    try {
+      const now = Date.now()
+      const sharedExams = (await db.select().from(exams).orderBy(desc(exams.createdAt)))
+        .filter(e => e.shared && (!e.sharedUntil || e.sharedUntil > now))
+      if (sharedExams.length) {
+        const list = sharedExams
+          .map(e => `  - ${e.examType} (${e.fileName}) — ${e.patientName}`)
+          .join('\n')
+        sections.push(`[Exames compartilhados pelo paciente]\n${list}`)
+      }
+    } catch { /* exams table optional — ignore */ }
+
+    // Append connected wearables + their latest synthetic readings.
+    try {
+      const connected = (await db.select().from(wearableConnections).where(eq(wearableConnections.connected, true)))
+      if (connected.length) {
+        const list = connected.map(w => {
+          let d: { steps?: number; restingHr?: number; sleepHours?: number; spo2?: number } = {}
+          try { d = w.data ? JSON.parse(w.data) : {} } catch { /* noop */ }
+          return `  - ${w.provider} (${w.patientName}): ${d.steps ?? '—'} passos, FC repouso ${d.restingHr ?? '—'} bpm, sono ${d.sleepHours ?? '—'}h, SpO2 ${d.spo2 ?? '—'}%`
+        }).join('\n')
+        sections.push(`[Wearables conectados — dados de atividade]\n${list}`)
+      }
+    } catch { /* wearables table optional — ignore */ }
+
     return sections.join('\n\n')
   }
 

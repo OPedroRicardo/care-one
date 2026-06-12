@@ -54,7 +54,48 @@ export const patientMessages = sqliteTable('patient_messages', {
   patientName: text('patient_name').notNull(),
   senderRole:  text('sender_role', { enum: ['medico', 'paciente'] }).notNull(),
   content:     text('content').notNull(),
+  attachmentExamId: text('attachment_exam_id'), // FK-by-convention → exams.id
   createdAt:   integer('created_at').notNull(),
+})
+
+// ── Cadastro canônico de pacientes (perfil/demográficos)
+
+export const patients = sqliteTable('patients', {
+  id:          text('id').primaryKey(),
+  name:        text('name').notNull().unique(),
+  dateOfBirth: text('date_of_birth'),                 // ISO date (YYYY-MM-DD)
+  sex:         text('sex', { enum: ['M', 'F'] }),
+  planTier:    text('plan_tier'),                     // Bronze | Prata | Ouro | Diamante
+  phone:       text('phone'),
+  email:       text('email'),
+  address:     text('address'),
+  allergies:   text('allergies'),                     // JSON array serializado
+  createdAt:   integer('created_at').notNull(),
+})
+
+// ── Notificações / recomendações
+
+export const notifications = sqliteTable('notifications', {
+  id:              text('id').primaryKey(),
+  recipientRole:   text('recipient_role', { enum: ['medico', 'paciente', 'operadora'] }).notNull(),
+  recipientName:   text('recipient_name'),                 // null/'*' = broadcast para o papel
+  type:            text('type').notNull(),                 // appointment | exam | risk | recommendation
+  title:           text('title').notNull(),
+  body:            text('body').notNull(),
+  relatedEntityId: text('related_entity_id'),
+  read:            integer('read', { mode: 'boolean' }).notNull().default(false),
+  createdAt:       integer('created_at').notNull(),
+})
+
+// ── Conexões com wearables / apps de saúde
+
+export const wearableConnections = sqliteTable('wearable_connections', {
+  id:          text('id').primaryKey(),
+  patientName: text('patient_name').notNull(),
+  provider:    text('provider').notNull(),
+  connected:   integer('connected', { mode: 'boolean' }).notNull().default(false),
+  connectedAt: integer('connected_at'),
+  data:        text('data'),                              // JSON: métricas sintéticas geradas na conexão
 })
 
 // ── Exames enviados pelo paciente

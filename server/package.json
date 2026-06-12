@@ -38,6 +38,7 @@
     "langchain": "^1.2.37",
     "mqtt": "^5.15.0",
     "winston": "^3.19.0",
+    "ws": "^8.19.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
