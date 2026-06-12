@@ -10,3 +10,5 @@ laudos/
 .vercel
 vercel.json
 *.mp4
+
+server/careplus.db
