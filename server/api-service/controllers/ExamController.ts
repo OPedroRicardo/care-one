@@ -5,6 +5,7 @@ import z from 'zod'
 
 import { db } from '../../shared/db/index.ts'
 import { exams } from '../../shared/db/schema.ts'
+import { emit } from '@api-service/services/NotificationService.ts'
 
 const UploadSchema = z.object({
   patientName: z.string().min(1),
@@ -66,6 +67,16 @@ export class ExamController {
       const { sharedUntil } = ShareSchema.parse(req.body)
       const until           = sharedUntil ?? Date.now() + SEVEN_DAYS_MS
       await db.update(exams).set({ shared: true, sharedUntil: until }).where(eq(exams.id, id))
+      const [exam] = await db.select().from(exams).where(eq(exams.id, id))
+      if (exam) {
+        await emit({
+          recipientRole: 'medico',
+          type: 'exam',
+          title: 'Novo exame compartilhado',
+          body: `${exam.patientName} compartilhou o exame "${exam.examType}".`,
+          relatedEntityId: exam.id,
+        })
+      }
       res.json({ ok: true, sharedUntil: until })
     } catch (err) { next(err) }
   }

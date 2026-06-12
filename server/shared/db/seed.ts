@@ -3,7 +3,8 @@
  * Execução: cd server && yarn db:seed
  */
 import { db } from './index.ts'
-import { historyRecords, appointments, exams } from './schema.ts'
+import { ensureSchema } from './migrate.ts'
+import { historyRecords, appointments, exams, patients } from './schema.ts'
 
 const D = (daysAgo: number) => Date.now() - daysAgo * 24 * 60 * 60 * 1000
 const F = (daysFromNow: number) => Date.now() + daysFromNow * 24 * 60 * 60 * 1000
@@ -303,12 +304,61 @@ const examSeeds = [
   },
 ]
 
+// ── Patient profiles (cadastro canônico) ───────────────────────────────────────
+
+const patientSeeds = [
+  {
+    id: 'pat-joao', name: 'João da Silva', dateOfBirth: '1968-04-12', sex: 'M' as const,
+    planTier: 'Ouro', phone: '(11) 98877-1234', email: 'joao.silva@email.com',
+    address: 'Rua das Acácias, 245 — São Paulo, SP',
+    allergies: JSON.stringify(['Dipirona', 'Penicilina']), createdAt: D(400),
+  },
+  {
+    id: 'pat-ana', name: 'Ana Lima', dateOfBirth: '1985-09-03', sex: 'F' as const,
+    planTier: 'Prata', phone: '(11) 99654-2200', email: 'ana.lima@email.com',
+    address: 'Av. Paulista, 1700 — São Paulo, SP',
+    allergies: JSON.stringify(['Sulfa']), createdAt: D(380),
+  },
+  {
+    id: 'pat-maria', name: 'Maria Fernanda', dateOfBirth: '1959-12-21', sex: 'F' as const,
+    planTier: 'Diamante', phone: '(11) 97001-9090', email: 'maria.fernanda@email.com',
+    address: 'Rua Oscar Freire, 88 — São Paulo, SP',
+    allergies: JSON.stringify([]), createdAt: D(420),
+  },
+  {
+    id: 'pat-carlos', name: 'Carlos Santos', dateOfBirth: '1996-06-30', sex: 'M' as const,
+    planTier: 'Bronze', phone: '(11) 96543-7788', email: 'carlos.santos@email.com',
+    address: 'Rua Augusta, 1200 — São Paulo, SP',
+    allergies: JSON.stringify([]), createdAt: D(200),
+  },
+  {
+    id: 'pat-beatriz', name: 'Beatriz Oliveira', dateOfBirth: '1953-02-14', sex: 'F' as const,
+    planTier: 'Ouro', phone: '(11) 95432-3311', email: 'beatriz.oliveira@email.com',
+    address: 'Rua Haddock Lobo, 410 — São Paulo, SP',
+    allergies: JSON.stringify(['Iodo', 'AAS']), createdAt: D(500),
+  },
+  {
+    id: 'pat-pedro', name: 'Pedro Alves', dateOfBirth: '1979-11-08', sex: 'M' as const,
+    planTier: 'Prata', phone: '(11) 94321-5566', email: 'pedro.alves@email.com',
+    address: 'Rua Pamplona, 730 — São Paulo, SP',
+    allergies: JSON.stringify([]), createdAt: D(150),
+  },
+]
+
 // ── Runner ────────────────────────────────────────────────────────────────────
 
 async function seed() {
   console.log('🌱 Iniciando seeding...\n')
 
-  console.log('📋 History records...')
+  await ensureSchema()
+
+  console.log('👤 Perfis de pacientes...')
+  for (const p of patientSeeds) {
+    await db.insert(patients).values(p).onConflictDoNothing()
+    console.log(`  ✓ ${p.name} — ${p.planTier}`)
+  }
+
+  console.log('\n📋 History records...')
   for (const r of historySeeds) {
     await db.insert(historyRecords).values(r).onConflictDoNothing()
     console.log(`  ✓ [${r.type}] ${r.patientName} — ${r.summary.slice(0, 60)}`)

@@ -4,10 +4,13 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 
 import { APIRouter } from '@api-service/routes/api-router.ts'
+import { ensureSchema } from '@shared/db/migrate.ts'
 
 dotenv.config()
 
 export async function createApp() {
+  await ensureSchema()
+
   const app = express()
 
   app.use(helmet())

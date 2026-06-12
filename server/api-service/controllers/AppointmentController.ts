@@ -5,6 +5,11 @@ import z from 'zod'
 
 import { db } from '../../shared/db/index.ts'
 import { appointments } from '../../shared/db/schema.ts'
+import { emit } from '@api-service/services/NotificationService.ts'
+
+function fmtWhen(ts: number) {
+  return new Date(ts).toLocaleString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+}
 
 const CreateSchema = z.object({
   patientName: z.string().min(1),
@@ -42,6 +47,13 @@ export class AppointmentController {
         notes:       data.notes ?? null,
         createdAt:   Date.now(),
       })
+      await emit({
+        recipientRole: 'medico',
+        type: 'appointment',
+        title: 'Nova solicitação de consulta',
+        body: `${data.patientName} solicitou uma consulta ${data.type} para ${fmtWhen(data.scheduledAt)}.`,
+        relatedEntityId: id,
+      })
       res.status(201).json({ id })
     } catch (err) { next(err) }
   }
@@ -50,6 +62,17 @@ export class AppointmentController {
     try {
       const { id } = IdParams.parse(req.params)
       await db.update(appointments).set({ status: 'confirmed' }).where(eq(appointments.id, id))
+      const [appt] = await db.select().from(appointments).where(eq(appointments.id, id))
+      if (appt) {
+        await emit({
+          recipientRole: 'paciente',
+          recipientName: appt.patientName,
+          type: 'appointment',
+          title: 'Consulta confirmada',
+          body: `Sua consulta ${appt.type} de ${fmtWhen(appt.scheduledAt)} foi confirmada.`,
+          relatedEntityId: id,
+        })
+      }
       res.json({ ok: true })
     } catch (err) { next(err) }
   }
@@ -57,7 +80,18 @@ export class AppointmentController {
   cancel = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = IdParams.parse(req.params)
+      const [appt] = await db.select().from(appointments).where(eq(appointments.id, id))
       await db.update(appointments).set({ status: 'cancelled' }).where(eq(appointments.id, id))
+      if (appt) {
+        await emit({
+          recipientRole: 'paciente',
+          recipientName: appt.patientName,
+          type: 'appointment',
+          title: 'Consulta cancelada',
+          body: `Sua consulta ${appt.type} de ${fmtWhen(appt.scheduledAt)} foi cancelada.`,
+          relatedEntityId: id,
+        })
+      }
       res.json({ ok: true })
     } catch (err) { next(err) }
   }
