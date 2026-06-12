@@ -1,4 +1,4 @@
-import { C, MONO, SANS } from './theme'
+import { MONO, SANS, useOperadoraColors } from './theme'
 
 interface ChartTipProps {
   active?: boolean
@@ -7,6 +7,7 @@ interface ChartTipProps {
 }
 
 export default function ChartTip({ active, payload, label }: ChartTipProps) {
+  const { C } = useOperadoraColors()
   if (!active || !payload?.length) return null
   return (
     <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: '10px 14px', ...SANS, minWidth: 140 }}>

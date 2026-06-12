@@ -1,10 +1,11 @@
-import { C } from './theme'
+import { useOperadoraColors } from './theme'
 
 function Skel({ w = '100%', h = 18, radius = 6 }: { w?: number | string; h?: number; radius?: number }) {
   return <div className="skeleton" style={{ width: w, height: h, borderRadius: radius }} />
 }
 
 function Card({ children }: { children: React.ReactNode }) {
+  const { C } = useOperadoraColors()
   return (
     <div style={{
       background: C.surface, border: `1px solid ${C.border}`,

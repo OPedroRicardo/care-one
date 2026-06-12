@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Search, ChevronUp, ChevronDown, Download, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Patient, SortKey } from './types'
-import { C, MONO, SANS, riskColor, riskBg, fmtBRL } from './theme'
+import { MONO, SANS, fmtBRL, useOperadoraColors } from './theme'
 import RiskBadge from './RiskBadge'
 import MarkerDots from './MarkerDots'
 import ProgressBar from './ProgressBar'
@@ -37,6 +37,7 @@ function exportCSV(patients: Patient[]) {
 }
 
 export default function PortfolioTab({ patients, onSelect }: PortfolioTabProps) {
+  const { C, riskColor, riskBg } = useOperadoraColors()
   const [search,      setSearch]      = useState('')
   const [riskFilter,  setRiskFilter]  = useState<'todos' | 'alto' | 'medio' | 'baixo'>('todos')
   const [cohorts,     setCohorts]     = useState<Set<CohortFilter>>(new Set())

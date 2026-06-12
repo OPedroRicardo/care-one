@@ -1,7 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts/umd/Recharts'
 import { AlertTriangle, TrendingUp } from 'lucide-react'
 import type { Patient } from './types'
-import { C, MONO, SANS, riskColor, fmtBRL } from './theme'
+import { MONO, SANS, fmtBRL, useOperadoraColors } from './theme'
 import KPICard from './KPICard'
 import RiskBadge from './RiskBadge'
 import ChartTip from './ChartTip'
@@ -12,6 +12,7 @@ interface OverviewTabProps {
 }
 
 function TH({ children }: { children: React.ReactNode }) {
+  const { C } = useOperadoraColors()
   return (
     <th style={{
       textAlign: 'left', color: C.muted, fontSize: 10, textTransform: 'uppercase',
@@ -21,6 +22,7 @@ function TH({ children }: { children: React.ReactNode }) {
 }
 
 export default function OverviewTab({ patients, onSelect }: OverviewTabProps) {
+  const { C, riskColor } = useOperadoraColors()
   const alto  = patients.filter(p => p.riskLevel === 'alto')
   const medio = patients.filter(p => p.riskLevel === 'medio')
   const baixo = patients.filter(p => p.riskLevel === 'baixo')

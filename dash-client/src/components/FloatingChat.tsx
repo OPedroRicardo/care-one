@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Bot, User, Send, Square, X, MessageCircle, Loader2, ChevronDown } from 'lucide-react'
+import { Bot, User, Send, Square, X, MessageCircle, ChevronDown } from 'lucide-react'
 import { apiFetch, apiStream } from '../lib/api'
 import MarkdownMessage from './MarkdownMessage'
 

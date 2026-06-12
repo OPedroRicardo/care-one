@@ -1,13 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   CalendarDays, FlaskConical, Clock, Video, MapPin, Loader2,
-  Share2, ShieldCheck, UserRound, HeartPulse, Activity, X,
-  FileText, AlertCircle, Bell, MessageCircle, ChevronRight,
-  Download,
+  Share2, ShieldCheck, HeartPulse, Activity, X,
+  FileText, Bell, MessageCircle, ChevronRight,
+  Download, Plus, List, Calendar, XCircle, Watch,
 } from 'lucide-react'
 import { apiFetch } from '../lib/api'
 import DigitalTwin from '../components/DigitalTwin'
 import { FilterChips, SortSelect, ListControlsBar, SearchBar } from '../components/ListControls'
+import { useRegisterHeaderTabs } from '../contexts/HeaderTabsContext'
+import { usePatientProfile, MeusDadosCard } from '../components/PatientProfile'
+import CalendarView from '../components/CalendarView'
+import { useWearables, WearablesTab, ActivityWidget } from '../components/Wearables'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -46,12 +50,27 @@ interface HistoryRecord {
   } | null
 }
 
-type Tab = 'saude' | 'consultas' | 'registros'
+type Tab = 'saude' | 'consultas' | 'registros' | 'integracoes'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const DEMO_PATIENT = 'João da Silva'
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3333'
+
+// Dados demonstrativos — usados quando não há triagem real registrada
+const DEMO_TRIAGEM: HistoryRecord = {
+  id: 'demo',
+  type: 'triagem',
+  patientName: DEMO_PATIENT,
+  date: Date.now() - 86400000,
+  summary: 'Triagem de demonstração — estado de saúde estável',
+  details: {
+    riskLevel: 'baixo',
+    vitals: { fc: 72, fr: 15, spo2: 98, temp: 36.7, pa: 118 },
+    news2: { total: 1 },
+    notes: 'Dados demonstrativos para fins de apresentação do sistema.',
+  },
+}
 
 // Intervalos baseados em:
 // MS — Caderno de Atenção Básica nº 29: Rastreamento (2010)
@@ -262,8 +281,13 @@ function ExamModalContent({ exam, onShare, sharingId }: {
   )
 }
 
-function AppointmentModalContent({ appt }: { appt: Appointment }) {
+function AppointmentModalContent({ appt, onCancel, cancelling }: {
+  appt: Appointment
+  onCancel: (id: string) => void
+  cancelling: boolean
+}) {
   const badge = statusLabel(appt.status)
+  const canCancel = appt.status === 'pending' || appt.status === 'confirmed'
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
@@ -289,13 +313,114 @@ function AppointmentModalContent({ appt }: { appt: Appointment }) {
         )}
       </div>
 
+      {appt.type === 'telechamada' && appt.status === 'confirmed' && (
+        <a
+          href={`/videochamada/${appt.id}`}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700 transition-colors"
+        >
+          <Video size={15} /> Iniciar videochamada
+        </a>
+      )}
+
       <a
-        href="/medico/conversa/Jo%C3%A3o%20da%20Silva"
+        href="/paciente/conversa"
         className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#0079C8] text-white text-sm font-semibold hover:bg-[#0060a0] transition-colors"
       >
         <MessageCircle size={15} /> Enviar mensagem ao médico
       </a>
+
+      {canCancel && (
+        <button
+          onClick={() => onCancel(appt.id)}
+          disabled={cancelling}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900 transition-colors disabled:opacity-50"
+        >
+          {cancelling ? <Loader2 size={15} className="animate-spin" /> : <XCircle size={15} />} Cancelar consulta
+        </button>
+      )}
     </div>
+  )
+}
+
+// ── Booking form ──────────────────────────────────────────────────────────────
+
+function BookAppointmentForm({ onSubmit, submitting }: {
+  onSubmit: (data: { type: 'presencial' | 'telechamada'; scheduledAt: number; notes: string }) => void
+  submitting: boolean
+}) {
+  // Sensible prefilled defaults so the flow is reachable in a couple of clicks
+  // during a live demo (tomorrow @ 09:00, presencial).
+  const tomorrow = new Date(Date.now() + 86400000)
+  const [type, setType]   = useState<'presencial' | 'telechamada'>('presencial')
+  const [date, setDate]   = useState(() => tomorrow.toISOString().slice(0, 10))
+  const [time, setTime]   = useState('09:00')
+  const [notes, setNotes] = useState('')
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault()
+    const scheduledAt = new Date(`${date}T${time}`).getTime()
+    if (isNaN(scheduledAt)) return
+    onSubmit({ type, scheduledAt, notes: notes.trim() })
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div>
+        <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Tipo de consulta</label>
+        <div className="grid grid-cols-2 gap-2 mt-1.5">
+          {([['presencial', MapPin, 'Presencial'], ['telechamada', Video, 'Telechamada']] as const).map(([val, Icon, label]) => (
+            <button
+              type="button"
+              key={val}
+              onClick={() => setType(val)}
+              className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
+                type === val
+                  ? 'border-green-600 bg-green-50 dark:bg-green-950 text-green-700'
+                  : 'border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
+              }`}
+            >
+              <Icon size={15} /> {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Data</label>
+          <input
+            type="date" value={date} min={new Date().toISOString().slice(0, 10)}
+            onChange={e => setDate(e.target.value)}
+            className="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:border-green-600"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Horário</label>
+          <input
+            type="time" value={time}
+            onChange={e => setTime(e.target.value)}
+            className="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:border-green-600"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Observações (opcional)</label>
+        <textarea
+          value={notes} onChange={e => setNotes(e.target.value)} rows={2}
+          placeholder="Ex.: retorno, ajuste de medicação…"
+          className="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 outline-none focus:border-green-600 resize-none placeholder:text-slate-400"
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors disabled:opacity-50"
+      >
+        {submitting ? <Loader2 size={15} className="animate-spin" /> : <CalendarDays size={15} />} Solicitar agendamento
+      </button>
+    </form>
   )
 }
 
@@ -399,10 +524,64 @@ function HealthSummaryStrip({ latestTriagem, upcoming, news2, risk }: {
   )
 }
 
+// ── Clinical insight summary ──────────────────────────────────────────────────
+
+function ClinicalInsight({ riskLevel, news2, vitals, isDemo }: {
+  riskLevel?: string
+  news2?: number
+  vitals?: { fc?: number; fr?: number; spo2?: number; temp?: number; pa?: number }
+  isDemo?: boolean
+}) {
+  const level = riskLevel ?? 'baixo'
+  const { profile } = usePatientProfile(DEMO_PATIENT)
+
+  const cfgMap = {
+    baixo: { mark: '✓', title: 'Você está bem!',               text: 'Todos os sinais vitais dentro da normalidade. Continue com os bons hábitos e mantenha o monitoramento regular.', color: '#16A34A', bg: '#F0FDF4' },
+    médio: { mark: '⚠', title: 'Atenção moderada',              text: 'Alguns indicadores merecem acompanhamento. Recomendamos agendar uma consulta de revisão preventiva em breve.', color: '#D97706', bg: '#FFFBEB' },
+    alto:  { mark: '!', title: 'Procure seu médico',             text: 'Indicadores fora dos parâmetros normais. Agende uma consulta com urgência para avaliação clínica.', color: '#DC2626', bg: '#FEF2F2' },
+  }
+
+  const cfg = cfgMap[level as keyof typeof cfgMap] ?? cfgMap.baixo
+
+  const highlights = [
+    vitals?.fc   !== undefined && `FC ${vitals.fc} bpm`,
+    vitals?.spo2 !== undefined && `SpO₂ ${vitals.spo2}%`,
+    vitals?.temp !== undefined && `${vitals.temp} °C`,
+    vitals?.pa   !== undefined && `PA ${vitals.pa} mmHg`,
+  ].filter(Boolean).join('  ·  ')
+
+  return (
+    <div className='flex flex-col gap-3'>
+      <div className="rounded-xl p-3.5 flex gap-3" style={{ background: cfg.bg }}>
+        <div className="text-sm font-black shrink-0 mt-0.5 w-4 text-center" style={{ color: cfg.color }}>{cfg.mark}</div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-0.5">
+            <p className="text-sm font-bold" style={{ color: cfg.color }}>{cfg.title}</p>
+            {news2 !== undefined && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-white/80" style={{ color: cfg.color }}>
+                NEWS2 · {news2} pts
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{cfg.text}</p>
+          {highlights && <p className="text-[10px] text-slate-500 mt-1.5 font-medium">{highlights}</p>}
+          {isDemo && (
+            <p className="text-[10px] text-slate-400 italic mt-1.5">
+              Dados demonstrativos — realize uma triagem no totem para ver seus dados reais
+            </p>
+          )}
+        </div>
+      </div>
+      <MeusDadosCard profile={profile} />
+    </div>
+  )
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function PacienteDashboard() {
   const [tab, setTab]             = useState<Tab>('saude')
+  const wearables                 = useWearables(DEMO_PATIENT)
   const [appointments, setAppts]  = useState<Appointment[]>([])
   const [exams, setExams]         = useState<Exam[]>([])
   const [records, setRecords]     = useState<HistoryRecord[]>([])
@@ -422,6 +601,12 @@ export default function PacienteDashboard() {
   const [triModal, setTriModal]   = useState<HistoryRecord | null>(null)
   const [examModal, setExamModal] = useState<Exam | null>(null)
   const [apptModal, setApptModal] = useState<Appointment | null>(null)
+
+  // Consultas booking + view
+  const [booking, setBooking]       = useState(false)
+  const [bookingBusy, setBookingBusy] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [cView, setCView]           = useState<'lista' | 'calendario'>('lista')
 
   useEffect(() => {
     const handler = (e: Event) => setTab((e as CustomEvent).detail as Tab)
@@ -463,16 +648,69 @@ export default function PacienteDashboard() {
     finally { setSharingId(null) }
   }, [examModal])
 
+  // Book a new appointment (defaults to pending; appears instantly for médico too).
+  const handleBook = useCallback(async (data: { type: 'presencial' | 'telechamada'; scheduledAt: number; notes: string }) => {
+    setBookingBusy(true)
+    try {
+      const { id } = await apiFetch<{ id: string }>('/app/agendamentos', {
+        method: 'POST',
+        body: JSON.stringify({
+          patientName: DEMO_PATIENT,
+          type: data.type,
+          scheduledAt: data.scheduledAt,
+          notes: data.notes || undefined,
+        }),
+      })
+      // Optimistic insert so the new consulta shows up immediately.
+      setAppts(prev => [...prev, {
+        id, patientName: DEMO_PATIENT, type: data.type,
+        status: 'pending', scheduledAt: data.scheduledAt,
+        notes: data.notes || null,
+      }])
+      setBooking(false)
+    } catch (err) { console.error(err) }
+    finally { setBookingBusy(false) }
+  }, [])
+
+  const handleCancelAppt = useCallback(async (id: string) => {
+    setCancelling(true)
+    try {
+      await apiFetch(`/app/agendamentos/${id}/cancel`, { method: 'PUT', body: '{}' })
+      setAppts(prev => prev.map(a => a.id === id ? { ...a, status: 'cancelled' } : a))
+      setApptModal(null)
+    } catch (err) { console.error(err) }
+    finally { setCancelling(false) }
+  }, [])
+
   // Derived data
-  const upcoming      = appointments.filter(a => a.status !== 'cancelled' && a.scheduledAt > Date.now())
-  const latestTriagem = records.find(r => r.type === 'triagem')
-  const latestVitals  = latestTriagem?.details?.vitals
-  const latestRisk    = latestTriagem?.details?.riskLevel
-  const latestNews2   = latestTriagem?.details?.news2?.total
-  const risk          = riskStyle(latestRisk)
+  const upcoming         = appointments.filter(a => a.status !== 'cancelled' && a.scheduledAt > Date.now())
+  const latestTriagem    = records.find(r => r.type === 'triagem')
+  const effectiveTriagem = latestTriagem ?? DEMO_TRIAGEM
+  const effectiveVitals  = effectiveTriagem.details?.vitals
+  const effectiveRisk    = effectiveTriagem.details?.riskLevel
+  const effectiveNews2   = effectiveTriagem.details?.news2?.total
+  const risk             = riskStyle(effectiveRisk)
   const pendingCount  = upcoming.filter(a => a.status === 'pending').length
   const sharedCount   = exams.filter(e => e.shared).length
-  const recommendations = checkExamRecommendations(records)
+  // Uploaded/attached exams (exams table) also satisfy recommendations, not just triagens.
+  const examAsRecords: HistoryRecord[] = exams.map(e => ({
+    id: e.id, type: 'exame', patientName: e.patientName, date: e.createdAt,
+    summary: e.examType, details: { examName: e.examType, fileName: e.fileName },
+  }))
+  const recommendations = checkExamRecommendations([...records, ...examAsRecords])
+
+  // Lift tab navigation into the unified Header (paciente uses the green accent).
+  useRegisterHeaderTabs({
+    accent: '#16A34A',
+    active: tab,
+    onSelect: id => setTab(id as Tab),
+    tabs: [
+      { id: 'saude',       label: 'Saúde',       Icon: Activity     },
+      { id: 'consultas',   label: 'Consultas',   Icon: CalendarDays, badge: pendingCount || undefined },
+      { id: 'registros',   label: 'Registros',   Icon: FileText,     badge: sharedCount  || undefined },
+      { id: 'integracoes', label: 'Integrações', Icon: Watch },
+    ],
+  }, [tab, pendingCount, sharedCount])
 
   const allRecords = [
     ...records.map(r => ({ ...r, _kind: 'record' as const })),
@@ -501,74 +739,15 @@ export default function PacienteDashboard() {
     .sort((a, b) => rSort === 'antigo' ? a.date - b.date : b.date - a.date)
 
   const vitalRows = [
-    { label: 'Freq. Cardíaca', key: 'fc',   value: latestVitals?.fc,   unit: 'bpm'  },
-    { label: 'Saturação O₂',  key: 'spo2', value: latestVitals?.spo2, unit: '%'    },
-    { label: 'Freq. Resp.',   key: 'fr',   value: latestVitals?.fr,   unit: 'rpm'  },
-    { label: 'Temperatura',   key: 'temp', value: latestVitals?.temp, unit: '°C'   },
-    { label: 'Pressão Art.',  key: 'pa',   value: latestVitals?.pa,   unit: 'mmHg' },
+    { label: 'Freq. Cardíaca', key: 'fc',   value: effectiveVitals?.fc,   unit: 'bpm'  },
+    { label: 'Saturação O₂',  key: 'spo2', value: effectiveVitals?.spo2, unit: '%'    },
+    { label: 'Freq. Resp.',   key: 'fr',   value: effectiveVitals?.fr,   unit: 'rpm'  },
+    { label: 'Temperatura',   key: 'temp', value: effectiveVitals?.temp, unit: '°C'   },
+    { label: 'Pressão Art.',  key: 'pa',   value: effectiveVitals?.pa,   unit: 'mmHg' },
   ].filter(v => v.value !== undefined)
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-16 transition-colors">
-
-      {/* ── Patient header ── */}
-      <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 text-green-700 flex items-center justify-center shrink-0">
-            <UserRound size={20} />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-base font-bold text-slate-800 dark:text-slate-100">Olá, {DEMO_PATIENT}</h1>
-            <p className="text-xs text-slate-400">Seu painel de saúde pessoal</p>
-          </div>
-          {/* Clickable KPI badges */}
-          <div className="flex gap-2">
-            {upcoming.length > 0 && (
-              <button
-                onClick={() => setTab('consultas')}
-                className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-950 text-[#0079C8] rounded-xl px-3 py-1.5 text-xs font-semibold hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-              >
-                <CalendarDays size={13} /> {upcoming.length} consulta{upcoming.length > 1 ? 's' : ''}
-              </button>
-            )}
-            {sharedCount > 0 && (
-              <button
-                onClick={() => setTab('registros')}
-                className="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-950 text-purple-600 rounded-xl px-3 py-1.5 text-xs font-semibold hover:bg-purple-100 dark:hover:bg-purple-900 transition-colors"
-              >
-                <FlaskConical size={13} /> {sharedCount} compartilhado{sharedCount > 1 ? 's' : ''}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Tab nav ── */}
-      <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-6">
-        <div className="flex gap-1">
-          {([
-            ['saude',    'Saúde',    Activity    ],
-            ['consultas','Consultas',CalendarDays],
-            ['registros','Registros',FileText    ],
-          ] as [Tab, string, typeof Activity][]).map(([id, label, Icon]) => (
-            <button
-              key={id}
-              onClick={() => setTab(id)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                tab === id
-                  ? 'border-green-600 text-green-700'
-                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-              }`}
-            >
-              <Icon size={15} />
-              {label}
-              {id === 'consultas' && pendingCount > 0 && (
-                <span className="text-xs bg-amber-100 text-amber-700 font-bold px-1.5 py-0.5 rounded-full">{pendingCount}</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-28 transition-colors">
 
       {/* ── Content ── */}
       <div className="px-6 py-6 max-w-3xl mx-auto">
@@ -582,91 +761,81 @@ export default function PacienteDashboard() {
             {tab === 'saude' && (
               <div className="space-y-5">
 
-                {/* Empty state */}
-                {!latestTriagem && (
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-8 text-center text-slate-400">
-                    <HeartPulse size={36} className="mx-auto mb-2 opacity-30" />
-                    <p className="text-sm">Nenhuma triagem registrada ainda.</p>
-                    <p className="text-xs mt-1">Visite um totem CarePlus para realizar sua triagem.</p>
-                  </div>
-                )}
-
                 {/* Exam recommendations banner */}
                 <ExamRecommendationBanner recommendations={recommendations} />
 
                 {/* Health summary strip */}
                 <HealthSummaryStrip
-                  latestTriagem={latestTriagem ?? null}
+                  latestTriagem={effectiveTriagem}
                   upcoming={upcoming}
-                  news2={latestNews2}
+                  news2={effectiveNews2}
                   risk={risk}
                 />
 
-                {latestTriagem && (
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
-                    {/* Section header */}
-                    <div className="flex items-center gap-3 px-5 pt-4 pb-3 border-b border-slate-50 dark:border-slate-800">
-                      <p className="text-sm font-bold text-slate-700 dark:text-slate-200 flex-1">Última triagem</p>
-                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ background: risk.bg, color: risk.color }}>
-                        {risk.label}
-                      </span>
-                      <span className="text-xs text-slate-400">{fmtDate(latestTriagem.date)}</span>
+                {/* Atividade — wearables conectados */}
+                <ActivityWidget providers={wearables.providers} />
+
+                {/* Meus dados — perfil cadastral */}
+                {/* <MeusDadosCard profile={profile} /> */}
+
+                {/* Triagem card — sempre visível, com dados reais ou demo */}
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+                  <div className="flex items-center gap-3 px-5 pt-4 pb-3 border-b border-slate-50 dark:border-slate-800">
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ background: risk.bg, color: risk.color }}>
+                      {risk.label}
+                    </span>
+                    <span className="text-xs text-slate-400">{fmtDate(effectiveTriagem.date)}</span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row">
+                    <div className="flex justify-center sm:justify-start p-4 sm:p-5 shrink-0">
+                      <DigitalTwin vitals={effectiveVitals ?? {}} riskLevel={effectiveRisk ?? null} />
                     </div>
-
-                    {/* Digital Twin + vitals */}
-                    <div className="flex flex-col sm:flex-row">
-                      <div className="flex justify-center sm:justify-start p-4 sm:p-5 shrink-0">
-                        <DigitalTwin vitals={latestVitals ?? {}} riskLevel={latestRisk ?? null} />
-                      </div>
-                      <div className="flex-1 min-w-0 px-5 pb-5 pt-2 sm:pt-5 flex flex-col gap-4">
-                        {/* NEWS2 */}
-                        {latestNews2 !== undefined && (
-                          <div className="flex items-center gap-4 p-4 rounded-2xl border-2" style={{ borderColor: risk.color, background: risk.bg }}>
-                            <div className="text-center shrink-0">
-                              <div className="text-4xl font-black leading-none" style={{ color: risk.color }}>{latestNews2}</div>
-                              <div style={{ fontSize: 9, letterSpacing: '0.18em', fontWeight: 700, color: risk.color, textTransform: 'uppercase', marginTop: 2 }}>NEWS2</div>
-                            </div>
-                            <div>
-                              <p className="text-sm font-bold" style={{ color: risk.color }}>{risk.label}</p>
-                              <p className="text-xs text-slate-500 mt-0.5">Escore de deterioração clínica</p>
-                            </div>
+                    <div className="flex-1 min-w-0 px-5 pb-5 pt-2 sm:pt-5 flex flex-col gap-4">
+                      {/* NEWS2 */}
+                      {effectiveNews2 !== undefined && (
+                        <div className="flex items-center gap-4 p-4 rounded-2xl border-2" style={{ borderColor: risk.color, background: risk.bg }}>
+                          <div className="text-center shrink-0">
+                            <div className="text-4xl font-black leading-none" style={{ color: risk.color }}>{effectiveNews2}</div>
+                            <div style={{ fontSize: 9, letterSpacing: '0.18em', fontWeight: 700, color: risk.color, textTransform: 'uppercase', marginTop: 2 }}>NEWS2</div>
                           </div>
-                        )}
-
-                        {/* Vital cards */}
-                        {vitalRows.length > 0 && (
-                          <div className="grid grid-cols-2 gap-2">
-                            {vitalRows.map(({ label, key, value, unit }) => {
-                              const vc = vitalColor(key, value)
-                              return (
-                                <div key={label} className="rounded-xl px-3 py-2.5" style={{ borderLeft: `3px solid ${vc.border}`, background: vc.bg }}>
-                                  <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: vc.label }}>{label}</p>
-                                  <p className="font-bold text-slate-800 text-lg leading-tight mt-0.5">
-                                    {value}<span className="text-xs font-normal text-slate-400 ml-1">{unit}</span>
-                                  </p>
-                                </div>
-                              )
-                            })}
+                          <div>
+                            <p className="text-sm font-bold" style={{ color: risk.color }}>{risk.label}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">Escore de deterioração clínica</p>
                           </div>
-                        )}
+                        </div>
+                      )}
 
-                        {latestTriagem.details?.notes && (
-                          <p className="text-xs text-slate-500 italic leading-relaxed">{latestTriagem.details.notes}</p>
-                        )}
+                      {/* Vital cards */}
+                      {vitalRows.length > 0 && (
+                        <div className="grid grid-cols-2 gap-2">
+                          {vitalRows.map(({ label, key, value, unit }) => {
+                            const vc = vitalColor(key, value)
+                            return (
+                              <div key={label} className="rounded-xl px-3 py-2.5" style={{ borderLeft: `3px solid ${vc.border}`, background: vc.bg }}>
+                                <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: vc.label }}>{label}</p>
+                                <p className="font-bold text-slate-800 text-lg leading-tight mt-0.5">
+                                  {value}<span className="text-xs font-normal text-slate-400 ml-1">{unit}</span>
+                                </p>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
 
-                        <button
-                          onClick={() => setTriModal(latestTriagem)}
-                          className="w-full flex items-center justify-center gap-1.5 text-xs text-[#0079C8] font-medium hover:underline"
-                        >
-                          Ver detalhes completos <ChevronRight size={13} />
-                        </button>
-                      </div>
+                      {/* Resumão clínico inline */}
+                      <ClinicalInsight
+                        riskLevel={effectiveRisk}
+                        news2={effectiveNews2}
+                        vitals={effectiveVitals}
+                        isDemo={!latestTriagem}
+                      />
                     </div>
                   </div>
-                )}
+                </div>
 
                 {/* Historical triagens */}
-                {records.filter(r => r.type === 'triagem').length > 1 && (
+                {/* {records.filter(r => r.type === 'triagem').length > 1 && (
                   <div>
                     <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Histórico de triagens</p>
                     <div className="space-y-2">
@@ -690,13 +859,39 @@ export default function PacienteDashboard() {
                       })}
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
             )}
 
             {/* ════════ Tab: Consultas ════════ */}
             {tab === 'consultas' && (
               <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <button
+                    onClick={() => setBooking(true)}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors"
+                  >
+                    <Plus size={15} /> Agendar consulta
+                  </button>
+                  <div className="flex gap-1.5 shrink-0">
+                    <button
+                      onClick={() => setCView('lista')}
+                      className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg font-medium transition-colors ${
+                        cView === 'lista' ? 'bg-green-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      <List size={12} /> Lista
+                    </button>
+                    <button
+                      onClick={() => setCView('calendario')}
+                      className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg font-medium transition-colors ${
+                        cView === 'calendario' ? 'bg-green-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      <Calendar size={12} /> Calendário
+                    </button>
+                  </div>
+                </div>
                 <SearchBar value={cSearch} onChange={setCSearch} placeholder="Buscar consulta…" />
                 <ListControlsBar>
                   <div className="flex flex-col gap-1.5">
@@ -722,7 +917,9 @@ export default function PacienteDashboard() {
                     />
                   </div>
                 </ListControlsBar>
-                {filteredConsultas.length === 0 ? (
+                {cView === 'calendario' ? (
+                  <CalendarView appointments={filteredConsultas} onSelectAppt={setApptModal} />
+                ) : filteredConsultas.length === 0 ? (
                   <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-8 text-center text-slate-400">
                     <CalendarDays size={36} className="mx-auto mb-2 opacity-30" />
                     <p className="text-sm">Nenhuma consulta encontrada.</p>
@@ -851,6 +1048,15 @@ export default function PacienteDashboard() {
                 )}
               </div>
             )}
+            {/* ════════ Tab: Integrações (wearables) ════════ */}
+            {tab === 'integracoes' && (
+              <WearablesTab
+                providers={wearables.providers}
+                loading={wearables.loading}
+                connect={wearables.connect}
+                disconnect={wearables.disconnect}
+              />
+            )}
           </>
         )}
       </div>
@@ -868,7 +1074,12 @@ export default function PacienteDashboard() {
       )}
       {apptModal && (
         <Modal title="Detalhes da Consulta" onClose={() => setApptModal(null)}>
-          <AppointmentModalContent appt={apptModal} />
+          <AppointmentModalContent appt={apptModal} onCancel={handleCancelAppt} cancelling={cancelling} />
+        </Modal>
+      )}
+      {booking && (
+        <Modal title="Agendar consulta" onClose={() => setBooking(false)}>
+          <BookAppointmentForm onSubmit={handleBook} submitting={bookingBusy} />
         </Modal>
       )}
     </div>

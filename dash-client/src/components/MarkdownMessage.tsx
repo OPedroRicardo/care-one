@@ -1,5 +1,5 @@
 import ReactMarkdown from 'react-markdown'
-import remarkGfm    from 'remark-gfm'
+import remarkGfmSafe from '../lib/remarkGfmSafe'
 import type { Components } from 'react-markdown'
 
 const components: Components = {
@@ -85,7 +85,7 @@ interface Props {
 export default function MarkdownMessage({ content, streaming = false }: Props) {
   return (
     <div className="text-sm leading-relaxed">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+      <ReactMarkdown remarkPlugins={[remarkGfmSafe]} components={components}>
         {content}
       </ReactMarkdown>
       {streaming && (

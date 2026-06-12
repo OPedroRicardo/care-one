@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ComposedChart, Area, CartesianGrid } from 'recharts/umd/Recharts'
 import type { Patient } from './types'
-import { C, MONO, fmtBRL } from './theme'
+import { MONO, fmtBRL, useOperadoraColors } from './theme'
 import ChartTip from './ChartTip'
 
 interface ROITabProps {
@@ -8,6 +8,7 @@ interface ROITabProps {
 }
 
 export default function ROITab({ patients }: ROITabProps) {
+  const { C } = useOperadoraColors()
   const alto = patients.filter(p => p.riskLevel === 'alto')
   const N    = alto.length
 

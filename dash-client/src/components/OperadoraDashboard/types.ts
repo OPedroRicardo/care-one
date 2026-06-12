@@ -32,6 +32,13 @@ export interface Patient {
   trendGlucose: number
   trendChol: number
   projectedCost: number
+  /** Present on live, DB-backed beneficiaries bridged from the Paciente/Médico world. */
+  live?: boolean
+  recentActivity?: {
+    latestTriagem: { summary: string; date: number; riskLevel: string | null } | null
+    sharedExams: { examType: string; date: number }[]
+    nextAppointment: { type: string; status: string; scheduledAt: number } | null
+  }
 }
 
 export type SortKey = 'compositeScore' | 'age' | 'framingham' | 'homaIR' | 'projectedCost' | 'alteredCount'

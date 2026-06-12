@@ -1,7 +1,7 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts/umd/Recharts'
 import { X, TrendingUp, TrendingDown, Minus, Activity } from 'lucide-react'
 import type { Patient } from './types'
-import { C, MONO, SANS, riskColor, riskBg, fmtBRL } from './theme'
+import { MONO, SANS, fmtBRL, useOperadoraColors } from './theme'
 import RiskBadge from './RiskBadge'
 import ChartTip from './ChartTip'
 
@@ -11,6 +11,7 @@ interface PatientModalProps {
 }
 
 function TrendPill({ label, slope, color }: { label: string; slope: number; color: string }) {
+  const { C } = useOperadoraColors()
   const up   = slope > 0.5
   const down = slope < -0.5
   return (
@@ -30,6 +31,7 @@ function TrendPill({ label, slope, color }: { label: string; slope: number; colo
 }
 
 export default function PatientModal({ patient, onClose }: PatientModalProps) {
+  const { C, riskColor, riskBg } = useOperadoraColors()
   const lat = patient.exams[patient.exams.length - 1]
 
   const markerLabels = ['Glicemia','Insulina','Col. Total','LDL','HDL','Triglicerídeos','PAS']
@@ -185,6 +187,54 @@ export default function PatientModal({ patient, onClose }: PatientModalProps) {
             <TrendPill label="PAS"        slope={parseFloat(bpSlope.toFixed(2))} color={C.high} />
           </div>
         </div>
+
+        {/* ── Atividade recente na plataforma (pacientes "live") ──────── */}
+        {patient.live && patient.recentActivity && (() => {
+          const ra = patient.recentActivity!
+          const fmtTs = (ts: number) => new Date(ts).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })
+          return (
+            <div style={{
+              background: C.surface, border: `1px solid ${C.blue}55`, borderRadius: 10,
+              padding: '18px 20px', marginBottom: 18,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                <Activity size={13} color={C.blue} />
+                <span style={{ color: C.blue, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.09em' }}>
+                  Atividade recente na plataforma · dados reais
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {ra.latestTriagem && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                    <span style={{ fontSize: 12, color: C.dim }}>
+                      Última triagem
+                      {ra.latestTriagem.riskLevel && (
+                        <span style={{ marginLeft: 8, ...MONO, fontSize: 11, color: riskColor(ra.latestTriagem.riskLevel === 'médio' ? 'medio' : ra.latestTriagem.riskLevel) }}>
+                          {ra.latestTriagem.riskLevel}
+                        </span>
+                      )}
+                    </span>
+                    <span style={{ ...MONO, fontSize: 11, color: C.muted }}>{fmtTs(ra.latestTriagem.date)}</span>
+                  </div>
+                )}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                  <span style={{ fontSize: 12, color: C.dim }}>Exames compartilhados</span>
+                  <span style={{ ...MONO, fontSize: 12, color: ra.sharedExams.length ? C.low : C.muted }}>
+                    {ra.sharedExams.length > 0 ? ra.sharedExams.map(e => e.examType).join(', ') : '—'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                  <span style={{ fontSize: 12, color: C.dim }}>Próxima consulta</span>
+                  <span style={{ ...MONO, fontSize: 11, color: ra.nextAppointment ? C.blue : C.muted }}>
+                    {ra.nextAppointment
+                      ? `${ra.nextAppointment.type} · ${fmtTs(ra.nextAppointment.scheduledAt)} (${ra.nextAppointment.status === 'confirmed' ? 'confirmada' : 'pendente'})`
+                      : '—'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
 
         {/* ── Footer stats ───────────────────────────────────────────── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>

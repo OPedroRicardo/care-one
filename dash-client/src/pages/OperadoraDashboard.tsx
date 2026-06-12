@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { RefreshCw, AlertTriangle } from 'lucide-react'
+import { RefreshCw, AlertTriangle, Sun, Moon } from 'lucide-react'
+import { useTheme } from '../contexts/ThemeContext'
 import '@fontsource/dm-sans/400.css'
 import '@fontsource/dm-sans/500.css'
 import '@fontsource/dm-sans/600.css'
@@ -7,7 +8,7 @@ import '@fontsource/dm-mono/400.css'
 import '../components/OperadoraDashboard/scrollbar.css'
 import '../components/OperadoraDashboard/animations.css'
 import type { Patient } from '../components/OperadoraDashboard/types'
-import { C, MONO, SANS } from '../components/OperadoraDashboard/theme'
+import { MONO, SANS, useOperadoraColors } from '../components/OperadoraDashboard/theme'
 import { usePatients } from '../hooks/usePatients'
 import OverviewTab from '../components/OperadoraDashboard/OverviewTab'
 import PortfolioTab from '../components/OperadoraDashboard/PortfolioTab'
@@ -33,6 +34,8 @@ export default function OperadoraDashboard() {
   const [selected, setSelected] = useState<Patient | null>(null)
   const [spinning, setSpinning] = useState(false)
   const { patients, loading, error, refresh, lastUpdated } = usePatients()
+  const { theme, toggle } = useTheme()
+  const { C } = useOperadoraColors()
 
   function handleRefresh() {
     setSpinning(true)
@@ -103,6 +106,20 @@ export default function OperadoraDashboard() {
               <RefreshCw size={14} className={spinning ? 'spin' : ''} />
             </button>
 
+            <button
+              onClick={toggle}
+              title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+              style={{
+                background: 'transparent', border: `1px solid ${C.border}`, borderRadius: 6,
+                padding: '5px 8px', cursor: 'pointer', color: C.muted, display: 'flex',
+                transition: 'border-color 0.18s ease, color 0.18s ease',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = C.blue; (e.currentTarget as HTMLButtonElement).style.color = C.blue }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = C.border; (e.currentTarget as HTMLButtonElement).style.color = C.muted }}
+            >
+              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{
                 width: 7, height: 7, borderRadius: '50%',
@@ -113,7 +130,7 @@ export default function OperadoraDashboard() {
               <span style={{ fontSize: 12, color: C.muted }}>
                 {loading ? 'Carregando…' : error ? 'Erro' : `${patients.length} beneficiários`}
                 {lastUpdated && !loading && !error && (
-                  <span style={{ marginLeft: 6, color: '#3d5070' }}>· {fmtTime(lastUpdated)}</span>
+                  <span style={{ marginLeft: 6, color: C.dim }}>· {fmtTime(lastUpdated)}</span>
                 )}
               </span>
             </div>

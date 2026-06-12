@@ -120,9 +120,6 @@ export default function DigitalTwin({ vitals, riskLevel }: Props) {
 
       {/* ── Card header ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 4px' }}>
-        <span style={{ fontSize: 9, letterSpacing: '0.2em', color: '#60A5FA', fontWeight: 800, textTransform: 'uppercase' }}>
-          Gêmeo Digital
-        </span>
         <span style={{
           fontSize: 9, fontWeight: 700,
           color: STATUS[overall].fill,

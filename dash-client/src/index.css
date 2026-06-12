@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Global interactivity ─────────────────────────────────────── */
+button:not(:disabled),
+a[href],
+[role="button"],
+label[for] {
+  cursor: pointer;
+}
+
+/* ── Clean minimal scrollbars ────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.55);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
@@ -64,13 +97,12 @@
 }
 
 input {
-	padding: 30px 20px;
-	border: 2px solid var(--primary-light);
+	border: 1px solid var(--primary-light);
 	border-radius: 25px;
 }
 
 input:focus {
-	outline: 4px solid var(--primary-lighter);
+	outline: 2px solid var(--primary-lighter);
 }
 
 input::placeholder {

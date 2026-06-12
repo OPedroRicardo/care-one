@@ -4,10 +4,12 @@ import {
   Users, CalendarDays, FileText, CheckCircle2, XCircle,
   Clock, Video, MapPin, AlertTriangle, Loader2, FlaskConical,
   ChevronRight, Shield, MessageCircle, List, Calendar,
-  Download, X, ChevronLeft,
+  Download, X,
 } from 'lucide-react'
 import { apiFetch } from '../lib/api'
 import { FilterChips, SortSelect, ListControlsBar, SearchBar } from '../components/ListControls'
+import { useRegisterHeaderTabs } from '../contexts/HeaderTabsContext'
+import CalendarView from '../components/CalendarView'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -72,10 +74,6 @@ function statusBadge(status: Appointment['status']) {
   return { label: 'Pendente', color: '#D97706', bg: '#FFFBEB' }
 }
 
-const PT_MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-                   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
-const PT_DAYS   = ['D','S','T','Q','Q','S','S']
-
 // ── Modal ─────────────────────────────────────────────────────────────────────
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
@@ -97,140 +95,6 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
         </div>
         <div className="p-5">{children}</div>
       </div>
-    </div>
-  )
-}
-
-// ── Calendar view ─────────────────────────────────────────────────────────────
-
-function CalendarView({
-  appointments,
-  onSelectAppt,
-}: {
-  appointments: Appointment[]
-  onSelectAppt: (a: Appointment) => void
-}) {
-  const [month, setMonth] = useState(() => new Date().getMonth())
-  const [year,  setYear]  = useState(() => new Date().getFullYear())
-
-  function prev() {
-    if (month === 0) { setMonth(11); setYear(y => y - 1) }
-    else setMonth(m => m - 1)
-  }
-  function next() {
-    if (month === 11) { setMonth(0); setYear(y => y + 1) }
-    else setMonth(m => m + 1)
-  }
-
-  const firstDay    = new Date(year, month, 1).getDay()
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const today       = new Date()
-
-  // Map appointments to their day of month (in the current month/year)
-  const apptsByDay = new Map<number, Appointment[]>()
-  appointments.forEach(a => {
-    const d = new Date(a.scheduledAt)
-    if (d.getMonth() === month && d.getFullYear() === year) {
-      const day = d.getDate()
-      apptsByDay.set(day, [...(apptsByDay.get(day) ?? []), a])
-    }
-  })
-
-  // Build cell array: 0 = empty, n = day number
-  const cells = Array.from({ length: firstDay + daysInMonth }, (_, i) =>
-    i < firstDay ? 0 : i - firstDay + 1
-  )
-
-  return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-4">
-      {/* Month navigation */}
-      <div className="flex items-center justify-between mb-4">
-        <button onClick={prev} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
-          <ChevronLeft size={16} />
-        </button>
-        <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-          {PT_MONTHS[month]} {year}
-        </span>
-        <button onClick={next} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
-          <ChevronRight size={16} />
-        </button>
-      </div>
-
-      {/* Day-of-week headers */}
-      <div className="grid grid-cols-7 mb-1">
-        {PT_DAYS.map((d, i) => (
-          <div key={i} className="text-center text-[10px] font-semibold text-slate-400 py-1">{d}</div>
-        ))}
-      </div>
-
-      {/* Day cells */}
-      <div className="grid grid-cols-7 gap-y-1">
-        {cells.map((day, i) => {
-          const appts    = day > 0 ? (apptsByDay.get(day) ?? []) : []
-          const isToday  = day > 0 && today.getDate() === day && today.getMonth() === month && today.getFullYear() === year
-          const hasPending = appts.some(a => a.status === 'pending')
-
-          return (
-            <div
-              key={i}
-              className={`relative flex flex-col items-center py-1 rounded-lg ${
-                day > 0 && appts.length > 0 ? 'cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950' : ''
-              } ${isToday ? 'bg-blue-100 dark:bg-blue-900' : ''}`}
-              onClick={() => {
-                if (appts.length === 1) onSelectAppt(appts[0])
-              }}
-            >
-              {day > 0 && (
-                <>
-                  <span className={`text-xs ${isToday ? 'font-bold text-[#0079C8]' : 'text-slate-600 dark:text-slate-300'}`}>
-                    {day}
-                  </span>
-                  {appts.length > 0 && (
-                    <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center">
-                      {appts.slice(0, 3).map(a => (
-                        <div
-                          key={a.id}
-                          className="w-1.5 h-1.5 rounded-full"
-                          style={{ background: hasPending ? '#D97706' : '#16A34A' }}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Appointments in current month */}
-      {appointments.filter(a => {
-        const d = new Date(a.scheduledAt)
-        return d.getMonth() === month && d.getFullYear() === year
-      }).length > 0 && (
-        <div className="mt-4 space-y-1.5 border-t border-slate-100 dark:border-slate-800 pt-3">
-          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-2">Neste mês</p>
-          {appointments.filter(a => {
-            const d = new Date(a.scheduledAt)
-            return d.getMonth() === month && d.getFullYear() === year
-          }).map(a => {
-            const b = statusBadge(a.status)
-            return (
-              <button
-                key={a.id}
-                onClick={() => onSelectAppt(a)}
-                className="w-full text-left flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
-              >
-                <span className="text-xs font-bold text-slate-500 w-6 shrink-0">
-                  {new Date(a.scheduledAt).getDate()}
-                </span>
-                <span className="text-xs text-slate-700 dark:text-slate-200 flex-1 truncate">{a.patientName}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full font-medium" style={{ background: b.bg, color: b.color }}>{b.label}</span>
-              </button>
-            )
-          })}
-        </div>
-      )}
     </div>
   )
 }
@@ -407,6 +271,15 @@ function ApptModalContent({ appt, onConfirm, onCancel }: {
         )}
       </div>
 
+      {appt.type === 'telechamada' && appt.status === 'confirmed' && (
+        <button
+          onClick={() => navigate(`/videochamada/${appt.id}`)}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700 transition-colors"
+        >
+          <Video size={15} /> Iniciar videochamada
+        </button>
+      )}
+
       <div className="flex gap-2">
         {appt.status === 'pending' && (
           <>
@@ -432,12 +305,6 @@ function ApptModalContent({ appt, onConfirm, onCancel }: {
 }
 
 // ── Main page ─────────────────────────────────────────────────────────────────
-
-const TABS: [Tab, string, typeof Users][] = [
-  ['pacientes', 'Pacientes', Users],
-  ['agenda',    'Agenda',    CalendarDays],
-  ['exames',    'Exames',    FileText],
-]
 
 function riskRank(r: string | null) {
   return r === 'alto' ? 2 : r === 'médio' ? 1 : 0
@@ -496,6 +363,18 @@ export default function MedicoDashboard() {
   const confirmed = appointments.filter(a => a.status === 'confirmed').length
   const highRisk  = patients.filter(p => p.riskLevel === 'alto').length
 
+  // Lift tab navigation into the unified Header; fold the old KPI counts into tab badges.
+  useRegisterHeaderTabs({
+    accent: '#0079C8',
+    active: tab,
+    onSelect: id => setTab(id as Tab),
+    tabs: [
+      { id: 'pacientes', label: 'Pacientes', Icon: Users,        badge: highRisk || undefined },
+      { id: 'agenda',    label: 'Agenda',    Icon: CalendarDays, badge: pending  || undefined },
+      { id: 'exames',    label: 'Exames',    Icon: FileText,     badge: sharedExams.length || undefined },
+    ],
+  }, [tab, highRisk, pending, sharedExams.length])
+
   const q = (s: string) => s.toLowerCase()
 
   const filteredPatients = patients
@@ -521,57 +400,8 @@ export default function MedicoDashboard() {
       b.createdAt - a.createdAt
     )
 
-  // KPI badges — clicking them jumps to the right tab + filter
-  const kpis = [
-    { label: 'Pacientes',             value: patients.length,    color: '#0079C8', action: () => { setTab('pacientes'); setPFilter('todos') } },
-    { label: 'Risco alto',            value: highRisk,           color: '#DC2626', action: () => { setTab('pacientes'); setPFilter('alto') } },
-    { label: 'Consultas pendentes',   value: pending,            color: '#D97706', action: () => { setTab('agenda'); setAStatus('pending') } },
-    { label: 'Confirmadas',           value: confirmed,          color: '#16A34A', action: () => { setTab('agenda'); setAStatus('confirmed') } },
-    { label: 'Exames compartilhados', value: sharedExams.length, color: '#7C3AED', action: () => setTab('exames') },
-  ]
-
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-16 transition-colors">
-
-      {/* KPI bar */}
-      <div className="flex flex-row justify-between items-center nowrap bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-6 py-4">
-        <h1 className="text-base font-bold text-slate-800 dark:text-slate-100">Painel Médico</h1>
-        <div className="flex gap-3 flex-wrap">
-          {kpis.map(kpi => (
-            <button
-              key={kpi.label}
-              onClick={kpi.action}
-              className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-xl px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-            >
-              <span className="text-xl font-bold" style={{ color: kpi.color }}>{kpi.value}</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">{kpi.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Tab nav */}
-      <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-6">
-        <div className="flex gap-1">
-          {TABS.map(([id, label, Icon]) => (
-            <button
-              key={id}
-              onClick={() => setTab(id)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                tab === id
-                  ? 'border-[#0079C8] text-[#0079C8]'
-                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-              }`}
-            >
-              <Icon size={16} />
-              {label}
-              {id === 'agenda' && pending > 0 && (
-                <span className="text-xs bg-amber-100 text-amber-700 font-bold px-1.5 py-0.5 rounded-full">{pending}</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-28 transition-colors">
 
       {/* Content */}
       <div className="px-6 py-6 max-w-3xl mx-auto">

@@ -6,14 +6,18 @@ import {
 } from 'lucide-react'
 import { apiFetch } from '../lib/api'
 import DigitalTwin from '../components/DigitalTwin'
+import { usePatientProfile, PatientProfileSnippet } from '../components/PatientProfile'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+interface Attachment { id: string; examType: string; fileName: string }
 
 interface ChatMessage {
   id: number
   patientName: string
   senderRole: 'medico' | 'paciente'
   content: string
+  attachment?: Attachment | null
   createdAt: number
 }
 
@@ -60,6 +64,17 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
           : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-sm'
       }`}>
         <p>{msg.content}</p>
+        {msg.attachment && (
+          <div className={`flex items-center gap-2 mt-2 rounded-lg px-2.5 py-1.5 ${
+            isDoctor ? 'bg-white/15' : 'bg-purple-50 dark:bg-purple-950 border border-purple-100 dark:border-purple-900'
+          }`}>
+            <FlaskConical size={13} className={isDoctor ? 'text-white shrink-0' : 'text-purple-600 shrink-0'} />
+            <div className="min-w-0">
+              <p className={`text-xs font-semibold truncate ${isDoctor ? 'text-white' : 'text-slate-700 dark:text-slate-200'}`}>{msg.attachment.examType}</p>
+              <p className={`text-[10px] truncate ${isDoctor ? 'text-blue-100' : 'text-slate-400'}`}>{msg.attachment.fileName}</p>
+            </div>
+          </div>
+        )}
         <p className={`text-[10px] mt-1 ${isDoctor ? 'text-blue-200' : 'text-slate-400'}`}>
           {fmtTime(msg.createdAt)} · {isDoctor ? 'Dr. Silva' : msg.patientName}
         </p>
@@ -200,6 +215,7 @@ const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3333'
 export default function MedicoConversa() {
   const { patientName = '' } = useParams<{ patientName: string }>()
   const decoded = decodeURIComponent(patientName)
+  const { profile } = usePatientProfile(decoded)
 
   const [messages,  setMessages]  = useState<ChatMessage[]>([])
   const [records,   setRecords]   = useState<HistoryRecord[]>([])
@@ -253,9 +269,13 @@ export default function MedicoConversa() {
     finally { setSending(false); textareaRef.current?.focus() }
   }
 
-  const latestTriagem = records.find(r => r.type === 'triagem')
-  const tDetails  = latestTriagem?.details as TriagemDetails | null
-  const twinVitals = tDetails?.vitals ?? tDetails?.news2
+  const DEMO_VITALS_DT = { fc: 78, fr: 17, spo2: 97, temp: 37.1, pa: 125 }
+
+  const latestTriagem  = records.find(r => r.type === 'triagem')
+  const tDetails       = latestTriagem?.details as TriagemDetails | null
+  const twinVitals     = tDetails?.vitals ?? tDetails?.news2
+  const effectiveVitals = (twinVitals as typeof DEMO_VITALS_DT | undefined) ?? DEMO_VITALS_DT
+  const effectiveRisk   = tDetails?.riskLevel ?? 'baixo'
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-16 flex flex-col transition-colors">
@@ -282,44 +302,29 @@ export default function MedicoConversa() {
 
         {/* ── Sidebar: Digital Twin + clinical records ── */}
         <aside className="hidden lg:flex flex-col w-56 shrink-0 border-r border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto">
-          {latestTriagem ? (
-            <>
-              {/* Digital twin */}
-              <div className="p-4 pb-2 flex justify-center border-b border-slate-50 dark:border-slate-800">
-                <DigitalTwin
-                  vitals={twinVitals ? {
-                    fc:   (twinVitals as { fc?: number }).fc,
-                    fr:   (twinVitals as { fr?: number }).fr,
-                    spo2: (twinVitals as { spo2?: number }).spo2,
-                    temp: (twinVitals as { temp?: number }).temp,
-                    pa:   (twinVitals as { pa?: number }).pa,
-                  } : undefined}
-                  riskLevel={(tDetails?.riskLevel) ?? null}
-                />
-              </div>
+          {/* Patient profile snippet */}
+          <PatientProfileSnippet profile={profile} />
 
-              {/* Clinical records list */}
-              <div className="p-3">
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest px-1 mb-3">
-                  Registros clínicos
-                </p>
-                <div className="flex flex-col nowrap space-y-2 overflow-y-auto h-[calc(100vh-650px)]">
-                  {records.length === 0 ? (
-                    <p className="text-xs text-slate-400 text-center py-4">Nenhum registro ainda</p>
-                  ) : (
-                    records.map(rec => (
-                      <RecordCard key={rec.id} record={rec} onClick={() => setActiveRec(rec)} />
-                    ))
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full p-6 text-center text-slate-400">
-              <UserRound size={32} className="mb-2 opacity-30" />
-              <p className="text-xs">Nenhum dado clínico disponível ainda</p>
+          {/* Digital twin — sempre visível (dados reais ou demo) */}
+          <div className="p-4 pb-2 flex justify-center border-b border-slate-50 dark:border-slate-800">
+            <DigitalTwin vitals={effectiveVitals} riskLevel={effectiveRisk} />
+          </div>
+
+          {/* Clinical records list */}
+          <div className="p-3">
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest px-1 mb-3">
+              Registros clínicos
+            </p>
+            <div className="flex flex-col space-y-2 overflow-y-auto h-[calc(100vh-650px)]">
+              {records.length === 0 ? (
+                <p className="text-xs text-slate-400 text-center py-4 italic">Nenhum registro ainda</p>
+              ) : (
+                records.map(rec => (
+                  <RecordCard key={rec.id} record={rec} onClick={() => setActiveRec(rec)} />
+                ))
+              )}
             </div>
-          )}
+          </div>
         </aside>
 
         {/* ── Main: chat only ── */}

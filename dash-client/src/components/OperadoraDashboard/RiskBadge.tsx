@@ -1,6 +1,7 @@
-import { MONO, riskColor, riskBg } from './theme'
+import { MONO, useOperadoraColors } from './theme'
 
 export default function RiskBadge({ level }: { level: string }) {
+  const { riskColor, riskBg } = useOperadoraColors()
   return (
     <span style={{
       background: riskBg(level), color: riskColor(level),
