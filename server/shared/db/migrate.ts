@@ -69,4 +69,12 @@ export async function ensureSchema() {
     )
   `)
   await addColumnIfMissing('wearable_connections', 'data', 'TEXT')
+
+  // Stage 9 — real OAuth2 token storage for cloud wearable providers
+  await addColumnIfMissing('wearable_connections', 'access_token', 'TEXT')
+  await addColumnIfMissing('wearable_connections', 'refresh_token', 'TEXT')
+  await addColumnIfMissing('wearable_connections', 'token_expires_at', 'INTEGER')
+  await addColumnIfMissing('wearable_connections', 'scope', 'TEXT')
+  await addColumnIfMissing('wearable_connections', 'external_user_id', 'TEXT')
+  await addColumnIfMissing('wearable_connections', 'last_sync_at', 'INTEGER')
 }

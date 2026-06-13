@@ -18,5 +18,6 @@ export default class ExamRouter extends APIRouter {
     this.router.post('/upload',      this.#controller.upload.bind(this.#controller))
     this.router.post('/:id/share',   this.#controller.share.bind(this.#controller))
     this.router.delete('/:id/share', this.#controller.unshare.bind(this.#controller))
+    this.router.get('/:id/pdf',      this.#controller.pdf.bind(this.#controller))
   }
 }

@@ -95,7 +95,14 @@ export const wearableConnections = sqliteTable('wearable_connections', {
   provider:    text('provider').notNull(),
   connected:   integer('connected', { mode: 'boolean' }).notNull().default(false),
   connectedAt: integer('connected_at'),
-  data:        text('data'),                              // JSON: métricas sintéticas geradas na conexão
+  data:        text('data'),                              // JSON: métricas (sintéticas ou sincronizadas)
+  // ── OAuth2 (provedores reais: Fitbit / Withings / Oura) ──────────────
+  accessToken:    text('access_token'),
+  refreshToken:   text('refresh_token'),
+  tokenExpiresAt: integer('token_expires_at'),            // epoch ms
+  scope:          text('scope'),
+  externalUserId: text('external_user_id'),               // id do usuário no provedor
+  lastSyncAt:     integer('last_sync_at'),
 })
 
 // ── Exames enviados pelo paciente

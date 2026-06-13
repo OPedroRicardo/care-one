@@ -16,5 +16,9 @@ export default class PacienteRouter extends APIRouter {
     this.router.get('/wearables',     this.#wearables.list.bind(this.#wearables))
     this.router.post('/wearables',    this.#wearables.connect.bind(this.#wearables))
     this.router.delete('/wearables',  this.#wearables.disconnect.bind(this.#wearables))
+    this.router.post('/wearables/sync', this.#wearables.sync.bind(this.#wearables))
+    // Real OAuth2 (Fitbit / Withings / Oura): consent redirect + provider callback.
+    this.router.get('/wearables/:provider/connect',  this.#wearables.oauthConnect.bind(this.#wearables))
+    this.router.get('/wearables/:provider/callback', this.#wearables.oauthCallback.bind(this.#wearables))
   }
 }
