@@ -32,6 +32,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
+    "@csstools/postcss-cascade-layers": "^6.0.0",
+    "@csstools/postcss-color-mix-function": "^4.0.4",
+    "@csstools/postcss-oklab-function": "^5.0.4",
     "@eslint/js": "^9.39.4",
     "@rolldown/plugin-babel": "^0.2.0",
     "@types/babel__core": "^7.20.5",

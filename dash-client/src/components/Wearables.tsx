@@ -2,17 +2,29 @@ import { useState, useEffect, useCallback } from 'react'
 import { Watch, Footprints, HeartPulse, Moon, Activity, Loader2, Plug, Check } from 'lucide-react'
 import { apiFetch } from '../lib/api'
 
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3333'
+
+// UI provider name → route slug for the real OAuth2 endpoints.
+const OAUTH_SLUG: Record<string, string> = {
+  Fitbit: 'fitbit', Withings: 'withings', Oura: 'oura',
+}
+
 export interface WearableData {
   steps: number
   restingHr: number
   sleepHours: number
   spo2: number
+  hrv?: number
+  bloodPressure?: string
   updatedAt: number
 }
 export interface ProviderState {
   provider: string
   connected: boolean
   connectedAt: number | null
+  lastSyncAt?: number | null
+  /** 'oauth' ⇒ real consent flow; 'simulated' ⇒ instant in-page mock. */
+  mode?: 'oauth' | 'simulated'
   data: WearableData | null
 }
 
@@ -49,20 +61,31 @@ export function useWearables(name: string) {
     await load()
   }, [name, load])
 
-  return { providers, loading, connect, disconnect, reload: load }
+  // Real providers: hand off to the backend, which 302s to the provider's consent
+  // screen and returns to /paciente?connected=… after the token exchange.
+  const startOAuth = useCallback((provider: string) => {
+    const slug = OAUTH_SLUG[provider]
+    if (!slug) return
+    window.location.href = `${API_BASE}/app/paciente/wearables/${slug}/connect?name=${encodeURIComponent(name)}`
+  }, [name])
+
+  return { providers, loading, connect, disconnect, startOAuth, reload: load }
 }
 
 // ── Integrações tab ─────────────────────────────────────────────────────────────
 
-export function WearablesTab({ providers, loading, connect, disconnect }: {
+export function WearablesTab({ providers, loading, connect, disconnect, startOAuth }: {
   providers: ProviderState[]
   loading: boolean
   connect: (provider: string) => Promise<void>
   disconnect: (provider: string) => Promise<void>
+  startOAuth: (provider: string) => void
 }) {
   const [busy, setBusy] = useState<string | null>(null)
 
   async function toggle(p: ProviderState) {
+    // Real OAuth provider, not yet connected → leave the SPA for the consent flow.
+    if (!p.connected && p.mode === 'oauth') { startOAuth(p.provider); return }
     setBusy(p.provider)
     try { p.connected ? await disconnect(p.provider) : await connect(p.provider) }
     finally { setBusy(null) }
@@ -74,14 +97,14 @@ export function WearablesTab({ providers, loading, connect, disconnect }: {
 
   return (
     <div className="space-y-3">
-      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-900 rounded-2xl p-4 flex items-start gap-3">
+      <div data-tour="integracoes-como-funciona" className="bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-900 rounded-2xl p-4 flex items-start gap-3">
         <Watch size={18} className="text-[#0079C8] shrink-0 mt-0.5" />
         <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
-          Conecte seus apps e dispositivos de saúde para enriquecer seu painel com dados de atividade.
-          As conexões são instantâneas e simuladas para esta demonstração.
+          Conecte seus apps e dispositivos de saúde para enriquecer seu painel com dados de atividade, os dados são simulados para a demonstração.
         </p>
       </div>
 
+      <div data-tour="integracoes-dispositivos" className="space-y-3">
       {providers.map(p => {
         const m = META[p.provider] ?? { color: '#0079C8', bg: '#EBF5FF', emoji: '⌚' }
         return (
@@ -90,11 +113,18 @@ export function WearablesTab({ providers, loading, connect, disconnect }: {
               {m.emoji}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{p.provider}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{p.provider}</p>
+                {p.mode === 'oauth' && (
+                  <span className="text-[9px] font-bold uppercase tracking-wide text-[#0079C8] bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-900 rounded px-1 py-0.5">
+                    OAuth
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-slate-400">
                 {p.connected
                   ? `Conectado${p.data ? ` · ${p.data.steps.toLocaleString('pt-BR')} passos hoje` : ''}`
-                  : 'Não conectado'}
+                  : p.mode === 'oauth' ? 'Não conectado · autorização real' : 'Não conectado'}
               </p>
             </div>
             <button
@@ -114,6 +144,7 @@ export function WearablesTab({ providers, loading, connect, disconnect }: {
           </div>
         )
       })}
+      </div>
     </div>
   )
 }

@@ -23,7 +23,7 @@ export default function ProductTour({ steps, run, onClose }: {
       options={{
         skipBeacon: true,
         buttons: ['back', 'skip', 'primary'],
-        showProgress: true,
+        showProgress: false,
         arrowColor:      dark ? '#1e293b' : '#ffffff',
         backgroundColor: dark ? '#1e293b' : '#ffffff',
         primaryColor:    '#0079C8',

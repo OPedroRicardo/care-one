@@ -1,0 +1,240 @@
+[
+  {
+    "url": "/",
+    "tour": [
+      {
+        "target": "[data-tour=\"intro\"]",
+        "title": "Bem-vindo ao Care One",
+        "content": "Esta é uma demonstração da plataforma. Você pode alternar entre os perfis a qualquer momento a partir desta tela.",
+        "placement": "bottom"
+      },
+      {
+        "target": "[data-tour=\"operadora\"]",
+        "title": "Operadora de Saúde",
+        "content": "Análise preditiva de sinistros: carteira de beneficiários, risco por paciente e ROI de intervenções preventivas.",
+        "placement": "bottom",
+        "inner_tour": {
+          "url": "/operadora",
+          "tour": [
+            {
+              "target": "[data-tour=\"geral-alertas\"]",
+              "title": "Alertas críticos",
+              "content": "Pacientes de alto risco com tendência de piora, identificados automaticamente para priorizar ações preventivas.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"geral-indicadores-chave\"]",
+              "title": "Indicadores-chave",
+              "content": "Volume de beneficiários em alto e médio risco, custo projetado para os próximos 12 meses e ROI estimado das intervenções preventivas.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"geral-distribuicao-risco\"]",
+              "title": "Distribuição de risco e risco por faixa etária",
+              "content": "Veja como os níveis de risco se distribuem na carteira e em quais grupos etários se concentram, para direcionar ações preventivas.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"geral-top-10\"]",
+              "title": "Custo por segmento e Top 10",
+              "content": "Visualize onde o custo se concentra e quais beneficiários têm maior probabilidade de sinistro, com score, indicadores clínicos e custo projetado de cada um.",
+              "placement": "top"
+            },
+            {
+              "target": "[data-tour=\"geral-recortes-carteira\"]",
+              "title": "Recortes da carteira",
+              "content": "Número de beneficiários diabéticos, medicados, com tendência de piora e de baixo risco, possuindo uma visão completa da saúde populacional.",
+              "placement": "top"
+            },
+
+            {
+              "target": "[data-tour=\"carteira-filtros\"]",
+              "title": "Busca e filtros rápidos",
+              "content": "Encontre beneficiários por nome ou filtre por nível de risco, diabéticos, medicados ou tendência de piora.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"carteira-exportar\"]",
+              "title": "Exportação",
+              "content": "Baixe a lista filtrada em CSV para compartilhar com times de saúde ou integrar a outros sistemas.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"carteira-completa\"]",
+              "title": "Carteira completa",
+              "content": "Score de risco, índices clínicos (Framingham, HOMA-IR), marcadores, custo projetado e probabilidade de sinistro de cada beneficiário.",
+              "placement": "auto"
+            },
+            {
+              "target": "[data-tour=\"modal\"]",
+              "title": "Perfil clínico do beneficiário",
+              "content": "Clicar em qualquer beneficiário abre o perfil completo: scores de risco, marcadores laboratoriais, evolução temporal dos exames e custo projetado.",
+              "placement": "left"
+            },
+
+            {
+              "target": "[data-tour=\"roi-modelo\"]",
+              "title": "Modelo de ROI",
+              "content": "Veja o cálculo passo a passo, com beneficiários de alto risco identificados, taxa de acerto, custo de internação versus custo da intervenção preventiva.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"roi-comparativo-custo\"]",
+              "title": "Comparativo de custo",
+              "content": "Visualize lado a lado o custo sem intervenção, o investimento em prevenção e o custo final com intervenção.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"roi-resumo-financeiro\"]",
+              "title": "Resumo financeiro",
+              "content": "Custo sem intervenção, custo com intervenção e economia potencial em valores absolutos.",
+              "placement": "top"
+            }
+          ]
+        }
+      },
+      {
+        "target": "[data-tour=\"medico\"]",
+        "title": "Médico",
+        "content": "Painel clínico: lista de pacientes, agenda de consultas (com videochamada) e exames compartilhados.",
+        "placement": "bottom",
+        "inner_tour": {
+          "url": "/medico",
+          "tour": [
+            {
+              "target": "[data-tour=\"pacientes-filtros\"]",
+              "title": "Busca e filtros",
+              "content": "Encontre pacientes por nome ou filtre por nível de risco (alto, médio, baixo).",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"pacientes-lista\"]",
+              "title": "Lista de pacientes",
+              "content": "Nível de risco, resumo da última triagem, número de exames/triagens e data do último registro, tudo visível de forma rápida.",
+              "placement": "top"
+            },
+            {
+              "target": "[data-tour=\"agenda-busca\"]",
+              "title": "Busca",
+              "content": "Encontre consultas por nome do paciente ou por palavras-chave nas observações.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"agenda-filtros\"]",
+              "title": "Filtros",
+              "content": "Organize a agenda por status (pendente/confirmado), tipo de atendimento (presencial/telechamada) e alterne entre lista ou calendário.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"agenda-calendario\"]",
+              "title": "Calendário",
+              "content": "Visualize o mês inteiro com indicadores de consultas confirmadas (verde), pendentes (amarelo) e canceladas (vermelho), além de um resumo com todos os atendimentos do período.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"agenda-consultas\"]",
+              "title": "Consultas",
+              "content": "Cada item mostra paciente, data, tipo de atendimento e observação clínica, com botões rápidos para confirmar ou cancelar.",
+              "placement": "Right"
+            },
+            {
+              "target": "[data-tour=\"exames-busca\"]",
+              "title": "Busca",
+              "content": "Encontre exames por nome do paciente, tipo de exame ou nome do arquivo.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"exames-lista\"]",
+              "title": "Exames compartilhados",
+              "content": "Lista de exames enviados pelos pacientes, com tipo, nome do arquivo e data de validade do compartilhamento.",
+              "placement": "top"
+            },
+            {
+              "target": "[data-tour=\"modal\"]",
+              "title": "Detalhe da consulta",
+              "content": "Cada consulta abre em detalhe, com paciente, tipo e observações — e ações rápidas para confirmar, cancelar ou iniciar a videochamada.",
+              "placement": "left"
+            }
+          ]
+        }
+      },
+      {
+        "target": "[data-tour=\"paciente\"]",
+        "title": "Paciente",
+        "content": "Painel pessoal de saúde: triagens, consultas, conversa com o médico, exames e integrações com wearables.",
+        "placement": "top",
+        "inner_tour": {
+          "url": "/paciente",
+          "tour": [
+            {
+              "target": "[data-tour=\"saude-status\"]",
+              "title": "Status rápido",
+              "content": "Seu nível de risco atual, data da última triagem e contagem para a próxima consulta.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"saude-visualizacao\"]",
+              "title": "Visualização corporal",
+              "content": "Acompanhe de forma visual seus principais sinais vitais (coração, pulmões, temperatura, pressão) e um resumo do seu estado de saúde.",
+              "placement": "left"
+            },
+            {
+              "target": "[data-tour=\"saude-meus-dados\"]",
+              "title": "Meus dados",
+              "content": "Visualize e atualize suas informações cadastrais.",
+              "placement": "top"
+            },
+            {
+              "target": "[data-tour=\"consultas-agendar\"]",
+              "title": "Agendar consulta",
+              "content": "Marque um novo atendimento, presencial ou por telechamada, em poucos cliques.",
+              "placement": "left"
+            },
+            {
+              "target": "[data-tour=\"consultas-filtros\"]",
+              "title": "Filtros",
+              "content": "Veja suas consultas por status (pendente/confirmado) ou tipo (presencial/telechamada), em lista ou calendário.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"consultas-lista\"]",
+              "title": "Suas consultas",
+              "content": "Data, tipo de atendimento e observação do médico sobre o motivo da consulta.",
+              "placement": "top"
+            },
+            {
+              "target": "[data-tour=\"registros-busca\"]",
+              "title": "Busca",
+              "content": "Encontre exames ou triagens pelo nome ou tipo de registro.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"registros-historico\"]",
+              "title": "Histórico completo",
+              "content": "Cada exame ou triagem mostra o nível de risco e o status de compartilhamento (privado ou compartilhado com o médico).",
+              "placement": "right"
+            },
+            {
+              "target": "[data-tour=\"integracoes-como-funciona\"]",
+              "title": "Como funciona",
+              "content": "Conecte seus apps e dispositivos de saúde para enriquecer seu painel com dados de atividade, de forma rápida e simples.",
+              "placement": "bottom"
+            },
+            {
+              "target": "[data-tour=\"integracoes-dispositivos\"]",
+              "title": "Conecte seus dispositivos",
+              "content": "Apple Health, Fitbit, Garmin, Samsung Health, Withings, Oura e outros, e seus dados de saúde passam a atualizar seu painel automaticamente.",
+              "placement": "top"
+            }
+          ]
+        }
+      },
+      {
+        "target": "[data-tour=\"tour-button\"]",
+        "title": "Refazer o tour",
+        "content": "Você pode reabrir este tour a qualquer momento clicando aqui.",
+        "placement": "left"
+      }
+    ]
+  }
+]

@@ -1,7 +1,6 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShieldCheck, Stethoscope, UserRound, ChevronRight, Presentation } from 'lucide-react'
-import ProductTour, { type Step } from '../components/ProductTour'
+import { ShieldCheck, Stethoscope, UserRound, ChevronRight, Presentation, Github } from 'lucide-react'
+import { usePlatformTour } from '../tour/PlatformTourProvider'
 
 const PROFILES = [
   {
@@ -33,47 +32,17 @@ const PROFILES = [
   },
 ]
 
-const TOUR_STEPS: Step[] = [
-  {
-    target: '[data-tour="intro"]',
-    title: 'Bem-vindo ao Care One',
-    content: 'Esta é uma demonstração da plataforma. Você pode alternar entre os perfis a qualquer momento a partir desta tela.',
-    placement: 'bottom',
-  },
-  {
-    target: '[data-tour="operadora"]',
-    title: 'Operadora de Saúde',
-    content: 'Análise preditiva de sinistros: carteira de beneficiários, risco por paciente e ROI de intervenções preventivas.',
-    placement: 'bottom',
-  },
-  {
-    target: '[data-tour="medico"]',
-    title: 'Médico',
-    content: 'Painel clínico: lista de pacientes, agenda de consultas (com videochamada) e exames compartilhados.',
-    placement: 'bottom',
-  },
-  {
-    target: '[data-tour="paciente"]',
-    title: 'Paciente',
-    content: 'Painel pessoal de saúde: triagens, consultas, conversa com o médico, exames e integrações com wearables.',
-    placement: 'top',
-  },
-  {
-    target: '[data-tour="tour-button"]',
-    title: 'Refazer o tour',
-    content: 'Você pode reabrir este tour a qualquer momento clicando aqui.',
-    placement: 'left',
-  },
-]
-
 export default function Home() {
   const navigate = useNavigate()
-  const [runTour, setRunTour] = useState(false)
+  const { start } = usePlatformTour()
 
   return (
     <section className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center px-6 py-16">
-      <ProductTour steps={TOUR_STEPS} run={runTour} onClose={() => setRunTour(false)} />
-
+      <header className="fixed w-full top-0 p-2 flex justify-end">
+        <a href="https://github.com/OPedroRicardo/care-one" target="_blank">
+          <button className="rounded-2xl p-2 bg-blue-100 text-[#0079C8]"><Github /></button>
+        </a>
+      </header>
       <div className="mb-10 text-center" data-tour="intro">
         <p className="text-xs font-semibold tracking-widest text-[#0079C8] uppercase mb-2">Care One</p>
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Bem-vindo</h1>
@@ -103,12 +72,12 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Floating "start tour" button */}
+      {/* Floating "start tour" button — desktop only, see PlatformTourProvider MOBILE_BREAKPOINT */}
       <button
         data-tour="tour-button"
-        onClick={() => setRunTour(true)}
+        onClick={start}
         title="Iniciar tour guiado"
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-[#0079C8] text-white shadow-lg hover:bg-[#0060a0] hover:shadow-xl flex items-center justify-center transition-all"
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-[#0079C8] text-white shadow-lg hover:bg-[#0060a0] hover:shadow-xl hidden md:flex items-center justify-center transition-all"
       >
         <Presentation size={22} />
       </button>

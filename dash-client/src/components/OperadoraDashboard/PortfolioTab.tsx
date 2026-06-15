@@ -106,54 +106,56 @@ export default function PortfolioTab({ patients, onSelect }: PortfolioTabProps) 
 
       {/* ── Filters bar ─────────────────────────────────────────────── */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-        {/* Search */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 8,
-          background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8,
-          padding: '7px 14px', flex: 1, maxWidth: 340,
-          transition: 'border-color 0.18s ease',
-        }}>
-          <Search size={14} color={C.muted} />
-          <input
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1) }}
-            placeholder="Buscar beneficiário..."
-            style={{ all: 'unset', color: C.text, fontSize: 13, ...SANS, width: '100%' } as React.CSSProperties}
-          />
-        </div>
+        <div data-tour="carteira-filtros" style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* Search */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8,
+            padding: '7px 14px', flex: 1, maxWidth: 340,
+            transition: 'border-color 0.18s ease',
+          }}>
+            <Search size={14} color={C.muted} />
+            <input
+              value={search}
+              onChange={e => { setSearch(e.target.value); setPage(1) }}
+              placeholder="Buscar beneficiário..."
+              style={{ all: 'unset', color: C.text, fontSize: 13, ...SANS, width: '100%' } as React.CSSProperties}
+            />
+          </div>
 
-        {/* Risk filter */}
-        <div style={{ display: 'flex', gap: 6 }}>
-          {(['todos','alto','medio','baixo'] as const).map(f => (
-            <button key={f} onClick={() => { setRiskFilter(f); setPage(1) }} style={{
-              background: riskFilter === f ? (f === 'todos' ? C.blueBg : riskBg(f)) : 'transparent',
-              border: `1px solid ${riskFilter === f ? (f === 'todos' ? C.blue : riskColor(f)) : C.border}`,
-              color: riskFilter === f ? (f === 'todos' ? C.blue : riskColor(f)) : C.muted,
-              borderRadius: 6, padding: '6px 14px', cursor: 'pointer', fontSize: 12, ...SANS,
-              transition: 'all 0.15s ease',
-            }}>
-              {f === 'todos' ? 'Todos' : f === 'alto' ? 'Alto' : f === 'medio' ? 'Médio' : 'Baixo'}
-            </button>
-          ))}
-        </div>
+          {/* Risk filter */}
+          <div style={{ display: 'flex', gap: 6 }}>
+            {(['todos','alto','medio','baixo'] as const).map(f => (
+              <button key={f} onClick={() => { setRiskFilter(f); setPage(1) }} style={{
+                background: riskFilter === f ? (f === 'todos' ? C.blueBg : riskBg(f)) : 'transparent',
+                border: `1px solid ${riskFilter === f ? (f === 'todos' ? C.blue : riskColor(f)) : C.border}`,
+                color: riskFilter === f ? (f === 'todos' ? C.blue : riskColor(f)) : C.muted,
+                borderRadius: 6, padding: '6px 14px', cursor: 'pointer', fontSize: 12, ...SANS,
+                transition: 'all 0.15s ease',
+              }}>
+                {f === 'todos' ? 'Todos' : f === 'alto' ? 'Alto' : f === 'medio' ? 'Médio' : 'Baixo'}
+              </button>
+            ))}
+          </div>
 
-        {/* Cohort filters */}
-        <div style={{ display: 'flex', gap: 6 }}>
-          {COHORT_OPTIONS.map(c => (
-            <button key={c.id} onClick={() => toggleCohort(c.id)} style={{
-              background: cohorts.has(c.id) ? C.blueBg : 'transparent',
-              border: `1px solid ${cohorts.has(c.id) ? C.blue : C.border}`,
-              color: cohorts.has(c.id) ? C.blue : C.muted,
-              borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: 11, ...SANS,
-              transition: 'all 0.15s ease',
-            }}>
-              {c.label}
-            </button>
-          ))}
+          {/* Cohort filters */}
+          <div style={{ display: 'flex', gap: 6 }}>
+            {COHORT_OPTIONS.map(c => (
+              <button key={c.id} onClick={() => toggleCohort(c.id)} style={{
+                background: cohorts.has(c.id) ? C.blueBg : 'transparent',
+                border: `1px solid ${cohorts.has(c.id) ? C.blue : C.border}`,
+                color: cohorts.has(c.id) ? C.blue : C.muted,
+                borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: 11, ...SANS,
+                transition: 'all 0.15s ease',
+              }}>
+                {c.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Stats + export */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: 'auto' }}>
+        <div data-tour="carteira-exportar" style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: 'auto' }}>
           <span style={{ color: C.muted, fontSize: 12, ...MONO }}>{filtered.length} beneficiários</span>
           <button onClick={() => exportCSV(filtered)} title="Exportar CSV" style={{
             display: 'flex', alignItems: 'center', gap: 5,
@@ -170,7 +172,7 @@ export default function PortfolioTab({ patients, onSelect }: PortfolioTabProps) 
       </div>
 
       {/* ── Table ───────────────────────────────────────────────────── */}
-      <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden' }}>
+      <div data-tour="carteira-completa" style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>

@@ -155,9 +155,9 @@ function RecordDetailModal({ record, onClose }: { record: HistoryRecord; onClose
                        { bg: '#F0FDF4', border: '#BBF7D0', text: '#16A34A' }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose} />
-      <div className="relative z-10 bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-100 dark:border-slate-800">
+      <div className="relative z-10 bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-100 dark:border-slate-800">
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900">
           <h2 className="font-bold text-slate-800 dark:text-slate-100">
             {record.type === 'triagem' ? 'Triagem clínica' : 'Exame'}

@@ -12,8 +12,9 @@ import MedicoConversa     from '../pages/MedicoConversa'
 import PacienteDashboard  from '../pages/PacienteDashboard'
 import PacienteConversa   from '../pages/PacienteConversa'
 import VideoCall          from '../pages/VideoCall'
+import { PlatformTourProvider } from '../tour/PlatformTourProvider'
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   { path: "/operadora", element: <OperadoraDashboard /> },
   {
     path: "/",
@@ -35,5 +36,9 @@ const router = createBrowserRouter([
 ]);
 
 export default function Router () {
-  return <RouterProvider router={router} />
+  return (
+    <PlatformTourProvider>
+      <RouterProvider router={router} />
+    </PlatformTourProvider>
+  )
 }

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { RefreshCw, AlertTriangle, Sun, Moon } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { RefreshCw, AlertTriangle, Sun, Moon, Home } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext'
 import '@fontsource/dm-sans/400.css'
 import '@fontsource/dm-sans/500.css'
@@ -7,14 +7,16 @@ import '@fontsource/dm-sans/600.css'
 import '@fontsource/dm-mono/400.css'
 import '../components/OperadoraDashboard/scrollbar.css'
 import '../components/OperadoraDashboard/animations.css'
+import '../components/OperadoraDashboard/responsive.css'
 import type { Patient } from '../components/OperadoraDashboard/types'
-import { MONO, SANS, useOperadoraColors } from '../components/OperadoraDashboard/theme'
+import { SANS, useOperadoraColors } from '../components/OperadoraDashboard/theme'
 import { usePatients } from '../hooks/usePatients'
 import OverviewTab from '../components/OperadoraDashboard/OverviewTab'
 import PortfolioTab from '../components/OperadoraDashboard/PortfolioTab'
 import ROITab from '../components/OperadoraDashboard/ROITab'
 import PatientModal from '../components/OperadoraDashboard/PatientModal'
 import DashSkeleton from '../components/OperadoraDashboard/DashSkeleton'
+import { useNavigate } from 'react-router-dom'
 
 type Tab = 'overview' | 'carteira' | 'roi'
 
@@ -36,6 +38,29 @@ export default function OperadoraDashboard() {
   const { patients, loading, error, refresh, lastUpdated } = usePatients()
   const { theme, toggle } = useTheme()
   const { C } = useOperadoraColors()
+  const navigate = useNavigate()
+
+  // Lets the platform tour switch tabs while walking through this dashboard.
+  useEffect(() => {
+    const handler = (e: Event) => setTab((e as CustomEvent).detail as Tab)
+    window.addEventListener('operadora-tab', handler)
+    return () => window.removeEventListener('operadora-tab', handler)
+  }, [])
+
+  // Lets the platform tour open/close the beneficiary detail modal.
+  useEffect(() => {
+    const open = () => {
+      const demo = patients.find(p => p.riskLevel === 'alto') ?? patients[0]
+      if (demo) setSelected(demo)
+    }
+    const close = () => setSelected(null)
+    window.addEventListener('operadora-open-modal', open)
+    window.addEventListener('tour-close-modals', close)
+    return () => {
+      window.removeEventListener('operadora-open-modal', open)
+      window.removeEventListener('tour-close-modals', close)
+    }
+  }, [patients])
 
   function handleRefresh() {
     setSpinning(true)
@@ -48,12 +73,13 @@ export default function OperadoraDashboard() {
   ).length
 
   return (
-    <div className="operadora-root"
+    <div className="operadora-root px-4 pb-4"
       style={{ minHeight: '100vh', background: C.bg, color: C.text, ...SANS }}>
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
-      <div style={{
-        borderBottom: `1px solid ${C.border}`, padding: '0 32px',
+      <div className="op-header" style={{
+        borderBottom: `1px solid ${C.border}`,
+        padding: '0px 20px',
         position: 'sticky', top: 0, background: C.bg, zIndex: 100,
         backdropFilter: 'blur(10px)',
       }}>
@@ -61,12 +87,13 @@ export default function OperadoraDashboard() {
 
           {/* Logo + tabs */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-              <span className="text-cyan-500" style={{ ...MONO, fontSize: 15, letterSpacing: '0.04em' }}><strong className="text-cyan-700">Care</strong>One</span>
-              <span style={{ fontSize: 11, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.12em', marginLeft: 6 }}>
-                Operadora · Análise Preditiva
-              </span>
-            </div>
+            <button
+              onClick={() => navigate('/')}
+              title="Início"
+              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+            >
+              <Home size={20} />
+            </button>
             <div style={{ display: 'flex', gap: 4 }}>
               {TABS.map(([id, label]) => (
                 <button key={id} onClick={() => setTab(id)} style={{
@@ -85,7 +112,7 @@ export default function OperadoraDashboard() {
           {/* Status + controls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {alerts > 0 && (
-              <div style={{
+              <div className="op-alerts" style={{
                 display: 'flex', alignItems: 'center', gap: 6,
                 background: 'rgba(248,113,113,0.10)', border: `1px solid rgba(248,113,113,0.25)`,
                 borderRadius: 8, padding: '4px 10px',
@@ -120,7 +147,7 @@ export default function OperadoraDashboard() {
               {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className="op-status" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{
                 width: 7, height: 7, borderRadius: '50%',
                 background: error ? C.high : loading ? C.muted : C.low,
@@ -139,7 +166,7 @@ export default function OperadoraDashboard() {
       </div>
 
       {/* ── Content ─────────────────────────────────────────────────────── */}
-      <div style={{ padding: '24px 32px', maxWidth: 1380, margin: '0 auto' }}>
+      <div className="op-content pt-4" style={{ maxWidth: 1380, margin: '0 auto' }}>
 
         {/* Error state */}
         {error && !loading && (

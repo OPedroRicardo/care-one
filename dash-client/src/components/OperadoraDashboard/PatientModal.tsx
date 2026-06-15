@@ -53,7 +53,7 @@ export default function PatientModal({ patient, onClose }: PatientModalProps) {
       position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.80)', zIndex: 1000,
       display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
     }}>
-      <div className="modal-box" onClick={e => e.stopPropagation()} style={{
+      <div className="modal-box" data-tour="modal" onClick={e => e.stopPropagation()} style={{
         background: C.bg, border: `1px solid ${C.border}`, borderRadius: 16,
         width: '100%', maxWidth: 960, maxHeight: '92vh', overflowY: 'auto', padding: 32, ...SANS,
       }}>

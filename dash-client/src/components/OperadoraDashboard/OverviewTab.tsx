@@ -69,7 +69,7 @@ export default function OverviewTab({ patients, onSelect }: OverviewTabProps) {
 
       {/* ── Alert strip ───────────────────────────────────────────────── */}
       {alertPatients.length > 0 && (
-        <div className="anim-fade-up" style={{
+        <div data-tour="geral-alertas" className="anim-fade-up" style={{
           background: 'rgba(248,113,113,0.06)', border: `1px solid rgba(248,113,113,0.22)`,
           borderRadius: 12, padding: '14px 20px',
           display: 'flex', alignItems: 'flex-start', gap: 14,
@@ -104,7 +104,7 @@ export default function OverviewTab({ patients, onSelect }: OverviewTabProps) {
       )}
 
       {/* ── KPI row ───────────────────────────────────────────────────── */}
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div data-tour="geral-indicadores-chave" className="op-kpis">
         {[
           { label: 'Alto Risco',       value: String(alto.length),          sub: `${((alto.length / Math.max(patients.length,1)) * 100).toFixed(0)}% da carteira`,    color: C.high, delay: 0   },
           { label: 'Médio Risco',      value: String(medio.length),         sub: `${((medio.length / Math.max(patients.length,1)) * 100).toFixed(0)}% da carteira`,   color: C.med,  delay: 60  },
@@ -116,7 +116,7 @@ export default function OverviewTab({ patients, onSelect }: OverviewTabProps) {
       </div>
 
       {/* ── Charts row ────────────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 14 }}>
+      <div data-tour="geral-distribuicao-risco" className="op-charts">
 
         {/* Pie */}
         <div className="anim-fade-up" style={{
@@ -167,12 +167,13 @@ export default function OverviewTab({ patients, onSelect }: OverviewTabProps) {
       </div>
 
       {/* ── Cost + Top10 ──────────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 14 }}>
+      <div data-tour="geral-top-10" className="op-cost">
 
         {/* Cost bars */}
         <div className="anim-fade-up" style={{
           background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 22px',
           animationDelay: '160ms',
+          overflowX: 'auto', maxWidth: '100vw'
         }}>
           <div style={{ color: C.muted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: 14 }}>
             Custo por Segmento (R$ mil)
@@ -193,11 +194,13 @@ export default function OverviewTab({ patients, onSelect }: OverviewTabProps) {
         <div className="anim-fade-up" style={{
           background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 22px',
           animationDelay: '200ms',
+          overflowX: 'auto', maxWidth: '100vw'
         }}>
           <div style={{ color: C.muted, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: 14 }}>
             Top 10 — Maior Risco de Sinistro
           </div>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div className="op-table-scroll">
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 420 }}>
             <thead>
               <tr><TH>#</TH><TH>Beneficiário</TH><TH>Nível</TH><TH>Score</TH><TH>Framingham</TH><TH>HOMA-IR</TH><TH>Custo Proj.</TH></tr>
             </thead>
@@ -216,12 +219,13 @@ export default function OverviewTab({ patients, onSelect }: OverviewTabProps) {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
 
       {/* ── Cohort summary strip ──────────────────────────────────────── */}
-      <div className="anim-fade-up" style={{
-        display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, animationDelay: '240ms',
+      <div data-tour="geral-recortes-carteira" className="anim-fade-up op-cohort" style={{
+        animationDelay: '240ms',
       }}>
         {[
           { label: 'Diabéticos',     val: patients.filter(p => p.diabetic).length,    sub: 'com CID E10/E11 ou Gli>126',  color: C.med  },

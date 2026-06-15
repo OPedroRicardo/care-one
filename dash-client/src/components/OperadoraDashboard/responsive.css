@@ -1,0 +1,81 @@
+/* Responsive layout for the Operadora dashboard.
+   The dashboard uses inline styles, which beat CSS classes — so the multi-column
+   grid definitions live here instead, letting media queries collapse them (wrap)
+   and letting wide tables scroll horizontally on mobile. */
+
+/* max-width + horizontal centering stay inline on the element (inline styles are
+   guaranteed to win); this class only owns the responsive padding. */
+.op-content {
+  padding: 24px 32px;
+}
+
+.op-header {
+  padding: 0 32px;
+}
+
+/* Header items that are nice-to-have on desktop but crowd the bar on mobile. */
+@media (max-width: 600px) {
+  .op-alerts,
+  .op-status {
+    display: none !important;
+  }
+}
+
+/* Card grids: fixed column counts on desktop. */
+.op-kpis,
+.op-cohort,
+.op-roi-summary {
+  display: grid;
+  gap: 12px;
+}
+.op-kpis        { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.op-cohort      { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.op-roi-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* Chart/panel rows: a fixed sidebar column + flexible content on desktop. */
+.op-charts,
+.op-cost,
+.op-roi-top {
+  display: grid;
+  gap: 14px;
+}
+.op-charts  { grid-template-columns: 320px 1fr; }
+.op-cost    { grid-template-columns: 280px 1fr; }
+.op-roi-top { grid-template-columns: 1fr 1fr; }
+
+/* Any wide table inside a panel scrolls horizontally instead of overflowing. */
+.op-table-scroll {
+  overflow-x: auto;
+}
+
+/* Tablet / small laptop: stack the two-column panel rows, halve the card grids. */
+@media (max-width: 1024px) {
+  .op-charts,
+  .op-cost,
+  .op-roi-top {
+    grid-template-columns: 1fr;
+  }
+  .op-kpis,
+  .op-cohort,
+  .op-roi-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile: single column, tighter page padding. */
+@media (max-width: 600px) {
+  .op-content {
+    padding: 16px 14px;
+  }
+  .op-header {
+    padding: 0 14px;
+  }
+  .op-subtitle {
+    display: none;
+  }
+  .op-kpis,
+  .op-cohort,
+  .op-roi-summary {
+    grid-template-columns: 1fr;
+  }
+}

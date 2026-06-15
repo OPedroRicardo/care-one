@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ComposedChart, Area, CartesianGrid } from 'recharts/umd/Recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts/umd/Recharts'
 import type { Patient } from './types'
 import { MONO, fmtBRL, useOperadoraColors } from './theme'
 import ChartTip from './ChartTip'
@@ -31,27 +31,27 @@ export default function ROITab({ patients }: ROITabProps) {
   ]
   const compColors = [C.high, C.med, C.low]
 
-  const sorted = [...patients].sort((a, b) => b.projectedCost - a.projectedCost)
-  const totalC = sorted.reduce((s, p) => s + p.projectedCost, 0)
-  let cum = 0
-  const paretoFull = sorted.map((p, i) => {
-    cum += p.projectedCost
-    return {
-      pb: parseFloat(((i + 1) / sorted.length * 100).toFixed(1)),
-      pc: parseFloat((cum / totalC * 100).toFixed(1)),
-    }
-  })
+  // const sorted = [...patients].sort((a, b) => b.projectedCost - a.projectedCost)
+  // const totalC = sorted.reduce((s, p) => s + p.projectedCost, 0)
+  // let cum = 0
+  // const paretoFull = sorted.map((p, i) => {
+  //   cum += p.projectedCost
+  //   return {
+  //     pb: parseFloat(((i + 1) / sorted.length * 100).toFixed(1)),
+  //     pc: parseFloat((cum / totalC * 100).toFixed(1)),
+  //   }
+  // })
   // Downsample for chart performance (max 100 points)
-  const step = Math.max(1, Math.floor(paretoFull.length / 100))
-  const pareto = paretoFull.filter((_, i) => i % step === 0 || i === paretoFull.length - 1)
-  const at20   = paretoFull.find(d => d.pb >= 20)?.pc ?? 0
+  // const step = Math.max(1, Math.floor(paretoFull.length / 100))
+  // const pareto = paretoFull.filter((_, i) => i % step === 0 || i === paretoFull.length - 1)
+  // const at20   = paretoFull.find(d => d.pb >= 20)?.pc ?? 0
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+      <div className="op-roi-top">
 
         {/* ROI model */}
-        <div className="anim-fade-up" style={{
+        <div data-tour="roi-modelo" className="anim-fade-up" style={{
           background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '24px 28px',
           animationDelay: '0ms',
         }}>
@@ -85,7 +85,7 @@ export default function ROITab({ patients }: ROITabProps) {
         </div>
 
         {/* Comparison bar chart */}
-        <div className="anim-fade-up" style={{
+        <div data-tour="roi-comparativo-custo" className="anim-fade-up" style={{
           background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '24px 28px',
           animationDelay: '80ms',
         }}>
@@ -106,7 +106,7 @@ export default function ROITab({ patients }: ROITabProps) {
       </div>
 
       {/* Pareto curve */}
-      <div className="anim-fade-up" style={{
+      {/* <div className="anim-fade-up" style={{
         background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '24px 28px',
         animationDelay: '160ms',
       }}>
@@ -137,11 +137,11 @@ export default function ROITab({ patients }: ROITabProps) {
             <Area type="monotone" dataKey="pc" name="% Custo Acum." stroke={C.blue} fill="url(#gPareto)" strokeWidth={2.5} dot={false} />
           </ComposedChart>
         </ResponsiveContainer>
-      </div>
+      </div> */}
 
       {/* ROI summary cards */}
-      <div className="anim-fade-up" style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, animationDelay: '240ms',
+      <div data-tour="roi-resumo-financeiro" className="anim-fade-up op-roi-summary" style={{
+        animationDelay: '240ms',
       }}>
         {[
           { label: 'Custo sem intervenção', val: fmtBRL(semInterv),   color: C.high },

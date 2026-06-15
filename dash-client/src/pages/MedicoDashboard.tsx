@@ -8,6 +8,8 @@ import {
 } from 'lucide-react'
 import { apiFetch } from '../lib/api'
 import { FilterChips, SortSelect, ListControlsBar, SearchBar } from '../components/ListControls'
+
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3333'
 import { useRegisterHeaderTabs } from '../contexts/HeaderTabsContext'
 import CalendarView from '../components/CalendarView'
 
@@ -84,9 +86,9 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose} />
-      <div className="relative z-10 bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-100 dark:border-slate-800">
+      <div className="relative z-10 bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-100 dark:border-slate-800">
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900">
           <h2 className="font-bold text-slate-800 dark:text-slate-100 text-base">{title}</h2>
           <button onClick={onClose} className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400">
@@ -230,7 +232,9 @@ function ExamModalContent({ exam }: { exam: SharedExam }) {
         )}
       </div>
 
-      <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-950 text-[#0079C8] text-sm font-semibold hover:bg-blue-100 transition-colors">
+      <button
+        onClick={() => window.open(`${API_BASE}/app/exames/${exam.id}/pdf`, '_blank')}
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-950 text-[#0079C8] text-sm font-semibold hover:bg-blue-100 transition-colors">
         <Download size={15} /> Baixar arquivo original
       </button>
     </div>
@@ -248,7 +252,7 @@ function ApptModalContent({ appt, onConfirm, onCancel }: {
   const badge = statusBadge(appt.status)
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-tour="modal">
       <div className="flex items-center gap-2">
         <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: badge.bg, color: badge.color }}>{badge.label}</span>
         <span className="text-xs text-slate-400">{fmtDateTime(appt.scheduledAt)}</span>
@@ -335,6 +339,33 @@ export default function MedicoDashboard() {
   const [examModal, setExamModal]   = useState<SharedExam | null>(null)
   const [apptModal, setApptModal]   = useState<Appointment | null>(null)
 
+  // Lets the platform tour switch tabs while walking through this dashboard.
+  useEffect(() => {
+    const handler = (e: Event) => setTab((e as CustomEvent).detail as Tab)
+    window.addEventListener('medico-tab', handler)
+    return () => window.removeEventListener('medico-tab', handler)
+  }, [])
+
+  // Lets the platform tour open/close the appointment detail modal.
+  useEffect(() => {
+    const open = () => {
+      const demo: Appointment = appointments[0] ?? {
+        id: 'tour-demo', patientName: 'João da Silva', doctorName: 'Dra. Helena',
+        type: 'telechamada', status: 'confirmed',
+        scheduledAt: Date.now() + 86400000, notes: 'Consulta de retorno — revisão de exames.',
+        createdAt: Date.now(),
+      }
+      setApptModal(demo)
+    }
+    const close = () => { setApptModal(null); setExamModal(null) }
+    window.addEventListener('medico-open-modal', open)
+    window.addEventListener('tour-close-modals', close)
+    return () => {
+      window.removeEventListener('medico-open-modal', open)
+      window.removeEventListener('tour-close-modals', close)
+    }
+  }, [appointments])
+
   useEffect(() => {
     setLoading(true)
     Promise.all([
@@ -414,6 +445,7 @@ export default function MedicoDashboard() {
               {/* ── Pacientes ── */}
             {tab === 'pacientes' && (
               <div className="space-y-3">
+                <div data-tour="pacientes-filtros" className="space-y-3">
                 <SearchBar value={pSearch} onChange={setPSearch} placeholder="Buscar paciente…" />
                 <ListControlsBar>
                   <FilterChips<PFilter>
@@ -436,6 +468,8 @@ export default function MedicoDashboard() {
                     onChange={setPSort}
                   />
                 </ListControlsBar>
+                </div>
+                <div data-tour="pacientes-lista" className="space-y-3">
                 {filteredPatients.length === 0 && (
                   <div className="text-center py-16 text-slate-400">
                     <Users size={40} className="mx-auto mb-2 opacity-40" />
@@ -445,14 +479,17 @@ export default function MedicoDashboard() {
                 {filteredPatients.map(p => (
                   <PatientCard key={p.name} patient={p} />
                 ))}
+                </div>
               </div>
             )}
 
             {/* ── Agenda ── */}
             {tab === 'agenda' && (
               <div className="space-y-3">
+                <div data-tour="agenda-busca">
                 <SearchBar value={aSearch} onChange={setASearch} placeholder="Buscar por paciente ou observações…" />
-                <div className="space-y-2 mb-1">
+                </div>
+                <div data-tour="agenda-filtros" className="space-y-2 mb-1">
                   <ListControlsBar>
                     <FilterChips<AStatus>
                       options={[
@@ -482,7 +519,7 @@ export default function MedicoDashboard() {
                       value={aType}
                       onChange={setAType}
                     />
-                    <div className="flex gap-1.5 shrink-0">
+                    <div data-tour="agenda-calendario" className="flex gap-1.5 shrink-0">
                       <button
                         onClick={() => setAgendaView('lista')}
                         className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg font-medium transition-colors ${
@@ -507,6 +544,7 @@ export default function MedicoDashboard() {
                   </div>
                 </div>
 
+                <div data-tour="agenda-consultas" className="space-y-3">
                 {agendaView === 'calendario' ? (
                   <CalendarView appointments={filteredAppts} onSelectAppt={setApptModal} />
                 ) : (
@@ -528,13 +566,17 @@ export default function MedicoDashboard() {
                     ))}
                   </>
                 )}
+                </div>
               </div>
             )}
 
             {/* ── Exames compartilhados ── */}
             {tab === 'exames' && (
               <div className="space-y-3">
+                <div data-tour="exames-busca">
                 <SearchBar value={eSearch} onChange={setESearch} placeholder="Buscar por paciente, tipo ou arquivo…" />
+                </div>
+                <div data-tour="exames-lista" className="space-y-3">
                 <ListControlsBar>
                   <span className="text-xs text-slate-400">{filteredExams.length} exame{filteredExams.length !== 1 ? 's' : ''}</span>
                   <SortSelect<ESort>
@@ -572,6 +614,7 @@ export default function MedicoDashboard() {
                     <ChevronRight size={16} className="text-slate-300 group-hover:text-slate-500 shrink-0" />
                   </button>
                 ))}
+                </div>
               </div>
             )}
           </>

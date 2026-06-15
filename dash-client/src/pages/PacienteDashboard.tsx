@@ -151,9 +151,9 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose} />
-      <div className="relative z-10 bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg max-h-[88vh] overflow-y-auto shadow-2xl border border-slate-100 dark:border-slate-800">
+      <div className="relative z-10 bg-white dark:bg-slate-900 rounded-3xl w-full max-w-lg max-h-[88vh] overflow-y-auto shadow-2xl border border-slate-100 dark:border-slate-800">
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900 z-10">
           <h2 className="font-bold text-slate-800 dark:text-slate-100 text-base">{title}</h2>
           <button onClick={onClose} className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400">
@@ -220,7 +220,9 @@ function TriagemModalContent({ record }: { record: HistoryRecord }) {
         <p className="text-xs text-slate-500 italic">{record.details.notes}</p>
       )}
 
-      <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+      <button
+        onClick={() => window.open(`${API_BASE}/app/exames/${record.id}/pdf`, '_blank')}
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
         <Download size={15} /> Baixar laudo PDF
       </button>
     </div>
@@ -273,7 +275,9 @@ function ExamModalContent({ exam, onShare, sharingId }: {
         >
           <Share2 size={14} /> {exam.shared ? 'Revogar compartilhamento' : 'Compartilhar com médico'}
         </button>
-        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950 text-[#0079C8] text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
+        <button
+          onClick={() => window.open(`${API_BASE}/app/exames/${exam.id}/pdf`, '_blank')}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950 text-[#0079C8] text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
           <Download size={14} /> PDF
         </button>
       </div>
@@ -364,7 +368,7 @@ function BookAppointmentForm({ onSubmit, submitting }: {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4">
+    <form onSubmit={submit} className="space-y-4" data-tour="modal">
       <div>
         <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Tipo de consulta</label>
         <div className="grid grid-cols-2 gap-2 mt-1.5">
@@ -572,7 +576,9 @@ function ClinicalInsight({ riskLevel, news2, vitals, isDemo }: {
           )}
         </div>
       </div>
-      <MeusDadosCard profile={profile} />
+      <div data-tour="saude-meus-dados">
+        <MeusDadosCard profile={profile} />
+      </div>
     </div>
   )
 }
@@ -612,6 +618,30 @@ export default function PacienteDashboard() {
     const handler = (e: Event) => setTab((e as CustomEvent).detail as Tab)
     window.addEventListener('paciente-tab', handler)
     return () => window.removeEventListener('paciente-tab', handler)
+  }, [])
+
+  // Back from a wearable OAuth round-trip (/paciente?connected=… | ?error=…):
+  // jump to the Integrações tab, refresh the connection list, and tidy the URL.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('connected') || params.has('error')) {
+      setTab('integracoes')
+      wearables.reload?.()
+      window.history.replaceState({}, '', '/paciente')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Lets the platform tour open/close the "Agendar consulta" popup.
+  useEffect(() => {
+    const open = () => setBooking(true)
+    const close = () => { setBooking(false); setTriModal(null); setExamModal(null); setApptModal(null) }
+    window.addEventListener('paciente-open-modal', open)
+    window.addEventListener('tour-close-modals', close)
+    return () => {
+      window.removeEventListener('paciente-open-modal', open)
+      window.removeEventListener('tour-close-modals', close)
+    }
   }, [])
 
   useEffect(() => {
@@ -762,15 +792,19 @@ export default function PacienteDashboard() {
               <div className="space-y-5">
 
                 {/* Exam recommendations banner */}
-                <ExamRecommendationBanner recommendations={recommendations} />
+                <div data-tour="saude-recomendados">
+                  <ExamRecommendationBanner recommendations={recommendations} />
+                </div>
 
                 {/* Health summary strip */}
-                <HealthSummaryStrip
-                  latestTriagem={effectiveTriagem}
-                  upcoming={upcoming}
-                  news2={effectiveNews2}
-                  risk={risk}
-                />
+                <div data-tour="saude-status">
+                  <HealthSummaryStrip
+                    latestTriagem={effectiveTriagem}
+                    upcoming={upcoming}
+                    news2={effectiveNews2}
+                    risk={risk}
+                  />
+                </div>
 
                 {/* Atividade — wearables conectados */}
                 <ActivityWidget providers={wearables.providers} />
@@ -779,7 +813,7 @@ export default function PacienteDashboard() {
                 {/* <MeusDadosCard profile={profile} /> */}
 
                 {/* Triagem card — sempre visível, com dados reais ou demo */}
-                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+                <div data-tour="saude-visualizacao" className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
                   <div className="flex items-center gap-3 px-5 pt-4 pb-3 border-b border-slate-50 dark:border-slate-800">
                     <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ background: risk.bg, color: risk.color }}>
                       {risk.label}
@@ -868,6 +902,7 @@ export default function PacienteDashboard() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
                   <button
+                    data-tour="consultas-agendar"
                     onClick={() => setBooking(true)}
                     className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors"
                   >
@@ -892,6 +927,7 @@ export default function PacienteDashboard() {
                     </button>
                   </div>
                 </div>
+                <div data-tour="consultas-filtros" className="space-y-3">
                 <SearchBar value={cSearch} onChange={setCSearch} placeholder="Buscar consulta…" />
                 <ListControlsBar>
                   <div className="flex flex-col gap-1.5">
@@ -917,6 +953,8 @@ export default function PacienteDashboard() {
                     />
                   </div>
                 </ListControlsBar>
+                </div>
+                <div data-tour="consultas-lista" className="space-y-3">
                 {cView === 'calendario' ? (
                   <CalendarView appointments={filteredConsultas} onSelectAppt={setApptModal} />
                 ) : filteredConsultas.length === 0 ? (
@@ -953,13 +991,17 @@ export default function PacienteDashboard() {
                     )
                   })
                 )}
+                </div>
               </div>
             )}
 
             {/* ════════ Tab: Registros (exams + triagens combined) ════════ */}
             {tab === 'registros' && (
               <div className="space-y-3">
+                <div data-tour="registros-busca">
                 <SearchBar value={rSearch} onChange={setRSearch} placeholder="Buscar exame ou triagem…" />
+                </div>
+                <div data-tour="registros-historico" className="space-y-3">
                 <ListControlsBar>
                   <FilterChips<'todos' | 'exames' | 'triagens'>
                     options={[
@@ -1046,6 +1088,7 @@ export default function PacienteDashboard() {
                     )
                   })
                 )}
+                </div>
               </div>
             )}
             {/* ════════ Tab: Integrações (wearables) ════════ */}
@@ -1055,6 +1098,7 @@ export default function PacienteDashboard() {
                 loading={wearables.loading}
                 connect={wearables.connect}
                 disconnect={wearables.disconnect}
+                startOAuth={wearables.startOAuth}
               />
             )}
           </>
