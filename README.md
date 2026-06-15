@@ -1,214 +1,152 @@
-# CarePlus Next
+# Care One
 
-Projeto acadêmico para FIAP, integrando soluções de saúde, IA e interfaces modernas. O repositório contém múltiplos módulos: backend, POCs de IA, interface Totem e pitches.
+Projeto acadêmico para FIAP: plataforma de saúde preditiva com Totem de triagem,
+API com IA (RAG + LLM, score NEWS2, wearables) e dashboards para Operadora,
+Médico e Paciente.
 
 ## Estrutura do Projeto
 
 ```
-careplus-next/
-├── server/        # Backend Express/TypeScript
-├── POCs/          # Provas de conceito (IA, OCR, LangChain)
-├── pitches/       # Apresentações e protótipos
-├── totem-client/  # Frontend React/Vite
+care-one/
+├── server/        # Backend Express/TypeScript (API + MQTT)
+├── dash-client/   # Dashboards web (Operadora / Médico / Paciente)
+├── totem-client/  # Frontend React/Vite do Totem de triagem
+├── analysis/      # Scripts Python de análise/geração de dados
+└── docs/          # POCs de IA e materiais de pitch
 ```
 
-### 1. `server/` — Backend Principal
+### 1. `server/` — API Principal
 
-- **Tecnologia:** Express + TypeScript
-- **Função:** Serviços para sinais vitais, chat clínico com RAG + LLM e integração com Totem.
-- **Subpastas:**
-  - `api-service/`: Código principal da API.
-    - `controllers/`: Lógica de negócio (ScoreController, ChatController).
-    - `middlewares/`: Middlewares de logging, segurança, etc.
-    - `routes/`: Organização modular das rotas (app, totem, score, chat).
-    - `services/`: RagService (busca semântica), LLMChatService (Ollama), ChatSessionStore (DB).
-    - `db/`: Schema e cliente Drizzle ORM (SQLite via libsql).
-    - `knowledge-base/`: Documentos `.md`/`.json` indexados pelo RAG.
+- **Tecnologia:** Express 5 + TypeScript, Drizzle ORM (SQLite/libsql), MQTT, Valkey/Redis.
+- **Função:** sinais vitais e score NEWS2 do Totem, chat clínico com RAG + LLM (Ollama),
+  agendas, exames (com geração de PDF), notificações e integração com wearables.
+- **Estrutura (`api-service/`):**
+  - `routes/totem/`: `MeasureRouter`, `ScoreRouter`, `TotemRouter` — ingestão de
+    medições e cálculo do score do Totem.
+  - `routes/app/`: rotas do app web, montadas em `/app` pelo `AppRouter`:
+    - `AuthRouter`, `HistoryRouter`, `OperadoraRouter`, `AppointmentRouter`,
+      `ExamRouter`, `MedicoRouter`, `PatientRouter`, `PacienteRouter`,
+      `NotificationRouter`.
+  - `controllers/`: regra de negócio por domínio (Score, History, Operadora,
+    Medico, Patient, Appointment, Exam, Notification, Chat, PatientConversation).
+  - `services/`: `RagService` (busca semântica), `LLMChatService` (Ollama),
+    `ChatSessionStore`, `AnalysisService` (ponte com `analysis/`),
+    `LivePatientService`, `ExamPdfService`, `SignalingService` (videochamada),
+    `NotificationService`, `ValkeyPublisher`, `wearables/providers` (Fitbit,
+    Withings, Oura).
+  - `llm/knowledge-base/`: `careplus.md` e `protocols.json` indexados pelo RAG.
+  - `shared/db/`: schema e cliente Drizzle, seed do banco.
+- **`mqtt-service/`:** orquestrador que conecta o broker MQTT ao Totem via Valkey pub/sub.
 - **Como rodar:**
-  1. Instale o [Ollama](https://ollama.com) e baixe os modelos necessários:
+  1. Instale o [Ollama](https://ollama.com) e baixe os modelos:
      ```bash
      ollama pull llama3.2        # LLM para geração de respostas
-     ollama pull all-minilm      # modelo de embeddings (RAG)
+     ollama pull nomic-embed-text  # embeddings (RAG)
      ```
   2. Instale dependências:
      ```bash
      cd server
      yarn install
-     # ou
-     npm install
      ```
-  3. Configure variáveis no `server/.env` (copie de `server/.env.example`):
-     ```
-      # .env.example
-
-      # ── Servidor ──────────────────────────────────────────────
-      NODE_ENV=development
-      PORT=3333
-      ALLOWED_ORIGINS="http://localhost:5173"
-
-      # ── Ollama (LLM + Embeddings) ─────────────────────────────
-      # URL base do servidor Ollama (local ou remoto)
-      OLLAMA_BASE_URL="http://localhost:11434"
-
-      # Modelo de linguagem para geração de respostas
-      # Opções: llama3.2, llama3.1, mistral, gemma2, etc.
-      OLLAMA_MODEL_LLM="llama3.2"
-
-      # Modelo de embeddings para indexação e busca RAG
-      # Recomendado: nomic-embed-text (leve e eficiente)
-      OLLAMA_MODEL_EMBEDDINGS="nomic-embed-text"
-
-      # ── Valkey (pub/sub entre api-service e mqtt-service) ─────
-      # Suba o container com: docker compose up -d
-      VALKEY_HOST="127.0.0.1"
-      VALKEY_PORT=6379
-
-      # ── Banco de Dados ────────────────────────────────────────
-      # Caminho para o arquivo SQLite (prefixo file: obrigatório)
-      DB_PATH="file:./careplus.db"
-     ```
-  4. Crie o banco de dados:
-     ```bash
-     yarn db:push
-     # ou
-     npm run db:push
-     ```
-  5. Alimente o banco de dados:
-     ```bash
-     yarn db:seed
-     # ou
-     npm run db:seed
-     ```
-  6. Caso queira checar o estado do banco de dados:
-     ```bash
-     yarn db:studio
-     # ou
-     npm run db:studio
-     ```
-  7. Suba o container com:
+  3. Copie `server/.env.example` para `server/.env` e ajuste:
+     - `PORT`, `ALLOWED_ORIGINS`, `DB_PATH`
+     - `OLLAMA_BASE_URL`, `OLLAMA_MODEL_LLM`, `OLLAMA_MODEL_EMBEDDINGS`
+     - `MQTT_BROKER`, `VALKEY_HOST`, `VALKEY_PORT`
+     - **Wearables (opcional):** `FITBIT_CLIENT_ID/SECRET`,
+       `WITHINGS_CLIENT_ID/SECRET`, `OURA_CLIENT_ID/SECRET`,
+       `WEARABLES_REDIRECT_BASE`, `APP_BASE_URL`. Sem credenciais, cada provedor
+       cai automaticamente no modo simulado (demo offline).
+  4. Suba a infra (Valkey/MQTT):
      ```bash
      docker compose up -d
-     ``` 
-  8. Inicie em modo desenvolvimento:
+     ```
+  5. Crie e popule o banco:
+     ```bash
+     yarn db:push
+     yarn db:seed
+     ```
+  6. Inicie a API + MQTT em modo dev:
      ```bash
      yarn dev
-     # ou
-     npm run dev
      ```
-  9.  Acesse: `http://localhost:3333`
+  7. Acesse a API em `http://localhost:3333`.
 
-Para importar as configurações em clientes de API ou MQTT utilize a pasta `client-config/`:
-  - **Postman:** importe `postman.postman_collection.json`
-  - **Insomnia:** importe `insomnia.json`
-  - **MQTTX:** importe `mqttx.json`
+- **Outros comandos úteis:**
+  - `yarn db:studio` — interface visual do banco.
+  - `yarn test` / `yarn test:coverage` — testes (Vitest).
+  - `yarn lint` — lint com correção automática.
 
-### 2. `POCs/` — Provas de Conceito
+- **Clientes de API/MQTT** (`server/client-config/`):
+  - **Postman:** `postman.postman_collection.json`
+  - **Insomnia:** `insomnia.json`
+  - **MQTTX:** `mqttx.json`
 
-- **langchain/**: API de chat RAG (Retrieval-Augmented Generation) com LangChain, Ollama, ChromaDB e Redis.
-  - **Como rodar:**
-    1. Instale dependências:
-       ```
-       cd POCs/langchain
-       yarn install
-       # ou
-       npm install
-       ```
-    2. Configure `.env` conforme exemplo do README.
-    3. Suba infraestrutura:
-       ```
-       docker-compose up -d
-       ```
-    4. Baixe modelos Ollama:
-       ```
-       docker exec ollama ollama pull llama3.2
-       docker exec ollama ollama pull nomic-embed-text
-       ```
-    5. Rode a API:
-       ```
-       yarn dev
-       # ou
-       npm run dev
-       ```
-    6. Acesse: `http://localhost:3000`
-  - **Endpoints:** Upload de documentos, chat, histórico, coleções, etc.
-  - **Referência completa:** Veja o README em `POCs/langchain/README.md`.
+### 2. `dash-client/` — Dashboards (Operadora / Médico / Paciente)
 
-- **OCR/**: Scripts Python para reconhecimento de texto em imagens.
-  - `img_map.py`, `txt_recognition.py`: Processamento de imagens e extração de texto.
-  - `assets/`: Dados de teste.
-
-### 3. `totem-client/` — Frontend React
-
-- **Tecnologia:** React, TypeScript, Vite.
-- **Função:** Interface para o Totem de atendimento, com páginas de login, vitais, perguntas, resultados.
+- **Tecnologia:** React 19 + TypeScript + Vite, Tailwind, Recharts.
+- **Função:** três painéis sobre a mesma base de dados, cada um com sua rota:
+  - **Operadora** (`/operadora`): análise preditiva de sinistros — visão geral
+    com alertas e indicadores-chave, carteira completa de beneficiários (score,
+    Framingham, HOMA-IR, custo projetado, exportação CSV) e aba de ROI das
+    intervenções preventivas.
+  - **Médico** (`/medico`): lista de pacientes por risco, agenda de consultas
+    (lista/calendário, presencial ou telechamada com videochamada via WebRTC) e
+    exames compartilhados pelos pacientes (com download em PDF).
+  - **Paciente** (`/paciente`): status de saúde, visualização de sinais vitais,
+    agendamento de consultas, histórico de exames/triagens e integrações com
+    wearables (Apple Health, Fitbit, Garmin, Samsung Health, Withings, Oura —
+    com OAuth2 real para Fitbit/Withings/Oura quando configurado no `server/`).
+  - Conversa paciente↔médico (`/medico/conversa`, `/paciente/conversa`) e
+    chamada de vídeo (`/videocall`).
+  - **Tour guiado** (`src/tour/`): onboarding interativo que percorre os três
+    perfis a partir da Home, definido em `tour.json`.
 - **Como rodar:**
-  1. Instale dependências:
-     ```
-     cd totem-client
-     yarn install
-     # ou
-     npm install
-     ```
-  2. Rode em modo desenvolvimento:
-     ```
-     yarn dev
-     # ou
-     npm run dev
-     ```
-  3. Acesse: `http://localhost:5173`
+  ```bash
+  cd dash-client
+  yarn install
+  yarn dev
+  ```
+  Acesse em `http://localhost:5174`. Requer a API do `server/` rodando em
+  `http://localhost:3333` (configurável via `VITE_API_URL`).
 
-### 4. `pitches/` — Apresentações
+### 3. `totem-client/` — Totem de Triagem
 
-- Protótipos HTML/CSS/JS para demonstração de ideias e funcionalidades.
-- Cada pitch tem um README e arquivos de apresentação.
+- **Tecnologia:** React 19 + TypeScript + Vite, Tailwind.
+- **Função:** fluxo de atendimento do Totem — login, captura de sinais vitais,
+  perguntas guiadas e resultado do score NEWS2.
+- **Como rodar:**
+  ```bash
+  cd totem-client
+  yarn install
+  yarn dev
+  ```
+  Acesse em `http://localhost:5175`.
 
----
+### 4. `docs/` — POCs e Pitches
 
-## Como Rodar o Server Principal
+- **`docs/POCs/langchain/`**: POC de chat RAG com LangChain, Ollama, ChromaDB e
+  Redis (veja o README próprio da pasta para rodar).
+- **`docs/POCs/OCR/`**: scripts Python de OCR (extração de texto em imagens).
+- **`docs/pitches/`**: protótipos e roteiros das apresentações do projeto.
 
-1. Entre na pasta `server`:
-   ```bash
-   cd server
-   ```
-2. Instale o Ollama e puxe os modelos:
-   ```bash
-   ollama pull llama3.2
-   ollama pull all-minilm
-   ```
-3. Instale as dependências:
-   ```bash
-   yarn install
-   # ou
-   npm install
-   ```
-4. Configure o `.env` a partir do `.env.example`.
-5. Crie o banco de dados:
-   ```bash
-   yarn db:push
-   # ou
-   npm run db:push
-   ```
-6. Inicie o servidor:
-   ```bash
-   yarn dev
-   # ou
-   npm run dev
-   ```
-7. Acesse a API em `http://localhost:3333`
+### `analysis/`
+
+- Scripts Python (`compute_dashboard.py`) usados pelo `AnalysisService` do
+  `server/` para gerar os dados analíticos consumidos pelo `dash-client`.
 
 ---
 
 ## Dicas
 
-- Consulte os READMEs das POCs para instruções específicas.
-- Use Docker para rodar serviços de IA e banco de dados nas POCs.
-- O projeto é modular: cada pasta pode ser usada e testada separadamente.
+- Cada pasta (`server`, `dash-client`, `totem-client`) tem seu próprio
+  `package.json` e pode ser instalada/rodada de forma independente.
+- Para o fluxo completo, rode `server` primeiro, depois `dash-client` e/ou
+  `totem-client`.
+- Sem Ollama/Docker configurados, a API ainda sobe, mas chat com IA e wearables
+  reais ficam indisponíveis (wearables caem no modo simulado).
 
 ---
 
 ## Licença
 
 MIT
-
----
-
