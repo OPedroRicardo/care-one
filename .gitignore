@@ -5,10 +5,8 @@ npm-debug.log
 coverage
 logs
 todo.md
-careplus.db
+server/careplus.db
 laudos/
 .vercel
 vercel.json
 *.mp4
-
-server/careplus.db
