@@ -13,6 +13,13 @@ import random
 from pathlib import Path
 from datetime import date
 
+# Node reads this script's stdout as UTF-8 (AnalysisService.ts). On Windows the
+# default stream encoding follows the console codepage (e.g. cp1252), which
+# silently mangles accented names (e.g. "João" -> "Jo\xe3o" -> "Jo�o" once
+# decoded as UTF-8). Force UTF-8 so the JSON bytes match what Node expects.
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
+
 try:
     import pandas as pd
 except ImportError:
